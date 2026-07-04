@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CV – Two Column Template</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#121212;
+      --muted:#60656a;
+      --line:#eaeaea;
+      --panel:#f3f3f3;
+      --black:#111;
+      --accent:#111;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#fff;color:var(--ink)}
+    body{font:14px/1.6 Inter,system-ui,Segoe UI,Roboto,Arial}
+
+    .sheet{
+      width:210mm; min-height:297mm;
+      margin:16px auto; background:#fff;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+      overflow:hidden;
+    }
+    @media print{
+      body{background:#fff}
+      .sheet{margin:0; box-shadow:none; page-break-after:always}
+    }
+
+    .wrap{padding:18mm 18mm 16mm 18mm}
+
+    .header{
+      display:grid; grid-template-columns:1fr 240px; gap:20px; align-items:start;
+    }
+    .title small{
+      display:block; color:#8b8f94; letter-spacing:.16em; text-transform:uppercase; margin-top:6px;
+      font-weight:600;
+    }
+    .title h1{
+      margin:0 0 8px 0; font-family:Poppins,Inter,sans-serif; font-weight:800;
+      font-size:52px; line-height:1.05; letter-spacing:.3px;
+    }
+    .title h1 .thin{font-weight:600; display:block}
+    .photo{
+      width:240px; height:240px; background:#ddd; overflow:hidden; justify-self:end;
+    }
+    .photo img{width:100%; height:100%; object-fit:cover; display:block}
+
+    .contact{
+      margin-top:16px; background:var(--black); color:#fff;
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px;
+      padding:14px 16px; font-size:13px; font-weight:600;
+    }
+    .contact b{display:block; opacity:.9; font-weight:700}
+    .contact .sub{opacity:.85; font-weight:400; margin-top:4px}
+
+    .grid{
+      margin-top:18px;
+      display:grid; grid-template-columns:1.1fr .9fr; gap:24px;
+    }
+
+    .section{margin-top:18px}
+    .h{
+      font-family:Poppins,Inter,sans-serif; font-weight:800; letter-spacing:.1em;
+      text-transform:uppercase; font-size:16px; color:var(--accent);
+      border-bottom:2px solid var(--line); padding-bottom:6px; margin-bottom:10px;
+    }
+    .lead{color:#4b4f54}
+
+    .exp-item{margin:14px 0}
+    .role{font-weight:700}
+    .org{font-weight:600; color:#444}
+    .when{color:#8b8f94; font-weight:700; margin-top:2px; font-size:12px}
+    .exp-item p{margin:6px 0 0 0; color:#555}
+
+    .refs{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+    .ref b{display:block; font-weight:700}
+    .ref .meta{color:#555; font-size:13px}
+
+    .side{
+      background:var(--panel); border:1px solid var(--line); border-radius:4px; padding:16px;
+    }
+    .side .h{border-color:#dcdcdc}
+    .edu-item{margin:10px 0}
+    .edu-item .degree{font-weight:700}
+    .edu-item .school{color:#555}
+    .edu-item .years{color:#8b8f94; font-weight:700; font-size:12px; margin-bottom:2px}
+
+    .bullets{margin:8px 0 0 0; padding-left:16px}
+    .bullets li{margin:4px 0}
+  </style>
+</head>
+<body>
+  <section class="sheet">
+    <div class="wrap">
+      <!-- Header -->
+      <div class="header">
+        <div class="title">
+          <h1>
+            <span class="thin">FIRST NAME</span>
+            LAST NAME
+          </h1>
+          <small>YOUR CURRENT STATUS</small>
+        </div>
+        <div class="photo">
+          <img src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d?q=80&w=800&auto=format&fit=crop" alt="photo">
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="contact">
+        <div>
+          <b>Phone</b>
+          <div class="sub">+237 XXX XXX<br>+237 XXX XXX</div>
+        </div>
+        <div>
+          <b>Email</b>
+          <div class="sub">yourmail@gmail.com<br>yourwebsite.com</div>
+        </div>
+        <div>
+          <b>Address</b>
+          <div class="sub">Street, District<br>City, Country</div>
+        </div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="grid">
+        <!-- Left -->
+        <div>
+          <div class="section">
+            <div class="h">Profile</div>
+            <p class="lead">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+              dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.
+            </p>
+          </div>
+
+          <div class="section">
+            <div class="h">Experience</div>
+
+            <div class="exp-item">
+              <div class="role">Job Title</div>
+              <div class="org">Company Name / City</div>
+              <div class="when">Present</div>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            </div>
+
+            <div class="exp-item">
+              <div class="role">Job Title</div>
+              <div class="org">Company Name / City</div>
+              <div class="when">20XX – 20XX</div>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            </div>
+
+            <div class="exp-item">
+              <div class="role">Job Title</div>
+              <div class="org">Company Name / City</div>
+              <div class="when">20XX – 20XX</div>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="h">Mentor or Reference</div>
+            <div class="refs">
+              <div class="ref">
+                <div class="meta">Current Position</div>
+                <b>Full Name</b>
+                <div class="meta">(+237) XXX XXX XXX</div>
+              </div>
+              <div class="ref">
+                <div class="meta">Current Position</div>
+                <b>Full Name</b>
+                <div class="meta">(+237) XXX XXX XXX</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <aside class="side">
+          <div class="section">
+            <div class="h">Education</div>
+            <div class="edu-item">
+              <div class="years">20XX – 20XX</div>
+              <div class="degree">Degree Earned</div>
+              <div class="school">Name of Institution</div>
+            </div>
+            <div class="edu-item">
+              <div class="years">20XX – 20XX</div>
+              <div class="degree">Degree Earned</div>
+              <div class="school">Name of Institution</div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="h">Languages</div>
+            <ul class="bullets">
+              <li>English</li>
+              <li>French</li>
+            </ul>
+          </div>
+
+          <div class="section">
+            <div class="h">Skills</div>
+            <ul class="bullets">
+              <li>Photoshop</li>
+              <li>Illustrator</li>
+              <li>InDesign</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

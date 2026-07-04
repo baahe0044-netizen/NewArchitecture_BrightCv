@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resume – Orange Template</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root{
+      --brand:#f59e0b;          /* orange */
+      --ink:#1f2328;            /* texte */
+      --muted:#6b7280;          /* texte secondaire */
+      --line:#eaecef;           /* séparateurs */
+      --panel:#fafafa;          /* panneaux gris clair */
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:#f3f4f6;color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+
+    /* ===== PAGE ===== */
+    .sheet{width:210mm; min-height:297mm; background:#fff; margin:16px auto; box-shadow:0 10px 30px rgba(0,0,0,.08); overflow:hidden}
+    @media print{body{background:#fff}.sheet{box-shadow:none;margin:0}}
+    .wrap{padding:16mm 14mm}
+
+    /* ===== HEADER ===== */
+    .header{display:grid;grid-template-columns:175px 1fr;gap:18px;align-items:center}
+    .portrait{position:relative;width:175px;height:175px;border-radius:50%;overflow:hidden}
+    .portrait img{width:100%;height:100%;object-fit:cover}
+    /* le croissant blanc sur l'image */
+    .portrait::after{content:"";position:absolute;bottom:-6px;left:-6px;width:60%;height:60%;border:10px solid #fff;border-top-color:transparent;border-right-color:transparent;border-bottom-left-radius:140px;transform:rotate(-35deg)}
+
+    .title h1{font-family:Poppins,Inter,sans-serif;color:var(--brand);font-size:46px;line-height:1.05;font-weight:800;letter-spacing:.3px;margin:0}
+    .title .subtitle{margin-top:3px;color:#9ca3af;text-transform:uppercase;letter-spacing:1.9px;font-weight:700;font-size:12px}
+
+    .resume{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+    .resume .head{display:flex;gap:10px;align-items:center;font-weight:800;text-transform:uppercase;letter-spacing:1.4px}
+    .resume .head i{color:var(--brand)}
+    .resume p{margin:8px 0 0;color:#4b5563;line-height:1.6}
+
+    /* ===== CONTACT BAR ===== */
+    .contact{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+    .contact .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:center}
+    .contact .center{display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .contact .center .dot{width:40px;height:40px;border-radius:999px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;color:var(--brand);margin-bottom:8px}
+    .contact .item{display:flex;gap:10px;align-items:center;color:#1f2937}
+    .contact i{color:var(--brand)}
+
+    /* ===== MAIN GRID ===== */
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:16px}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+    .panel h2{margin:0 0 12px; text-transform:uppercase; letter-spacing:1.2px; font-size:18px;display:flex;align-items:center;gap:10px}
+    .panel h2 i{color:var(--brand)}
+
+    .timeline{display:flex;flex-direction:column;gap:14px}
+    .item{display:grid;grid-template-columns:14px 1fr;gap:12px}
+    .pin{position:relative}
+    .pin::before{content:"";position:absolute;left:6px;top:0;bottom:-14px;width:2px;background:var(--line)}
+    .item:last-child .pin::before{display:none}
+    .node{width:12px;height:12px;border-radius:999px;background:var(--brand);display:block;margin-top:4px}
+    .role{font-weight:800}
+    .org{font-weight:700;color:#6b7280}
+    .desc{color:#6b7280;font-size:13px;margin-top:4px}
+    .years{color:var(--brand);font-weight:800;font-size:12px;margin-top:6px}
+
+    /* ===== EXPERTISE ===== */
+    .expert{margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+    .expert .title{display:flex;align-items:center;gap:10px;justify-content:center;text-transform:uppercase;font-weight:800;letter-spacing:1.6px}
+    .expert .title i{color:var(--brand)}
+    .skills{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+    .skill b{font-size:14px}
+    .bar{height:6px;background:#f3f4f6;border-radius:999px;overflow:hidden;margin-top:6px;position:relative}
+    .bar span{display:block;height:100%;background:var(--brand);width:70%}
+    .bar::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--brand)}
+
+    /* ===== FOOTER (Mentor / Intérêts) ===== */
+    .footer{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px}
+    .badge{color:var(--brand);font-weight:900;text-transform:uppercase}
+    .muted{color:#6b7280}
+  </style>
+</head>
+<body>
+  <section class="sheet">
+    <div class="wrap">
+      <!-- HEADER -->
+      <div class="header">
+        <div class="portrait">
+          <!-- remplacez l'image -->
+          <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?q=80&w=600&auto=format&fit=crop" alt="portrait"/>
+        </div>
+        <div class="title">
+          <h1 data-field="name">YOUR NAME</h1>
+          <div class="subtitle" data-field="headline">YOUR CURRENT STATUS (OR THE ROLE YOU WANT)</div>
+
+          <div class="resume">
+            <div class="head"><i class="fa-solid fa-user"></i> SUMMARY</div>
+            <p data-field="summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="contact">
+        <div class="row">
+          <div class="item"><i class="fa-solid fa-phone"></i> <span data-field="phone1">(+237) XXX XXX XXX</span></div>
+          <div class="center">
+            <div class="dot"><i class="fa-solid fa-circle"></i></div>
+            <div data-field="website">www.yourwebsite.com</div>
+            <div data-field="email">your@email.com</div>
+          </div>
+          <div class="item" style="justify-self:end"><i class="fa-solid fa-location-dot"></i> <span data-field="location">Street, District — City, Country</span></div>
+        </div>
+      </div>
+
+      <!-- MAIN GRID: EXPERIENCE / EDUCATION -->
+      <div class="grid">
+        <div class="panel">
+          <h2><i class="fa-solid fa-briefcase"></i> WORK EXPERIENCE</h2>
+          <div class="timeline" data-collection="experience">
+            <div class="item">
+              <div class="pin"><span class="node"></span></div>
+              <div>
+                <div class="role" data-field="role">POSITION HELD</div>
+                <div class="org" data-field="company">Company name</div>
+                <div class="desc" data-field="summary">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.</div>
+                <div class="years" data-field="dates">20XX – 20XX</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="pin"><span class="node"></span></div>
+              <div>
+                <div class="role">POSITION HELD</div>
+                <div class="org">Company name</div>
+                <div class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.</div>
+                <div class="years">20XX – 20XX</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="pin"><span class="node"></span></div>
+              <div>
+                <div class="role">POSITION HELD</div>
+                <div class="org">Company name</div>
+                <div class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.</div>
+                <div class="years">20XX – 20XX</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="pin"><span class="node"></span></div>
+              <div>
+                <div class="role">POSITION HELD</div>
+                <div class="org">Company name</div>
+                <div class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.</div>
+                <div class="years">20XX – 20XX</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><i class="fa-solid fa-graduation-cap"></i> EDUCATION</h2>
+          <div class="timeline" data-collection="education">
+            <div class="item">
+              <div class="pin"><span class="node"></span></div>
+              <div>
+                <div class="role" data-field="degree">DEGREE EARNED</div>
+                <div class="org" data-field="school">Institution name</div>
+                <div class="desc" data-field="notes">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                <div class="years" data-field="years">20XX – 20XX</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="pin"><span class="node"></span></div>
+              <div>
+                <div class="role">DEGREE EARNED</div>
+                <div class="org">Institution name</div>
+                <div class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                <div class="years">20XX – 20XX</div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="pin"><span class="node"></span></div>
+              <div>
+                <div class="role">DEGREE EARNED</div>
+                <div class="org">Institution name</div>
+                <div class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                <div class="years">20XX – 20XX</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXPERTISE -->
+      <div class="expert">
+        <div class="title"><i class="fa-solid fa-lightbulb"></i> EXPERTISE</div>
+        <div class="skills" data-collection="skills">
+          <div class="skill"><b>Microsoft Word</b><div class="bar"><span style="width:78%"></span></div></div>
+          <div class="skill"><b>Microsoft PowerPoint</b><div class="bar"><span style="width:74%"></span></div></div>
+          <div class="skill"><b>Adobe Illustrator</b><div class="bar"><span style="width:62%"></span></div></div>
+          <div class="skill"><b>Adobe Photoshop</b><div class="bar"><span style="width:76%"></span></div></div>
+        </div>
+      </div>
+
+      <!-- FOOTER: Mentor / Intérêts -->
+      <div class="footer">
+        <div>
+          <div class="badge">Your Mentor</div>
+          <div class="muted" data-field="mentor">MICHAEL R. MAGEE — Their current title — (+237) XXX XXX XXX</div>
+        </div>
+        <div style="text-align:right">
+          <div class="badge">Interests</div>
+          <div class="muted" data-field="interests">TRAVEL • MUSIC</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</body>
+</html>

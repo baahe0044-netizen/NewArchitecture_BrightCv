@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume – Blue Template </title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background-color: #f5f5f5; color: #333; }
+        .resume-container { max-width: 800px; margin: 20px auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden; }
+
+        .header { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; padding: 40px; display: flex; align-items: center; gap: 30px; }
+        .profile-image { width: 150px; height: 150px; border-radius: 50%; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150"><circle cx="75" cy="75" r="75" fill="%23ddd"/><circle cx="75" cy="60" r="20" fill="%23999"/><path d="M75 85c-25 0-45 15-45 35v30h90v-30c0-20-20-35-45-35z" fill="%23999"/></svg>') center/cover; border: 4px solid rgba(255,255,255,0.3); flex-shrink: 0; }
+        .header-info { flex: 1; }
+        .name { font-size: 2.5em; font-weight: bold; color: #ff9500; margin-bottom: 5px; letter-spacing: 1px; }
+        .status { font-size: 0.9em; color: rgba(255,255,255,0.8); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .resume-section { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .resume-icon { width: 20px; height: 20px; background: #ff9500; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .resume-text { font-size: 0.9em; line-height: 1.4; }
+
+        .contact-section { background: #f8f9fa; padding: 25px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; }
+        .contact-item { text-align: center; font-size: 0.85em; color: #666; }
+        .contact-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: bold; color: #ff9500; text-transform: uppercase; font-size: 0.8em; }
+        .contact-icon { width: 16px; height: 16px; background: #ff9500; border-radius: 50%; }
+
+        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px; }
+        .section { margin-bottom: 30px; }
+        .section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 2px solid #ff9500; }
+        .section-icon { width: 24px; height: 24px; background: #ff9500; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
+        .section-title h2 { font-size: 1.2em; color: #333; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .experience-item, .education-item { margin-bottom: 20px; padding-left: 20px; position: relative; }
+        .experience-item::before, .education-item::before { content: ''; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; background: #ff9500; border-radius: 50%; }
+        .job-title, .degree-title { font-weight: bold; color: #333; margin-bottom: 2px; }
+        .company, .school { font-size: 0.9em; color: #666; margin-bottom: 5px; }
+        .description { font-size: 0.85em; line-height: 1.4; color: #555; margin-bottom: 8px; }
+        .date { font-size: 0.75em; color: #ff9500; font-weight: bold; }
+
+        .skills-section { background: #f8f9fa; padding: 30px 40px; }
+        .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+        .skill-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .skill-name { font-weight: bold; color: #333; }
+        .skill-bar { width: 120px; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
+        .skill-progress { height: 100%; background: linear-gradient(90deg, #ff9500, #ffb347); border-radius: 4px; }
+
+        .footer-section { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+        .mentor-section { background: linear-gradient(135deg, #ff9500, #ffb347); color: white; padding: 20px; border-radius: 8px; }
+        .mentor-title { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; }
+        .mentor-name { font-size: 1em; margin-bottom: 5px; }
+        .mentor-status { font-size: 0.8em; opacity: 0.9; margin-bottom: 5px; }
+        .mentor-contact { font-size: 0.8em; opacity: 0.9; }
+
+        .interests-section h2 { color: #ff9500; font-size: 1.4em; margin-bottom: 15px; text-transform: uppercase; }
+        .interests-list { list-style: none; }
+        .interests-list li { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; color: #333; }
+        .interests-list li::before { content: '▶'; color: #ff9500; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div class="resume-container">
+        <div class="header">
+            <div class="profile-image"></div>
+            <div class="header-info">
+                <h1 class="name">YOUR NAME</h1>
+                <p class="status">YOUR CURRENT STATUS (OR THE ROLE YOU WANT)</p>
+                <div class="resume-section">
+                    <div class="resume-icon">👤</div>
+                    <div class="resume-text">
+                        <strong>SUMMARY</strong><br>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <div class="contact-item">
+                <div class="contact-header">
+                    <div class="contact-icon"></div>
+                    CONTACT
+                </div>
+                <div>(+237) XXX XXX XXX</div>
+                <div>(+237) XXX XXX XXX</div>
+            </div>
+            <div class="contact-item">
+                <div>www.yourwebsite.com</div>
+                <div>your@email.com</div>
+            </div>
+            <div class="contact-item">
+                <div>Street, district</div>
+                <div>City, country</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-column">
+                <div class="section">
+                    <div class="section-title">
+                        <div class="section-icon">💼</div>
+                        <h2>WORK EXPERIENCE</h2>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="job-title">POSITION HELD</div>
+                        <div class="company">Company name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="job-title">POSITION HELD</div>
+                        <div class="company">Company name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="job-title">POSITION HELD</div>
+                        <div class="company">Company name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+
+                    <div class="experience-item">
+                        <div class="job-title">POSITION HELD</div>
+                        <div class="company">Company name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="section">
+                    <div class="section-title">
+                        <div class="section-icon">🎓</div>
+                        <h2>EDUCATION</h2>
+                    </div>
+
+                    <div class="education-item">
+                        <div class="degree-title">DEGREE EARNED</div>
+                        <div class="school">Institution name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+
+                    <div class="education-item">
+                        <div class="degree-title">DEGREE EARNED</div>
+                        <div class="school">Institution name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+
+                    <div class="education-item">
+                        <div class="degree-title">DEGREE EARNED</div>
+                        <div class="school">Institution name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+
+                    <div class="education-item">
+                        <div class="degree-title">DEGREE EARNED</div>
+                        <div class="school">Institution name</div>
+                        <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</div>
+                        <div class="date">20XX - 20XX</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="skills-section">
+            <div class="section-title">
+                <div class="section-icon">💡</div>
+                <h2>EXPERTISE</h2>
+            </div>
+
+            <div class="skills-grid">
+                <div>
+                    <div class="skill-item">
+                        <span class="skill-name">Microsoft Word</span>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Adobe Illustrator</span>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 70%"></div></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="skill-item">
+                        <span class="skill-name">Microsoft PowerPoint</span>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">Adobe Photoshop</span>
+                        <div class="skill-bar"><div class="skill-progress" style="width: 80%"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <div class="mentor-section">
+                    <div class="mentor-title">YOUR MENTOR</div>
+                    <div class="mentor-name">MICHAEL R. MAGEE</div>
+                    <div class="mentor-status">THEIR CURRENT TITLE</div>
+                    <div class="mentor-contact">(+237) XXX XXX XXX</div>
+                </div>
+
+                <div class="interests-section">
+                    <h2>INTERESTS</h2>
+                    <ul class="interests-list">
+                        <li>TRAVEL</li>
+                        <li>MUSIC</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
