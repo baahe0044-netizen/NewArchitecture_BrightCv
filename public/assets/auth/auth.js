@@ -8,6 +8,7 @@
       input.type = visible ? 'password' : 'text';
       button.textContent = visible ? 'Show' : 'Hide';
       button.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
+      button.setAttribute('aria-pressed', String(!visible));
     });
   });
 
@@ -18,6 +19,7 @@
       button.disabled = true;
       button.dataset.label = button.textContent;
       button.textContent = 'Please wait…';
+      form.setAttribute('aria-busy', 'true');
     });
   });
 })();

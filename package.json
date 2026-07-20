@@ -9,8 +9,9 @@
     "test:php": "node scripts/run-php-tests.mjs",
     "test:renderer": "node --test tests/renderer.test.cjs",
     "test:ui": "node scripts/test-builder-ui.mjs",
+    "test:views": "node scripts/test-view-accessibility.mjs",
     "test:integrity": "node scripts/check-integrity.mjs",
-    "check": "npm run lint:php && npm run lint:js && npm run test:integrity && npm run test:php && npm run test:renderer && npm run test:ui"
+    "check": "npm run lint:php && npm run lint:js && npm run test:integrity && npm run test:php && npm run test:renderer && npm run test:ui && npm run test:views"
   },
   "devDependencies": {
     "@php-wasm/node": "^3.1.45",

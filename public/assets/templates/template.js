@@ -18,12 +18,18 @@
       if (show) visible++;
     });
     document.getElementById('templateEmpty').hidden = visible !== 0;
+    const results = document.getElementById('templateResults');
+    if (results) results.textContent = visible + (visible === 1 ? ' template' : ' templates');
   }
 
   document.querySelectorAll('[data-template-filter]').forEach((button) => {
     button.addEventListener('click', () => {
-      document.querySelectorAll('[data-template-filter]').forEach((item) => item.classList.remove('active'));
+      document.querySelectorAll('[data-template-filter]').forEach((item) => {
+        item.classList.remove('active');
+        item.setAttribute('aria-pressed', 'false');
+      });
       button.classList.add('active');
+      button.setAttribute('aria-pressed', 'true');
       activeFilter = button.dataset.templateFilter;
       applyFilters();
     });
@@ -47,9 +53,9 @@
     if (preview) {
       previewedKey = preview.dataset.previewTemplate;
       previewedName = preview.dataset.templateName;
-      const source = preview.closest('.template-preview');
+      const source = preview.closest('.template-card')?.querySelector('.template-preview');
+      if (!source) return;
       const clone = source.cloneNode(true);
-      clone.querySelector('.template-overlay')?.remove();
       document.getElementById('largeTemplatePreview').replaceChildren(clone);
       document.getElementById('previewTemplateTitle').textContent = previewedName;
       window.Lunetti.openModal('templatePreviewModal');
@@ -66,6 +72,7 @@
     if (!name) return;
 
     button.disabled = true;
+    event.currentTarget.setAttribute('aria-busy', 'true');
     button.innerHTML = '<span class="spinner"></span> Creating…';
     try {
       const response = await window.Lunetti.api('/api/resumes', {
@@ -77,6 +84,7 @@
       window.Lunetti.toast(error.message, 'error');
       button.disabled = false;
       button.textContent = 'Create and edit';
+      event.currentTarget.removeAttribute('aria-busy');
     }
   });
 })();

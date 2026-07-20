@@ -11,22 +11,26 @@
 </head>
 <body class="auth-page">
 <main class="auth-shell">
-    <section class="auth-visual">
-        <a class="auth-brand" href="<?= e(base_url('/')) ?>"><?php View::partial('components/logo'); ?></a>
+    <section class="auth-visual" aria-labelledby="auth-context-title">
+        <div class="auth-brand"><?php View::partial('components/logo'); ?></div>
         <div class="auth-visual-copy">
-            <span class="auth-kicker">Build with confidence</span>
-            <h1>A sharper CV is waiting for you.</h1>
-            <p>Continue building, tailor your application, and check every detail before you apply.</p>
+            <p class="auth-kicker">Your CV workspace</p>
+            <h1 id="auth-context-title">Continue from your latest draft.</h1>
+            <p>Review your content, tailor it for the role, and export the finished CV when it is ready.</p>
         </div>
-        <div class="auth-preview">
-            <div class="auth-preview-paper">
-                <div class="preview-top"><span>EB</span><div><b>EMMANUEL BAAH</b><small>SOFTWARE ENGINEER</small></div></div>
-                <hr><b>PROFILE</b><i></i><i></i><b>EXPERIENCE</b><i></i><i></i><i></i><b>SKILLS</b>
-                <div class="preview-pills"><span>PHP</span><span>Python</span><span>React</span></div>
+        <div class="auth-workspace" aria-hidden="true">
+            <div class="auth-workspace-head">
+                <div><span>Marketing Manager CV</span><small>Updated recently</small></div>
+                <strong><i></i> Saved</strong>
             </div>
-            <div class="auth-score"><strong>88</strong><span>ATS ready</span></div>
+            <div class="auth-workspace-body">
+                <div class="auth-document-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 15h6M9 18h4"/></svg>
+                </div>
+                <div><b>Ready to edit</b><span>Personal details · Experience · Education · Skills</span></div>
+            </div>
+            <div class="auth-workspace-footer"><span>Completion</span><div><i></i></div><b>82%</b></div>
         </div>
-        <p class="auth-quote">“Make every line earn its place.”</p>
     </section>
 
     <section class="auth-form-side">
@@ -35,7 +39,7 @@
             <div class="auth-heading">
                 <p class="eyebrow">Welcome back</p>
                 <h2>Sign in to your account</h2>
-                <p>Pick up exactly where you left off.</p>
+                <p>Enter the email and password you used to register.</p>
             </div>
 
             <?php View::partial('components/flash', compact('message', 'error')); ?>
@@ -49,16 +53,16 @@
                 <div class="field">
                     <div class="label-row"><label for="password">Password</label><a href="<?= e(base_url('/forgot-password')) ?>">Forgot password?</a></div>
                     <div class="password-wrap">
-                        <input id="password" type="password" name="password" autocomplete="current-password" placeholder="Your password" required>
-                        <button type="button" data-password-toggle="password" aria-label="Show password">Show</button>
+                        <input id="password" type="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+                        <button type="button" data-password-toggle="password" aria-controls="password" aria-pressed="false" aria-label="Show password">Show</button>
                     </div>
                 </div>
                 <button class="btn btn-primary auth-submit" type="submit">Sign in</button>
             </form>
 
-            <p class="auth-switch">New to LunettiStar? <a href="<?= e(base_url('/register')) ?>">Create a free account</a></p>
+            <p class="auth-switch">New to LunettiStar? <a href="<?= e(base_url('/register')) ?>">Create an account</a></p>
         </div>
-        <p class="auth-legal">By continuing, you agree to use LunettiStar responsibly and keep your account secure.</p>
+        <p class="auth-legal">Keep your sign-in details private, especially on shared devices.</p>
     </section>
 </main>
 <script src="<?= e(asset('auth/auth.js')) ?>" defer></script>

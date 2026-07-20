@@ -10,6 +10,8 @@
 }
 
 .account-nav {
+  position: sticky;
+  top: 88px;
   display: grid;
   padding: 8px;
   gap: 3px;
@@ -17,30 +19,41 @@
 
 .account-nav a {
   display: flex;
-  padding: 11px;
+  min-height: 54px;
+  padding: 9px 10px;
   align-items: center;
   gap: 10px;
   color: var(--muted);
-  border-radius: 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
 }
 
-.account-nav a:hover,
+.account-nav a:hover {
+  color: var(--ink);
+  background: var(--surface-muted);
+}
+
 .account-nav a.active {
   color: var(--brand-dark);
   background: var(--brand-soft);
+  border-color: var(--brand-border);
 }
 
 .account-nav a > span {
   display: grid;
-  width: 29px;
-  height: 29px;
-  flex: 0 0 29px;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
   place-items: center;
   color: inherit;
-  background: rgba(255,255,255,.68);
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 800;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.account-nav svg {
+  width: 17px;
+  height: 17px;
 }
 
 .account-nav b,
@@ -48,8 +61,15 @@
   display: block;
 }
 
-.account-nav b { font-size: 12px; }
-.account-nav small { margin-top: 2px; color: #93909e; font-size: 9px; }
+.account-nav b {
+  font-size: 12px;
+}
+
+.account-nav small {
+  margin-top: 2px;
+  color: var(--subtle);
+  font-size: 9px;
+}
 
 .account-card {
   padding: 30px;
@@ -70,20 +90,26 @@
 
 .large-avatar {
   display: grid;
-  width: 54px;
-  height: 54px;
-  flex: 0 0 54px;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
   place-items: center;
   color: #fff;
-  background: linear-gradient(135deg, var(--brand), #9b73f3);
-  border-radius: 17px;
-  font-size: 19px;
+  background: var(--brand);
+  border-radius: 10px;
+  font-size: 18px;
   font-weight: 800;
 }
 
+.large-avatar svg {
+  width: 25px;
+  height: 25px;
+}
+
 .security-avatar {
-  color: #0b7953;
-  background: #e2f8ee;
+  color: var(--success);
+  background: var(--success-soft);
+  border: 1px solid #badfce;
 }
 
 .account-card-heading h2,
@@ -92,59 +118,70 @@
 }
 
 .account-card-heading h2 {
-  font-size: 19px;
+  font-size: 20px;
+  letter-spacing: -.02em;
 }
 
 .account-card-heading p {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .account-form {
   display: grid;
-  max-width: 570px;
-  gap: 17px;
+  max-width: 580px;
+  gap: 18px;
+}
+
+.form-errors {
+  display: grid;
+  gap: 3px;
 }
 
 .account-form-actions {
   display: flex;
-  margin-top: 7px;
+  margin-top: 8px;
   justify-content: flex-end;
 }
 
 .security-note {
   display: flex;
+  max-width: 580px;
   margin-top: 28px;
   padding: 15px;
   align-items: flex-start;
   gap: 11px;
   color: #315d4e;
-  background: #eef9f4;
-  border: 1px solid #ccebdd;
-  border-radius: 12px;
+  background: #eef7f2;
+  border: 1px solid #cce1d7;
+  border-radius: 9px;
 }
 
 .security-note > span {
   display: grid;
-  width: 25px;
-  height: 25px;
-  flex: 0 0 25px;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
   place-items: center;
   color: #fff;
-  background: #1a9265;
-  border-radius: 50%;
-  font-size: 10px;
+  background: var(--success);
+  border-radius: 7px;
+}
+
+.security-note svg {
+  width: 16px;
+  height: 16px;
 }
 
 .security-note b {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .security-note p {
   margin: 3px 0 0;
-  color: #5d7b70;
-  font-size: 9px;
+  color: #5d776d;
+  font-size: 10px;
 }
 
 @media (max-width: 740px) {
@@ -153,6 +190,7 @@
   }
 
   .account-nav {
+    position: static;
     grid-template-columns: repeat(3, 1fr);
   }
 
@@ -174,5 +212,9 @@
 
   .account-card-heading {
     align-items: flex-start;
+  }
+
+  .account-form-actions .btn {
+    width: 100%;
   }
 }

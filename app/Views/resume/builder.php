@@ -40,7 +40,7 @@ $builderPayload = [
     </div>
 
     <div class="save-indicator" id="saveIndicator" data-state="saved" role="status" aria-live="polite">
-        <span class="save-dot"></span><span id="saveStatusText">All changes saved</span>
+        <span class="save-dot"></span><span id="saveStatusText">Saved</span>
     </div>
 
     <div class="builder-actions">
@@ -63,8 +63,8 @@ $builderPayload = [
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg>
             Print / PDF
         </button>
-        <button class="icon-btn builder-mobile-panel" type="button" data-toggle-panel="assistant" aria-label="Open assistant">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 9.7 8.7 4 11l5.7 2.3L12 19l2.3-5.7L20 11l-5.7-2.3Z"/></svg>
+        <button class="icon-btn builder-mobile-panel" type="button" data-toggle-panel="assistant" aria-controls="assistantPanel" aria-expanded="false" aria-label="Open CV review">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5zM8 8h8M8 12h5M8 16h4"/></svg>
         </button>
     </div>
 </header>
@@ -73,11 +73,11 @@ $builderPayload = [
     <aside class="editor-panel" id="editorPanel" aria-label="CV editor">
         <div class="panel-mobile-header">
             <b>Edit CV</b>
-            <button class="icon-btn" type="button" data-close-panel="editor" aria-label="Close editor">×</button>
+            <button class="icon-btn" type="button" data-close-panel="editor" aria-label="Close editor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         </div>
         <div class="editor-mode-tabs" role="tablist">
-            <button class="active" type="button" data-editor-mode="content">Content</button>
-            <button type="button" data-editor-mode="design">Design</button>
+            <button class="active" type="button" role="tab" data-editor-mode="content" aria-controls="editorContentMode" aria-selected="true">Content</button>
+            <button type="button" role="tab" data-editor-mode="design" aria-controls="editorDesignMode" aria-selected="false">Design</button>
         </div>
 
         <div class="editor-content-mode" id="editorContentMode">
@@ -88,26 +88,26 @@ $builderPayload = [
             </div>
 
             <nav class="section-nav" id="sectionNav" aria-label="CV sections">
-                <button class="active" type="button" data-section="personal"><span>01</span><div><b>Personal details</b><small>Name and contact</small></div><i data-section-check="personal">○</i></button>
-                <button type="button" data-section="summary"><span>02</span><div><b>Summary</b><small>Your professional value</small></div><i data-section-check="summary">○</i></button>
-                <button type="button" data-section="experience"><span>03</span><div><b>Experience</b><small>Roles and achievements</small></div><i data-section-check="experience">○</i></button>
-                <button type="button" data-section="education"><span>04</span><div><b>Education</b><small>Qualifications</small></div><i data-section-check="education">○</i></button>
-                <button type="button" data-section="skills"><span>05</span><div><b>Skills</b><small>Relevant strengths</small></div><i data-section-check="skills">○</i></button>
-                <button type="button" data-section="projects"><span>06</span><div><b>Projects</b><small>Practical evidence</small></div><i data-section-check="projects">○</i></button>
-                <button type="button" data-section="extras"><span>07</span><div><b>More sections</b><small>Languages and more</small></div><i data-section-check="extras">○</i></button>
+                <button class="active" type="button" data-section="personal" aria-current="step"><span>01</span><div><b>Personal details</b><small>Name and contact</small></div><i data-section-check="personal">Incomplete</i></button>
+                <button type="button" data-section="summary"><span>02</span><div><b>Summary</b><small>Your professional value</small></div><i data-section-check="summary">Incomplete</i></button>
+                <button type="button" data-section="experience"><span>03</span><div><b>Experience</b><small>Roles and achievements</small></div><i data-section-check="experience">Incomplete</i></button>
+                <button type="button" data-section="education"><span>04</span><div><b>Education</b><small>Qualifications</small></div><i data-section-check="education">Incomplete</i></button>
+                <button type="button" data-section="skills"><span>05</span><div><b>Skills</b><small>Relevant strengths</small></div><i data-section-check="skills">Incomplete</i></button>
+                <button type="button" data-section="projects"><span>06</span><div><b>Projects</b><small>Practical evidence</small></div><i data-section-check="projects">Incomplete</i></button>
+                <button type="button" data-section="extras"><span>07</span><div><b>Additional information</b><small>Languages and more</small></div><i data-section-check="extras">Incomplete</i></button>
             </nav>
 
             <section class="section-editor" id="sectionEditor" aria-live="polite"></section>
         </div>
 
         <div class="editor-design-mode" id="editorDesignMode" hidden>
-            <div class="design-heading"><p class="eyebrow">Visual style</p><h2>Make it feel like you.</h2><p>Every option remains professional and print-safe.</p></div>
+            <div class="design-heading"><p class="eyebrow">Visual style</p><h2>Choose the presentation.</h2><p>Your content stays intact when you change these options.</p></div>
 
             <div class="design-group">
-                <label>Template</label>
+                <p class="control-label">Template</p>
                 <div class="mini-template-grid">
                     <?php foreach ($templates as $template): ?>
-                        <button class="mini-template <?= $resume['template_key'] === $template['template_key'] ? 'active' : '' ?>" type="button" data-template-key="<?= e($template['template_key']) ?>" title="<?= e($template['name']) ?>">
+                        <button class="mini-template <?= $resume['template_key'] === $template['template_key'] ? 'active' : '' ?>" type="button" data-template-key="<?= e($template['template_key']) ?>" aria-pressed="<?= $resume['template_key'] === $template['template_key'] ? 'true' : 'false' ?>" title="<?= e($template['name']) ?>">
                             <span class="mini-sheet mini-<?= e($template['template_key']) ?>" style="--mini-accent:<?= e($template['color']) ?>"><i></i><i></i><b></b><i></i><i></i></span>
                             <small><?= e($template['name']) ?></small>
                         </button>
@@ -116,12 +116,12 @@ $builderPayload = [
             </div>
 
             <div class="design-group">
-                <label>Accent colour</label>
+                <p class="control-label">Accent colour</p>
                 <div class="color-options">
                     <?php foreach (['#5b4df7', '#16324f', '#087f5b', '#e25241', '#b16a00', '#202124', '#7b2fbe', '#075985'] as $color): ?>
-                        <button type="button" data-accent-color="<?= e($color) ?>" style="--swatch:<?= e($color) ?>" aria-label="Use <?= e($color) ?>"></button>
+                        <button type="button" data-accent-color="<?= e($color) ?>" style="--swatch:<?= e($color) ?>" aria-label="Use <?= e($color) ?>" aria-pressed="false"></button>
                     <?php endforeach; ?>
-                    <label class="custom-color" title="Custom colour"><input id="customColor" type="color" value="<?= e($resume['accent_color']) ?>"><span>+</span></label>
+                    <label class="custom-color" title="Custom colour"><span class="sr-only">Choose a custom colour</span><input id="customColor" type="color" value="<?= e($resume['accent_color']) ?>"><span aria-hidden="true">+</span></label>
                 </div>
             </div>
 
@@ -147,11 +147,11 @@ $builderPayload = [
             </div>
 
             <div class="design-group">
-                <label>Content density</label>
+                <p class="control-label">Content density</p>
                 <div class="segmented-control">
-                    <button type="button" data-density="compact">Compact</button>
-                    <button class="active" type="button" data-density="comfortable">Comfortable</button>
-                    <button type="button" data-density="spacious">Spacious</button>
+                    <button type="button" data-density="compact" aria-pressed="false">Compact</button>
+                    <button class="active" type="button" data-density="comfortable" aria-pressed="true">Comfortable</button>
+                    <button type="button" data-density="spacious" aria-pressed="false">Spacious</button>
                 </div>
             </div>
         </div>
@@ -174,7 +174,7 @@ $builderPayload = [
                 <div id="resumePreview"></div>
             </div>
         </div>
-        <button class="mobile-edit-button" type="button" data-toggle-panel="editor">
+        <button class="mobile-edit-button" type="button" data-toggle-panel="editor" aria-controls="editorPanel" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
             Edit content
         </button>
@@ -182,54 +182,54 @@ $builderPayload = [
 
     <aside class="assistant-panel" id="assistantPanel" aria-label="CV assistant">
         <div class="panel-mobile-header">
-            <b>CV assistant</b>
-            <button class="icon-btn" type="button" data-close-panel="assistant" aria-label="Close assistant">×</button>
+            <b>CV review</b>
+            <button class="icon-btn" type="button" data-close-panel="assistant" aria-label="Close CV review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         </div>
         <div class="assistant-heading">
-            <div class="assistant-icon">✦</div>
-            <div><h2>CV Assistant</h2><p>Private, practical guidance</p></div>
+            <div class="assistant-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5zM8 8h8M8 12h5"/><path d="m9 16 1.5 1.5L14 14"/></svg></div>
+            <div><h2>CV review</h2><p>Private, practical guidance</p></div>
         </div>
 
         <div class="assistant-tabs" role="tablist">
-            <button class="active" type="button" data-assistant-tab="assistant">Improve</button>
-            <button type="button" data-assistant-tab="ats">ATS score</button>
-            <button type="button" data-assistant-tab="job">Job match</button>
+            <button class="active" type="button" role="tab" data-assistant-tab="assistant" aria-selected="true">Improve</button>
+            <button type="button" role="tab" data-assistant-tab="ats" aria-selected="false">ATS score</button>
+            <button type="button" role="tab" data-assistant-tab="job" aria-selected="false">Job match</button>
         </div>
 
         <div class="assistant-scroll">
             <section class="assistant-tab-view active" data-assistant-view="assistant">
                 <div class="assistant-intro">
-                    <span class="sparkle">✦</span>
+                    <span class="sparkle" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 11v5M12 8v.2"/></svg></span>
                     <div><b>What would you like to improve?</b><p>Choose a focused action. You always review suggestions before applying them.</p></div>
                 </div>
 
                 <div class="assistant-actions-list">
                     <button type="button" data-smart-action="summary">
-                        <span class="assistant-action-icon purple">≡</span>
-                        <div><b>Write my summary</b><small>Create a focused professional introduction</small></div><i>›</i>
+                        <span class="assistant-action-icon purple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5h14M5 9h14M5 13h9M5 17h7"/></svg></span>
+                        <div><b>Write my summary</b><small>Create a focused professional introduction</small></div><i aria-hidden="true">›</i>
                     </button>
                     <button type="button" data-smart-action="bullet">
-                        <span class="assistant-action-icon blue">↗</span>
-                        <div><b>Improve a bullet</b><small>Turn a responsibility into an achievement</small></div><i>›</i>
+                        <span class="assistant-action-icon blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5V16l10-10 4 4-10 10H4Z"/><path d="m12.5 7.5 4 4"/></svg></span>
+                        <div><b>Improve a bullet</b><small>Turn a responsibility into an achievement</small></div><i aria-hidden="true">›</i>
                     </button>
                     <button type="button" data-smart-action="keywords">
-                        <span class="assistant-action-icon green">#</span>
-                        <div><b>Find missing keywords</b><small>Compare your CV with the target role</small></div><i>›</i>
+                        <span class="assistant-action-icon green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
+                        <div><b>Find missing keywords</b><small>Compare your CV with the target role</small></div><i aria-hidden="true">›</i>
                     </button>
                     <button type="button" data-smart-action="tips">
-                        <span class="assistant-action-icon amber">✓</span>
-                        <div><b>Review my content</b><small>Get the most useful next improvements</small></div><i>›</i>
+                        <span class="assistant-action-icon amber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5zM8 8h8M8 12h5M8 16h7"/></svg></span>
+                        <div><b>Review my content</b><small>Get the most useful next improvements</small></div><i aria-hidden="true">›</i>
                     </button>
                 </div>
 
                 <div class="assistant-result" id="assistantResult" hidden>
-                    <div class="result-heading"><span>Suggestion</span><button type="button" id="dismissSuggestion">×</button></div>
+                    <div class="result-heading"><span>Suggestion</span><button type="button" id="dismissSuggestion" aria-label="Dismiss suggestion">×</button></div>
                     <div id="assistantResultContent"></div>
                     <button class="btn btn-primary btn-small" id="applySuggestion" type="button" hidden>Use this suggestion</button>
                 </div>
 
                 <div class="voice-card">
-                    <div><span>◉</span><div><b>Voice input</b><small>Place your cursor in a text field, then dictate.</small></div></div>
+                    <div><span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg></span><div><b>Voice input</b><small>Place your cursor in a text field, then dictate.</small></div></div>
                     <button class="btn btn-secondary btn-small" id="voiceButton" type="button">Start</button>
                 </div>
             </section>
@@ -248,7 +248,7 @@ $builderPayload = [
 
             <section class="assistant-tab-view" data-assistant-view="job">
                 <div class="job-match-intro">
-                    <span>#</span>
+                    <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
                     <h3>Match a target role</h3>
                     <p>Paste the job description. We extract important terms and compare them with your CV locally.</p>
                 </div>
@@ -272,11 +272,26 @@ $builderPayload = [
     </aside>
 </main>
 
+<nav class="builder-mobile-switch" aria-label="Builder view">
+    <button type="button" data-toggle-panel="editor" aria-controls="editorPanel" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19.5V16l10-10 4 4-10 10H4Z"/><path d="m12.5 7.5 4 4"/></svg>
+        Edit
+    </button>
+    <button class="active" type="button" data-close-panel="preview" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+        Preview
+    </button>
+    <button type="button" data-toggle-panel="assistant" aria-controls="assistantPanel" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h5"/><path d="m9 16 1.5 1.5L14 14"/></svg>
+        Review
+    </button>
+</nav>
+
 <div class="mobile-panel-overlay" id="mobilePanelOverlay"></div>
 
 <div class="modal" id="summaryAssistantModal" role="dialog" aria-modal="true" aria-labelledby="summaryAssistantTitle" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-header"><div><p class="eyebrow">Smart writer</p><h2 id="summaryAssistantTitle">Shape your summary</h2></div><button class="icon-btn" type="button" data-modal-close="summaryAssistantModal">×</button></div>
+        <div class="modal-header"><div><p class="eyebrow">Summary writer</p><h2 id="summaryAssistantTitle">Shape your summary</h2></div><button class="icon-btn" type="button" data-modal-close="summaryAssistantModal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
         <div class="assistant-modal-form">
             <div class="field"><label for="summaryTargetRole">Target role</label><input id="summaryTargetRole" placeholder="e.g. Software Engineer"></div>
             <div class="field"><label for="summaryYears">Years of experience</label><input id="summaryYears" type="number" min="0" max="50" placeholder="e.g. 3"></div>
@@ -288,7 +303,7 @@ $builderPayload = [
 
 <div class="modal" id="bulletAssistantModal" role="dialog" aria-modal="true" aria-labelledby="bulletAssistantTitle" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-header"><div><p class="eyebrow">Achievement writer</p><h2 id="bulletAssistantTitle">Improve a bullet</h2></div><button class="icon-btn" type="button" data-modal-close="bulletAssistantModal">×</button></div>
+        <div class="modal-header"><div><p class="eyebrow">Achievement writer</p><h2 id="bulletAssistantTitle">Improve a bullet</h2></div><button class="icon-btn" type="button" data-modal-close="bulletAssistantModal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
         <div class="assistant-modal-form">
             <div class="field"><label for="bulletSource">What did you do?</label><textarea id="bulletSource" placeholder="e.g. Responsible for customer support and daily sales"></textarea></div>
             <div class="field"><label for="bulletOutcome">What changed? <span class="muted">(optional)</span></label><input id="bulletOutcome" placeholder="e.g. 20% faster response time"></div>
