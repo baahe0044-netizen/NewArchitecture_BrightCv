@@ -1,0 +1,161 @@
+.print-page {
+  min-height: 100vh;
+  background: var(--canvas);
+}
+
+.print-toolbar {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: flex;
+  min-height: 68px;
+  padding: 10px 22px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+}
+
+.print-document-name,
+.print-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.print-document-name > span {
+  width: 1px;
+  height: 30px;
+  background: var(--line);
+}
+
+.print-toolbar b,
+.print-toolbar small {
+  display: block;
+}
+
+.print-toolbar b {
+  max-width: 260px;
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.print-toolbar small {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.print-toolbar .btn {
+  min-height: 40px;
+  font-size: 11px;
+}
+
+.print-tip {
+  width: min(780px, calc(100% - 30px));
+  margin: 18px auto 0;
+  padding: 10px 13px;
+  color: #665d4b;
+  background: var(--warning-soft);
+  border: 1px solid #ecd8ac;
+  border-radius: 8px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.print-canvas {
+  display: grid;
+  padding: 24px 15px 64px;
+  place-items: start center;
+  overflow: hidden;
+}
+
+.print-sheet-wrap {
+  position: relative;
+  width: 794px;
+  min-height: 1123px;
+}
+
+#printResume {
+  width: 794px;
+  transform: scale(var(--print-preview-scale, 1));
+  transform-origin: top left;
+}
+
+#printResume .cv-document {
+  box-shadow: 0 14px 34px rgba(16, 24, 40, .16);
+}
+
+.print-noscript {
+  padding: 30px;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .print-toolbar {
+    padding: 9px 12px;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .print-document-name {
+    display: none;
+  }
+
+  .print-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .print-actions .btn {
+    width: 100%;
+  }
+
+  .print-tip {
+    margin-top: 12px;
+    text-align: left;
+  }
+
+  .print-canvas {
+    padding: 16px 12px 48px;
+  }
+}
+
+@media (max-width: 410px) {
+  .print-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .print-toolbar,
+  .print-tip,
+  .toast-region {
+    display: none !important;
+  }
+
+  .print-page,
+  .print-canvas,
+  .print-sheet-wrap,
+  #printResume {
+    width: auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  #printResume {
+    transform: none !important;
+  }
+
+  #printResume .cv-document {
+    box-shadow: none !important;
+  }
+}

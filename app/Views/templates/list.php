@@ -1,135 +1,132 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LunettiStar — Choose Your Template</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="Public/assets/templates/template.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="app-url" content="<?= e(BASE_URL) ?>">
+    <meta name="csrf-token" content="<?= e(Csrf::token()) ?>">
+    <title>CV templates · <?= e(APP_NAME) ?></title>
+    <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('templates/template.css')) ?>">
 </head>
-
 <body>
+<?php View::partial('components/app_header', compact('user')); ?>
 
-  <!-- ═══ PAGE HEADER ════════════════════════════════════════════ -->
-  <header class="page-header">
-    <div class="page-header-inner">
-      <div class="page-title-row">
-        <div>
-          <h1 class="page-title">Choose your <span>template</span></h1>
-          <p class="page-subtitle">Select a design, preview it, then start building your resume.</p>
-        </div>
-        <?php $displayTemplates = isset($displayTemplates) ? $displayTemplates : []; ?>
-        <span class="template-count"><?php $count = count($displayTemplates); echo $count; ?> template<?php echo $count !== 1 ? 's' : ''; ?> available</span>
-      </div>
-
-      <nav class="filter-tabs" role="tablist">
-        <button class="filter-tab active" data-category="all" role="tab">All</button>
-        <button class="filter-tab" data-category="Professional" role="tab">Professional</button>
-        <button class="filter-tab" data-category="Modern" role="tab">Modern</button>
-        <button class="filter-tab" data-category="Creative" role="tab">Creative</button>
-        <button class="filter-tab" data-category="Classic" role="tab">Classic</button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- ═══ MAIN ════════════════════════════════════════════════════ -->
-  <main class="container">
-
-    <?php if (isset($error_message)): ?>
-      <div class="error-banner"><?php echo htmlspecialchars($error_message); ?></div>
-    <?php endif; ?>
-
-    <!-- Inline Preview Panel -->
-    <div id="inlinePreview">
-      <div class="preview-bar">
-        <span class="preview-bar-title" id="inlinePreviewTitle">Template Preview</span>
-        <div class="preview-bar-actions">
-          <button class="btn btn-sm" id="inlinePreviewOpen">
-            <i class="fas fa-arrow-up-right-from-square"></i> Open in new tab
-          </button>
-          <button class="btn btn-sm" id="inlinePreviewClose">
-            <i class="fas fa-xmark"></i> Close
-          </button>
-        </div>
-      </div>
-      <div class="preview-frame-wrap">
-        <iframe id="inlinePreviewFrame" referrerpolicy="no-referrer" title="Template preview"></iframe>
-      </div>
-    </div>
-
-    <!-- Template Grid -->
-    <div class="template-grid" id="templateGrid">
-      <?php foreach ($displayTemplates as $tpl): ?>
-        <?php $isSelected = ($selId === (int)$tpl['id']); ?>
-        <div class="template-card <?php echo $isSelected ? 'is-selected' : ''; ?>"
-          data-template-id="<?php echo (int)$tpl['id']; ?>"
-          data-category="<?php echo htmlspecialchars($tpl['category']); ?>">
-
-          <!-- Thumbnail -->
-          <div class="card-thumb" onclick="previewTemplate(<?php echo (int)$tpl['id']; ?>, <?php echo json_encode($tpl['name']); ?>)">
-            <iframe class="half-frame"
-              data-src="Templates/template_preview.php?template_id=<?php echo (int)$tpl['id']; ?>"
-              referrerpolicy="no-referrer"
-              aria-hidden="true"
-              tabindex="-1"></iframe>
-
-            <div class="thumb-overlay">
-              <button class="thumb-overlay-btn">
-                <i class="fas fa-expand"></i> Preview
-              </button>
+<main class="page-shell templates-page">
+    <div class="container">
+        <section class="templates-hero">
+            <div>
+                <p class="eyebrow">CV templates</p>
+                <h1>Choose a clear structure for your experience.</h1>
+                <p>Every template uses the same CV content and is prepared for A4 printing. You can change the layout later without starting over.</p>
             </div>
+            <a class="btn btn-secondary" href="<?= e(base_url('/dashboard')) ?>">Back to dashboard</a>
+        </section>
 
-            <?php if ($isSelected): ?>
-              <div class="selected-badge">
-                <i class="fas fa-check"></i> Selected
-              </div>
-            <?php endif; ?>
-
-            <span class="card-category-pill"><?php echo htmlspecialchars($tpl['category']); ?></span>
-          </div>
-
-          <!-- Body -->
-          <div class="card-body">
-            <div class="card-name"><?php echo htmlspecialchars($tpl['name']); ?></div>
-            <div class="card-desc"><?php echo htmlspecialchars($tpl['description']); ?></div>
-            <div class="card-actions">
-              <button class="btn btn-ghost"
-                onclick="previewTemplate(<?php echo (int)$tpl['id']; ?>, <?php echo json_encode($tpl['name']); ?>)">
-                <i class="fas fa-eye"></i> Preview
-              </button>
-              <?php if ($isSelected): ?>
-                <button class="btn btn-selected" disabled>
-                  <i class="fas fa-check"></i> In Use
-                </button>
-              <?php else: ?>
-                <button class="btn btn-primary"
-                  onclick="selectTemplate(<?php echo (int)$tpl['id']; ?>, <?php echo json_encode($tpl['name']); ?>)">
-                  Use Template
-                </button>
-              <?php endif; ?>
+        <section class="template-toolbar" aria-label="Filter CV templates">
+            <div class="filter-group">
+                <span class="filter-label">Category</span>
+                <div class="filter-tabs" role="group" aria-label="Template categories">
+                    <button class="active" type="button" data-template-filter="all" aria-pressed="true">All</button>
+                    <?php foreach (array_values(array_unique(array_column($templates, 'category'))) as $category): ?>
+                        <button type="button" data-template-filter="<?= e(mb_strtolower($category)) ?>" aria-pressed="false"><?= e($category) ?></button>
+                    <?php endforeach; ?>
+                </div>
             </div>
-          </div>
+            <label class="template-search" for="templateSearch">
+                <span class="filter-label">Search templates</span>
+                <span class="search-input-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+                    <input type="search" id="templateSearch" placeholder="Search by name or category">
+                </span>
+            </label>
+        </section>
+
+        <div class="template-results-row">
+            <p id="templateResults" role="status" aria-live="polite"><?= count($templates) ?> <?= count($templates) === 1 ? 'template' : 'templates' ?></p>
+            <p>Select <strong>Preview</strong> to inspect a layout or <strong>Use this template</strong> to create a new CV.</p>
         </div>
-      <?php endforeach; ?>
 
-      <?php if (empty($displayTemplates)): ?>
-        <div class="empty-state">
-          <div class="empty-state-icon"><i class="fas fa-file-lines"></i></div>
-          <h3>No templates found</h3>
-          <p>Add active templates to your database to get started.</p>
+        <section class="templates-grid" id="templatesGrid" aria-label="Available CV templates">
+            <?php foreach ($templates as $template): ?>
+                <article class="template-card" data-template-card data-category="<?= e(mb_strtolower($template['category'])) ?>" data-name="<?= e(mb_strtolower($template['name'])) ?>">
+                    <div class="template-preview template-style-<?= e($template['template_key']) ?>" style="--accent:<?= e($template['color']) ?>" aria-label="<?= e($template['name']) ?> layout preview">
+                        <div class="template-paper" aria-hidden="true">
+                            <header><div class="template-avatar">AM</div><div><h2>ALEX MORGAN</h2><span>PRODUCT &amp; OPERATIONS LEAD</span></div></header>
+                            <div class="template-contact">Accra, Ghana · alex@example.com · +233 24 000 0000</div>
+                            <div class="template-content">
+                                <section><h3>PROFILE</h3><i></i><i></i><i class="short"></i></section>
+                                <section><h3>EXPERIENCE</h3><b>Operations Manager</b><small>Forward Labs · 2022 — Present</small><i></i><i></i><i class="short"></i></section>
+                                <section><h3>EDUCATION</h3><b>Bachelor of Arts</b><small>University of Ghana</small></section>
+                                <section><h3>SKILLS</h3><div class="preview-skills"><span>Leadership</span><span>Strategy</span><span>Analytics</span></div></section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="template-card-body">
+                        <div class="template-name-row">
+                            <div><h2><?= e($template['name']) ?></h2><span><?= e($template['category']) ?></span></div>
+                            <?php if ((int) $template['is_premium'] === 1): ?><span class="premium-label">Pro</span><?php endif; ?>
+                        </div>
+                        <p><?= e($template['description']) ?></p>
+                        <p class="template-features">ATS-friendly · A4 print · Custom colours</p>
+                        <div class="template-card-actions">
+                            <button class="btn btn-secondary btn-small" type="button" data-preview-template="<?= e($template['template_key']) ?>" data-template-name="<?= e($template['name']) ?>">Preview</button>
+                            <button class="btn btn-primary btn-small" type="button" data-use-template="<?= e($template['template_key']) ?>" data-template-name="<?= e($template['name']) ?>">Use this template</button>
+                        </div>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </section>
+        <div class="empty-state template-empty" id="templateEmpty" hidden>
+            <div class="empty-state-icon">
+                <svg viewBox="0 0 24 24" width="25" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8.5 11h5"/></svg>
+            </div>
+            <h3>No matching templates</h3>
+            <p>Clear the search or choose another category.</p>
         </div>
-      <?php endif; ?>
     </div>
+</main>
 
-    <div class="page-footer">
-      &copy; <?php echo date('Y'); ?> BRIGHT CV Builder &mdash; Professional Resume Templates
+<div class="modal template-modal" id="templatePreviewModal" role="dialog" aria-modal="true" aria-labelledby="previewTemplateTitle" aria-hidden="true">
+    <div class="modal-dialog preview-dialog">
+        <div class="modal-header">
+            <div><p class="eyebrow">Template preview</p><h2 id="previewTemplateTitle">Template preview</h2></div>
+            <button class="icon-btn" type="button" data-modal-close="templatePreviewModal" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </button>
+        </div>
+        <div id="largeTemplatePreview" class="large-template-preview"></div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" type="button" data-modal-close="templatePreviewModal">Close</button>
+            <button class="btn btn-primary" type="button" id="usePreviewedTemplate">Use this template</button>
+        </div>
     </div>
+</div>
 
-  </main>
+<div class="modal" id="nameTemplateResumeModal" role="dialog" aria-modal="true" aria-labelledby="nameTemplateResumeTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div><p class="eyebrow">Create from template</p><h2 id="nameTemplateResumeTitle">Name your new CV</h2></div>
+            <button class="icon-btn" type="button" data-modal-close="nameTemplateResumeModal" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+            </button>
+        </div>
+        <form id="templateResumeForm">
+            <input type="hidden" id="selectedTemplateKey" value="modern">
+            <div class="field">
+                <label for="templateResumeName">CV name</label>
+                <input id="templateResumeName" maxlength="150" placeholder="e.g. Product Manager CV" required>
+                <span class="field-hint">Use the target role or company so tailored versions are easy to find.</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" type="button" data-modal-close="nameTemplateResumeModal">Cancel</button>
+                <button class="btn btn-primary" type="submit">Create and edit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="<?= e(asset('common/app.js')) ?>" defer></script>
+<script src="<?= e(asset('templates/template.js')) ?>" defer></script>
 </body>
-
 </html>

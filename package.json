@@ -1,0 +1,22 @@
+{
+  "name": "lunettistar-quality-tools",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Static validation and browser-side unit tests for LunettiStar.",
+  "scripts": {
+    "lint:php": "node scripts/lint-php.mjs",
+    "lint:js": "node scripts/lint-js.mjs",
+    "test:php": "node scripts/run-php-tests.mjs",
+    "test:renderer": "node --test tests/renderer.test.cjs",
+    "test:ui": "node scripts/test-builder-ui.mjs",
+    "test:views": "node scripts/test-view-accessibility.mjs",
+    "test:integrity": "node scripts/check-integrity.mjs",
+    "check": "npm run lint:php && npm run lint:js && npm run test:integrity && npm run test:php && npm run test:renderer && npm run test:ui && npm run test:views"
+  },
+  "devDependencies": {
+    "@php-wasm/node": "^3.1.45",
+    "@php-wasm/universal": "^3.1.45",
+    "jsdom": "^26.1.0",
+    "php-parser": "^3.2.5"
+  }
+}

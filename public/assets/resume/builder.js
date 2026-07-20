@@ -1,0 +1,1207 @@
+(() => {
+  'use strict';
+
+  const payloadElement = document.getElementById('builderData');
+  if (!payloadElement || !window.LunettiResume || !window.Lunetti) return;
+
+  const config = JSON.parse(payloadElement.textContent);
+  const clone = (value) => JSON.parse(JSON.stringify(value));
+  const h = window.LunettiResume.escapeHtml;
+  const serverResume = clone(config.resume);
+  let state = clone(serverResume);
+  let currentSection = 'personal';
+  let currentExtra = 'certifications';
+  let zoom = 0.82;
+  let dirty = false;
+  let saving = false;
+  let saveAgain = false;
+  let saveTimer = null;
+  let localTimer = null;
+  let history = [];
+  let historyIndex = -1;
+  let pendingSuggestion = null;
+  let lastFocusedInput = null;
+  let speechRecognition = null;
+  const localKey = 'lunettistar.resume.' + state.id;
+
+  normalizeState();
+  restoreLocalDraft();
+  pushHistory(true);
+  renderEditor();
+  renderPreview();
+  updateProgress();
+  updateDesignControls();
+  updateJobCount();
+  setTimeout(fitPage, 60);
+
+  function normalizeState() {
+    state.content = state.content && typeof state.content === 'object' ? state.content : {};
+    const defaults = {
+      personal: {
+        full_name: '', headline: '', email: '', phone: '', location: '', website: '', linkedin: '',
+      },
+      summary: '',
+      experience: [],
+      education: [],
+      skills: [],
+      projects: [],
+      certifications: [],
+      languages: [],
+      references: [],
+      interests: [],
+      settings: { density: 'comfortable' },
+    };
+    Object.keys(defaults).forEach((key) => {
+      if (state.content[key] === undefined || state.content[key] === null) state.content[key] = clone(defaults[key]);
+    });
+    state.content.personal = Object.assign({}, defaults.personal, state.content.personal || {});
+    Object.keys(defaults.personal).forEach((key) => {
+      state.content.personal[key] = scalarText(state.content.personal[key], 255);
+    });
+    state.content.summary = scalarText(state.content.summary, 3000);
+    state.content.settings = Object.assign({}, defaults.settings, state.content.settings || {});
+    const densities = ['compact', 'comfortable', 'spacious'];
+    if (!densities.includes(state.content.settings.density)) state.content.settings.density = 'comfortable';
+
+    ['experience', 'education', 'skills', 'projects', 'certifications', 'languages', 'references'].forEach((key) => {
+      const entries = Array.isArray(state.content[key]) ? state.content[key] : [];
+      state.content[key] = entries
+        .filter((entry) => entry && typeof entry === 'object' && !Array.isArray(entry))
+        .slice(0, 25)
+        .map((entry) => {
+          const normalized = Object.assign(defaultEntry(key), entry);
+          Object.keys(defaultEntry(key)).forEach((field) => {
+            if (field === 'current') {
+              normalized[field] = Boolean(normalized[field]);
+            } else if (field === 'bullets') {
+              normalized[field] = (Array.isArray(normalized[field]) ? normalized[field] : [])
+                .map((bullet) => scalarText(bullet, 600))
+                .filter(Boolean)
+                .slice(0, 12);
+            } else {
+              normalized[field] = scalarText(normalized[field], field === 'id' ? 60 : 1600);
+            }
+          });
+          normalized.id = normalized.id || uuid();
+          return normalized;
+        });
+    });
+    state.content.interests = (Array.isArray(state.content.interests) ? state.content.interests : [])
+      .map((interest) => scalarText(interest, 80))
+      .filter(Boolean)
+      .slice(0, 20);
+
+    state.name = scalarText(state.name, 150) || 'Untitled CV';
+    if (!['modern', 'executive', 'minimal', 'creative', 'graduate', 'tech'].includes(state.template_key)) state.template_key = 'modern';
+    if (!['en', 'fr', 'es'].includes(state.language)) state.language = 'en';
+    if (!/^#[0-9a-f]{6}$/i.test(state.accent_color || '')) state.accent_color = '#5b4df7';
+    if (!['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'].includes(state.font_family)) state.font_family = 'Inter';
+    state.job_description = scalarText(state.job_description, 15000);
+  }
+
+  function scalarText(value, limit) {
+    return typeof value === 'string' || typeof value === 'number'
+      ? String(value).slice(0, limit)
+      : '';
+  }
+
+  function restoreLocalDraft() {
+    try {
+      const local = JSON.parse(localStorage.getItem(localKey) || 'null');
+      const serverTime = Date.parse(state.updated_at || 0);
+      if (local && local.resume && local.savedAt > serverTime) {
+        state = Object.assign(state, local.resume, { id: serverResume.id });
+        normalizeState();
+        dirty = true;
+        setTimeout(() => window.Lunetti.toast('Recovered newer unsaved changes from this device.'), 250);
+        scheduleSave();
+      }
+    } catch {
+      localStorage.removeItem(localKey);
+    }
+  }
+
+  function uuid() {
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+    return Date.now().toString(36) + Math.random().toString(36).slice(2);
+  }
+
+  function setByPath(object, path, value) {
+    const parts = path.split('.');
+    let target = object;
+    parts.slice(0, -1).forEach((part) => {
+      if (!target[part] || typeof target[part] !== 'object') target[part] = {};
+      target = target[part];
+    });
+    target[parts[parts.length - 1]] = value;
+  }
+
+  function field(label, path, value, options = {}) {
+    const type = options.type || 'text';
+    const placeholder = options.placeholder || '';
+    const hint = options.hint ? '<span class="field-hint">' + h(options.hint) + '</span>' : '';
+    const attrs = (options.maxlength ? ' maxlength="' + Number(options.maxlength) + '"' : '') +
+      (options.autocomplete ? ' autocomplete="' + h(options.autocomplete) + '"' : '');
+    const labelHtml = '<label for="' + h(path) + '">' + h(label) + '</label>';
+    let control;
+    if (type === 'textarea') {
+      control = '<textarea id="' + h(path) + '" data-field="' + h(path) + '" placeholder="' + h(placeholder) + '"' + attrs + '>' + h(value || '') + '</textarea>';
+    } else {
+      control = '<input id="' + h(path) + '" type="' + h(type) + '" data-field="' + h(path) + '" value="' + h(value || '') + '" placeholder="' + h(placeholder) + '"' + attrs + '>';
+    }
+    return '<div class="field">' + labelHtml + control + hint + '</div>';
+  }
+
+  function arrayField(label, array, index, key, value, options = {}) {
+    const type = options.type || 'text';
+    const placeholder = options.placeholder || '';
+    const id = 'field-' + array + '-' + Number(index) + '-' + key;
+    const attrs = ' id="' + h(id) + '" data-array="' + h(array) + '" data-index="' + Number(index) + '" data-key="' + h(key) + '"' +
+      (options.maxlength ? ' maxlength="' + Number(options.maxlength) + '"' : '');
+    let control;
+    if (type === 'textarea') {
+      control = '<textarea' + attrs + ' placeholder="' + h(placeholder) + '">' + h(value || '') + '</textarea>';
+    } else {
+      control = '<input type="' + h(type) + '"' + attrs + ' value="' + h(value || '') + '" placeholder="' + h(placeholder) + '">';
+    }
+    return '<div class="field"><label for="' + h(id) + '">' + h(label) + '</label>' + control +
+      (options.hint ? '<span class="field-hint">' + h(options.hint) + '</span>' : '') + '</div>';
+  }
+
+  function selectField(label, array, index, key, value, options) {
+    const id = 'field-' + array + '-' + Number(index) + '-' + key;
+    return '<div class="field"><label for="' + h(id) + '">' + h(label) + '</label><select id="' + h(id) + '" data-array="' + h(array) +
+      '" data-index="' + Number(index) + '" data-key="' + h(key) + '">' +
+      options.map((option) => '<option value="' + h(option) + '"' + (value === option ? ' selected' : '') + '>' + h(option) + '</option>').join('') +
+      '</select></div>';
+  }
+
+  function editorHeading(title, description, actionHtml = '') {
+    return '<div class="section-editor-heading"><div><h2>' + h(title) + '</h2><p>' + h(description) + '</p></div>' + actionHtml + '</div>';
+  }
+
+  function entryHeader(array, index, title) {
+    return '<div class="entry-card-header"><b>' + h(title || ('Entry ' + (index + 1))) + '</b><div class="entry-card-actions">' +
+      '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="-1" title="Move up" aria-label="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>' +
+      '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="1" title="Move down" aria-label="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>' +
+      '<button type="button" data-remove-entry="' + h(array) + '" data-entry-index="' + index + '" title="Remove" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>' +
+      '</div></div>';
+  }
+
+  function renderEditor() {
+    const mount = document.getElementById('sectionEditor');
+    if (!mount) return;
+    const c = state.content;
+
+    if (currentSection === 'personal') {
+      mount.innerHTML = editorHeading('Personal details', 'Make it easy for recruiters to contact you.') +
+        '<div class="editor-fields">' +
+        field('Full name', 'personal.full_name', c.personal.full_name, { placeholder: 'e.g. Emmanuel Baah', maxlength: 120, autocomplete: 'name' }) +
+        field('Professional headline', 'personal.headline', c.personal.headline, { placeholder: 'e.g. Software Engineer', maxlength: 160 }) +
+        '<div class="field-grid">' +
+        field('Email', 'personal.email', c.personal.email, { type: 'email', placeholder: 'you@example.com', maxlength: 190, autocomplete: 'email' }) +
+        field('Phone', 'personal.phone', c.personal.phone, { type: 'tel', placeholder: '+233 24 000 0000', maxlength: 80, autocomplete: 'tel' }) +
+        '</div>' +
+        field('Location', 'personal.location', c.personal.location, { placeholder: 'Accra, Ghana', maxlength: 160 }) +
+        '<div class="field-grid">' +
+        field('Website', 'personal.website', c.personal.website, { placeholder: 'yourportfolio.com', maxlength: 255 }) +
+        field('LinkedIn', 'personal.linkedin', c.personal.linkedin, { placeholder: 'linkedin.com/in/you', maxlength: 255 }) +
+        '</div></div>';
+      return;
+    }
+
+    if (currentSection === 'summary') {
+      const count = String(c.summary || '').length;
+      mount.innerHTML = editorHeading(
+        'Professional summary',
+        'Lead with the role you want, your relevant experience, and the value you deliver.',
+        '<button class="btn btn-secondary" type="button" data-open-summary-assistant>Open summary writer</button>'
+      ) +
+        '<div class="editor-fields"><div class="field"><div class="field-label-row"><label for="summary">Summary</label><span class="character-count" id="summaryCount">' +
+        count + ' / 3,000</span></div><textarea id="summary" data-field="summary" maxlength="3000" placeholder="Write 3–5 focused lines about your professional value…">' +
+        h(c.summary || '') + '</textarea><span class="field-hint">A strong summary is usually 80–600 characters and avoids generic claims.</span></div>' +
+        '<div class="bullet-help"><span>Tip</span><div>Replace phrases such as “hardworking team player” with evidence, specialist skills, or a clear result.</div></div></div>';
+      return;
+    }
+
+    if (currentSection === 'experience') {
+      mount.innerHTML = editorHeading('Experience', 'Show what changed because of your work.') +
+        '<div class="entry-list">' + c.experience.map((entry, index) => renderExperience(entry, index)).join('') + '</div>' +
+        '<button class="add-entry-button" type="button" data-add-entry="experience">+ Add experience</button>';
+      return;
+    }
+
+    if (currentSection === 'education') {
+      mount.innerHTML = editorHeading('Education', 'Include the qualifications most relevant to your next role.') +
+        '<div class="entry-list">' + c.education.map((entry, index) => renderEducation(entry, index)).join('') + '</div>' +
+        '<button class="add-entry-button" type="button" data-add-entry="education">+ Add education</button>';
+      return;
+    }
+
+    if (currentSection === 'skills') {
+      mount.innerHTML = editorHeading('Skills', 'Prioritize role-specific abilities recruiters actually search for.') +
+        '<div class="entry-list">' + c.skills.map((entry, index) => renderSkill(entry, index)).join('') + '</div>' +
+        '<button class="add-entry-button" type="button" data-add-entry="skills">+ Add skill</button>' +
+        '<div class="bullet-help spaced"><span>ATS</span><div>Use the same truthful terminology as the target job description. Five to twelve focused skills usually work well.</div></div>';
+      return;
+    }
+
+    if (currentSection === 'projects') {
+      mount.innerHTML = editorHeading('Projects', 'Use projects to prove practical skills and initiative.') +
+        '<div class="entry-list">' + c.projects.map((entry, index) => renderProject(entry, index)).join('') + '</div>' +
+        '<button class="add-entry-button" type="button" data-add-entry="projects">+ Add project</button>';
+      return;
+    }
+
+    renderExtras();
+  }
+
+  function renderExperience(entry, index) {
+    const bullets = Array.isArray(entry.bullets) ? entry.bullets.join('\n') : '';
+    return '<article class="entry-card">' + entryHeader('experience', index, entry.role || 'New experience') +
+      '<div class="entry-card-body">' +
+      arrayField('Role title', 'experience', index, 'role', entry.role, { placeholder: 'e.g. Marketing Manager', maxlength: 160 }) +
+      '<div class="field-grid">' +
+      arrayField('Company', 'experience', index, 'company', entry.company, { placeholder: 'Company name', maxlength: 160 }) +
+      arrayField('Location', 'experience', index, 'location', entry.location, { placeholder: 'City, Country', maxlength: 160 }) +
+      '</div><div class="field-grid">' +
+      arrayField('Start date', 'experience', index, 'start_date', entry.start_date, { placeholder: 'e.g. Jan 2023', maxlength: 30 }) +
+      arrayField('End date', 'experience', index, 'end_date', entry.current ? '' : entry.end_date, { placeholder: 'e.g. Jun 2026', maxlength: 30 }) +
+      '</div><label class="checkbox-field"><input type="checkbox" data-array="experience" data-index="' + index + '" data-key="current"' +
+      (entry.current ? ' checked' : '') + '><span>I currently work here</span></label>' +
+      '<div class="field"><div class="field-label-row"><label for="field-experience-' + index + '-bullets">Achievement bullets</label><button type="button" data-improve-entry="' + index + '">Improve a bullet</button></div>' +
+      '<textarea id="field-experience-' + index + '-bullets" data-array="experience" data-index="' + index + '" data-key="bullets" placeholder="One achievement per line…">' + h(bullets) + '</textarea>' +
+      '<span class="field-hint">Start with an action verb. Add scale, speed, money, quality, or another result where possible.</span></div>' +
+      '</div></article>';
+  }
+
+  function renderEducation(entry, index) {
+    return '<article class="entry-card">' + entryHeader('education', index, entry.degree || 'New qualification') +
+      '<div class="entry-card-body">' +
+      arrayField('Degree or qualification', 'education', index, 'degree', entry.degree, { placeholder: 'e.g. Diploma in Software Engineering', maxlength: 180 }) +
+      arrayField('Institution', 'education', index, 'school', entry.school, { placeholder: 'Institution name', maxlength: 180 }) +
+      '<div class="field-grid">' +
+      arrayField('Location', 'education', index, 'location', entry.location, { placeholder: 'Accra, Ghana', maxlength: 160 }) +
+      arrayField('Start date', 'education', index, 'start_date', entry.start_date, { placeholder: 'e.g. 2024', maxlength: 30 }) +
+      '</div>' +
+      arrayField('End date', 'education', index, 'end_date', entry.end_date, { placeholder: 'e.g. 2026', maxlength: 30 }) +
+      arrayField('Details', 'education', index, 'details', entry.details, { type: 'textarea', placeholder: 'Honours, relevant coursework, or achievement', maxlength: 1000 }) +
+      '</div></article>';
+  }
+
+  function renderSkill(entry, index) {
+    return '<article class="entry-card">' + entryHeader('skills', index, entry.name || 'New skill') +
+      '<div class="entry-card-body"><div class="field-grid">' +
+      arrayField('Skill', 'skills', index, 'name', entry.name, { placeholder: 'e.g. MySQL', maxlength: 100 }) +
+      selectField('Level', 'skills', index, 'level', entry.level || 'Proficient', ['Beginner', 'Intermediate', 'Proficient', 'Advanced', 'Expert']) +
+      '</div></div></article>';
+  }
+
+  function renderProject(entry, index) {
+    return '<article class="entry-card">' + entryHeader('projects', index, entry.name || 'New project') +
+      '<div class="entry-card-body">' +
+      arrayField('Project name', 'projects', index, 'name', entry.name, { placeholder: 'e.g. Pharmacy Management System', maxlength: 180 }) +
+      '<div class="field-grid">' +
+      arrayField('Your role', 'projects', index, 'role', entry.role, { placeholder: 'e.g. Full-stack developer', maxlength: 160 }) +
+      arrayField('Project link', 'projects', index, 'url', entry.url, { placeholder: 'github.com/you/project', maxlength: 255 }) +
+      '</div><div class="field-grid">' +
+      arrayField('Start date', 'projects', index, 'start_date', entry.start_date, { placeholder: 'e.g. Mar 2026', maxlength: 30 }) +
+      arrayField('End date', 'projects', index, 'end_date', entry.end_date, { placeholder: 'e.g. Jul 2026', maxlength: 30 }) +
+      '</div>' +
+      arrayField('What you built and why it matters', 'projects', index, 'description', entry.description, { type: 'textarea', placeholder: 'Technology, problem solved, and result…', maxlength: 1600 }) +
+      '</div></article>';
+  }
+
+  function renderExtras() {
+    const c = state.content;
+    const nav = '<div class="extras-nav">' +
+      ['certifications', 'languages', 'references', 'interests'].map((name) =>
+        '<button class="' + (currentExtra === name ? 'active' : '') + '" type="button" data-extra-section="' + name + '">' +
+        h(name.charAt(0).toUpperCase() + name.slice(1)) + '</button>'
+      ).join('') + '</div>';
+    let body = '';
+
+    if (currentExtra === 'certifications') {
+      body = '<div class="entry-list">' + c.certifications.map((entry, index) =>
+        '<article class="entry-card">' + entryHeader('certifications', index, entry.name || 'New certification') +
+        '<div class="entry-card-body">' +
+        arrayField('Certification', 'certifications', index, 'name', entry.name, { placeholder: 'e.g. AWS Cloud Practitioner', maxlength: 180 }) +
+        '<div class="field-grid">' +
+        arrayField('Issuer', 'certifications', index, 'issuer', entry.issuer, { placeholder: 'Issuing organization', maxlength: 180 }) +
+        arrayField('Date', 'certifications', index, 'date', entry.date, { placeholder: 'e.g. 2026', maxlength: 30 }) +
+        '</div>' +
+        arrayField('Credential link', 'certifications', index, 'url', entry.url, { placeholder: 'https://…', maxlength: 255 }) +
+        '</div></article>'
+      ).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="certifications">+ Add certification</button>';
+    }
+
+    if (currentExtra === 'languages') {
+      body = '<div class="entry-list">' + c.languages.map((entry, index) =>
+        '<article class="entry-card">' + entryHeader('languages', index, entry.name || 'New language') +
+        '<div class="entry-card-body"><div class="field-grid">' +
+        arrayField('Language', 'languages', index, 'name', entry.name, { placeholder: 'e.g. English', maxlength: 100 }) +
+        selectField('Proficiency', 'languages', index, 'level', entry.level || 'Professional', ['Basic', 'Conversational', 'Professional', 'Fluent', 'Native']) +
+        '</div></div></article>'
+      ).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="languages">+ Add language</button>';
+    }
+
+    if (currentExtra === 'references') {
+      body = '<div class="entry-list">' + c.references.map((entry, index) =>
+        '<article class="entry-card">' + entryHeader('references', index, entry.name || 'New reference') +
+        '<div class="entry-card-body">' +
+        arrayField('Full name', 'references', index, 'name', entry.name, { placeholder: 'Reference name', maxlength: 160 }) +
+        '<div class="field-grid">' +
+        arrayField('Position', 'references', index, 'position', entry.position, { placeholder: 'Job title', maxlength: 160 }) +
+        arrayField('Company', 'references', index, 'company', entry.company, { placeholder: 'Organization', maxlength: 160 }) +
+        '</div><div class="field-grid">' +
+        arrayField('Email', 'references', index, 'email', entry.email, { type: 'email', placeholder: 'email@example.com', maxlength: 190 }) +
+        arrayField('Phone', 'references', index, 'phone', entry.phone, { placeholder: '+233…', maxlength: 80 }) +
+        '</div></div></article>'
+      ).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="references">+ Add reference</button>';
+    }
+
+    if (currentExtra === 'interests') {
+      body = '<div class="field"><label for="interestInput">Add an interest</label><div class="tag-input-row"><input id="interestInput" maxlength="80" placeholder="e.g. Community volunteering"><button type="button" data-add-interest aria-label="Add interest">+</button></div></div>' +
+        '<div class="simple-tags spaced">' + c.interests.map((interest, index) =>
+          '<span class="simple-tag">' + h(interest) + '<button type="button" data-remove-interest="' + index + '" aria-label="Remove">×</button></span>'
+        ).join('') + '</div><div class="bullet-help spaced"><span>Tip</span><div>Interests are optional. Include them only when they add personality or support your professional story.</div></div>';
+    }
+
+    document.getElementById('sectionEditor').innerHTML =
+      editorHeading('Additional information', 'Add only the information that strengthens this application.') + nav + body;
+  }
+
+  function defaultEntry(array) {
+    const id = uuid();
+    const entries = {
+      experience: { id, role: '', company: '', location: '', start_date: '', end_date: '', current: false, bullets: [] },
+      education: { id, degree: '', school: '', location: '', start_date: '', end_date: '', details: '' },
+      skills: { id, name: '', level: 'Proficient' },
+      projects: { id, name: '', role: '', url: '', start_date: '', end_date: '', description: '' },
+      certifications: { id, name: '', issuer: '', date: '', url: '' },
+      languages: { id, name: '', level: 'Professional' },
+      references: { id, name: '', position: '', company: '', email: '', phone: '' },
+    };
+    return entries[array];
+  }
+
+  function renderPreview() {
+    const preview = document.getElementById('resumePreview');
+    preview.innerHTML = window.LunettiResume.renderResume(state, { placeholders: true });
+    const density = state.content.settings?.density || 'comfortable';
+    preview.className = 'density-' + density;
+    applyZoom();
+  }
+
+  function updateProgress() {
+    const progress = window.LunettiResume.calculateProgress(state.content);
+    state.completion = progress;
+    document.getElementById('completionPercent').textContent = progress + '%';
+    document.getElementById('completionBar').style.width = progress + '%';
+    document.getElementById('progressSmallValue').textContent = progress + '%';
+    document.getElementById('progressRingSmall').style.setProperty('--progress', progress);
+
+    const levels = progress >= 90
+      ? ['Application ready', 'Great work. Tailor keywords and run a final scan.']
+      : progress >= 70
+        ? ['Strong draft', 'Complete the remaining gaps to become Application Ready.']
+        : progress >= 40
+          ? ['Taking shape', 'Add evidence to the key incomplete sections.']
+          : ['Building foundation', 'Complete sections to reach Application Ready.'];
+    document.getElementById('progressLevel').textContent = levels[0];
+    document.getElementById('progressRewardText').textContent = levels[1];
+    document.getElementById('completionHint').textContent = levels[1];
+
+    const c = state.content;
+    const personalComplete = ['full_name', 'headline', 'email', 'phone', 'location'].every((key) => String(c.personal[key] || '').trim());
+    const summaryComplete = String(c.summary || '').trim().length >= 80;
+    const experienceComplete = c.experience.some((item) => item.role && item.company && item.bullets?.some((b) => String(b).trim()));
+    const educationComplete = c.education.some((item) => item.degree && item.school);
+    const skillsComplete = c.skills.filter((item) => String(item.name || '').trim()).length >= 5;
+    const projectsComplete = c.projects.some((item) => item.name && item.description);
+    const extrasComplete = c.certifications.some((item) => item.name) || c.languages.some((item) => item.name) || c.references.some((item) => item.name) || c.interests.length;
+    const checks = { personal: personalComplete, summary: summaryComplete, experience: experienceComplete, education: educationComplete, skills: skillsComplete, projects: projectsComplete, extras: Boolean(extrasComplete) };
+    Object.entries(checks).forEach(([key, complete]) => {
+      const element = document.querySelector('[data-section-check="' + key + '"]');
+      if (!element) return;
+      element.textContent = complete ? 'Complete' : 'Incomplete';
+      element.setAttribute('aria-label', complete ? 'Section complete' : 'Section incomplete');
+      element.classList.toggle('complete', complete);
+    });
+  }
+
+  function stateChanged(options = {}) {
+    dirty = true;
+    setSaveState('saving', 'Unsaved changes');
+    renderPreview();
+    updateProgress();
+    scheduleLocalBackup();
+    scheduleSave();
+    if (options.history) pushHistory();
+  }
+
+  function buildDocumentPayload() {
+    return {
+      name: state.name,
+      template_key: state.template_key,
+      language: state.language,
+      accent_color: state.accent_color,
+      font_family: state.font_family,
+      job_description: state.job_description,
+      content: state.content,
+    };
+  }
+
+  function buildSavePayload() {
+    return {
+      ...buildDocumentPayload(),
+      version: state.version,
+    };
+  }
+
+  function documentHash() {
+    return JSON.stringify(buildDocumentPayload());
+  }
+
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => saveResume(), 1200);
+  }
+
+  async function saveResume(force = false) {
+    clearTimeout(saveTimer);
+    if (saving) {
+      saveAgain = true;
+      return false;
+    }
+    if (!dirty && !force) return true;
+
+    saving = true;
+    const sentHash = documentHash();
+    setSaveState('saving', 'Saving…');
+    try {
+      const response = await window.Lunetti.api(config.endpoints.save, {
+        method: 'PUT',
+        body: JSON.stringify(buildSavePayload()),
+      });
+      const saved = response.data.resume;
+      state.version = saved.version;
+      state.updated_at = saved.updated_at;
+      state.completion = saved.completion;
+
+      if (documentHash() === sentHash) {
+        dirty = false;
+        localStorage.removeItem(localKey);
+        setSaveState('saved', 'Saved');
+      } else {
+        dirty = true;
+        saveAgain = true;
+      }
+      return true;
+    } catch (error) {
+      dirty = true;
+      saveLocalDraft();
+      const conflict = error.status === 409;
+      setSaveState('error', conflict ? 'Newer version found' : (navigator.onLine ? 'Unable to save' : 'Saved on this device'));
+      if (conflict || force) window.Lunetti.toast(error.message, 'error');
+      if (conflict) saveAgain = false;
+      return false;
+    } finally {
+      saving = false;
+      if (saveAgain) {
+        saveAgain = false;
+        scheduleSave();
+      }
+    }
+  }
+
+  function setSaveState(status, message) {
+    const indicator = document.getElementById('saveIndicator');
+    indicator.dataset.state = status;
+    document.getElementById('saveStatusText').textContent = message;
+  }
+
+  function scheduleLocalBackup() {
+    clearTimeout(localTimer);
+    localTimer = setTimeout(saveLocalDraft, 250);
+  }
+
+  function saveLocalDraft() {
+    try {
+      localStorage.setItem(localKey, JSON.stringify({ savedAt: Date.now(), resume: state }));
+    } catch {
+      // Storage can be disabled; server autosave remains the primary path.
+    }
+  }
+
+  function pushHistory(initial = false) {
+    const snapshot = JSON.stringify(buildDocumentPayload());
+    if (!initial && history[historyIndex] === snapshot) return;
+    history = history.slice(0, historyIndex + 1);
+    history.push(snapshot);
+    if (history.length > 40) history.shift();
+    historyIndex = history.length - 1;
+    updateHistoryButtons();
+  }
+
+  function restoreHistory(index) {
+    if (index < 0 || index >= history.length) return;
+    historyIndex = index;
+    const snapshot = JSON.parse(history[index]);
+    Object.assign(state, snapshot);
+    normalizeState();
+    document.getElementById('resumeTitle').value = state.name;
+    document.getElementById('jobDescription').value = state.job_description || '';
+    renderEditor();
+    renderPreview();
+    updateProgress();
+    updateDesignControls();
+    updateJobCount();
+    dirty = true;
+    scheduleSave();
+    scheduleLocalBackup();
+    updateHistoryButtons();
+  }
+
+  function updateHistoryButtons() {
+    document.getElementById('undoButton').disabled = historyIndex <= 0;
+    document.getElementById('redoButton').disabled = historyIndex >= history.length - 1;
+  }
+
+  function updateDesignControls() {
+    document.querySelectorAll('[data-template-key]').forEach((button) => {
+      const active = button.dataset.templateKey === state.template_key;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll('[data-accent-color]').forEach((button) => {
+      const active = button.dataset.accentColor.toLowerCase() === state.accent_color.toLowerCase();
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll('[data-density]').forEach((button) => {
+      const active = button.dataset.density === (state.content.settings?.density || 'comfortable');
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    const font = document.getElementById('fontFamily');
+    const language = document.getElementById('cvLanguage');
+    if (font) font.value = state.font_family;
+    if (language) language.value = state.language;
+    document.getElementById('customColor').value = state.accent_color;
+  }
+
+  document.getElementById('sectionNav')?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-section]');
+    if (!button) return;
+    currentSection = button.dataset.section;
+    document.querySelectorAll('[data-section]').forEach((item) => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      if (active) item.setAttribute('aria-current', 'step');
+      else item.removeAttribute('aria-current');
+    });
+    renderEditor();
+  });
+
+  document.getElementById('sectionEditor')?.addEventListener('input', handleEditorInput);
+  document.getElementById('sectionEditor')?.addEventListener('change', (event) => {
+    handleEditorInput(event);
+    pushHistory();
+  });
+
+  function handleEditorInput(event) {
+    const element = event.target;
+    if (element.dataset.field) {
+      setByPath(state.content, element.dataset.field, element.value);
+      if (element.dataset.field === 'summary') {
+        const counter = document.getElementById('summaryCount');
+        if (counter) counter.textContent = element.value.length + ' / 3,000';
+      }
+      stateChanged();
+      return;
+    }
+
+    if (element.dataset.array) {
+      const array = element.dataset.array;
+      const index = Number(element.dataset.index);
+      const key = element.dataset.key;
+      const entry = state.content[array]?.[index];
+      if (!entry) return;
+      let value = element.type === 'checkbox' ? element.checked : element.value;
+      if (key === 'bullets') {
+        value = String(value).split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+      }
+      entry[key] = value;
+      if (key === 'current' && value) entry.end_date = '';
+      stateChanged();
+    }
+  }
+
+  document.getElementById('sectionEditor')?.addEventListener('click', (event) => {
+    const add = event.target.closest('[data-add-entry]');
+    if (add) {
+      const array = add.dataset.addEntry;
+      state.content[array].push(defaultEntry(array));
+      renderEditor();
+      stateChanged({ history: true });
+      return;
+    }
+
+    const remove = event.target.closest('[data-remove-entry]');
+    if (remove) {
+      const array = remove.dataset.removeEntry;
+      const index = Number(remove.dataset.entryIndex);
+      state.content[array].splice(index, 1);
+      renderEditor();
+      stateChanged({ history: true });
+      return;
+    }
+
+    const move = event.target.closest('[data-move-entry]');
+    if (move) {
+      const array = move.dataset.moveEntry;
+      const from = Number(move.dataset.entryIndex);
+      const to = from + Number(move.dataset.direction);
+      if (to < 0 || to >= state.content[array].length) return;
+      const [entry] = state.content[array].splice(from, 1);
+      state.content[array].splice(to, 0, entry);
+      renderEditor();
+      stateChanged({ history: true });
+      return;
+    }
+
+    const extra = event.target.closest('[data-extra-section]');
+    if (extra) {
+      currentExtra = extra.dataset.extraSection;
+      renderExtras();
+      return;
+    }
+
+    if (event.target.closest('[data-open-summary-assistant]')) {
+      prefillSummaryModal();
+      window.Lunetti.openModal('summaryAssistantModal');
+      return;
+    }
+
+    const improve = event.target.closest('[data-improve-entry]');
+    if (improve) {
+      const entry = state.content.experience[Number(improve.dataset.improveEntry)];
+      document.getElementById('bulletSource').value = entry?.bullets?.[0] || '';
+      document.getElementById('bulletOutcome').value = '';
+      document.getElementById('bulletAssistantModal').dataset.targetEntry = improve.dataset.improveEntry;
+      window.Lunetti.openModal('bulletAssistantModal');
+      return;
+    }
+
+    if (event.target.closest('[data-add-interest]')) addInterest();
+    const removeInterest = event.target.closest('[data-remove-interest]');
+    if (removeInterest) {
+      state.content.interests.splice(Number(removeInterest.dataset.removeInterest), 1);
+      renderExtras();
+      stateChanged({ history: true });
+    }
+  });
+
+  document.getElementById('sectionEditor')?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && event.target.id === 'interestInput') {
+      event.preventDefault();
+      addInterest();
+    }
+  });
+
+  function addInterest() {
+    const input = document.getElementById('interestInput');
+    const value = input?.value.trim();
+    if (!value) return;
+    state.content.interests.push(value);
+    renderExtras();
+    stateChanged({ history: true });
+  }
+
+  document.getElementById('resumeTitle')?.addEventListener('input', (event) => {
+    state.name = event.target.value.trimStart();
+    stateChanged();
+  });
+  document.getElementById('resumeTitle')?.addEventListener('change', () => pushHistory());
+
+  document.querySelectorAll('[data-editor-mode]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('[data-editor-mode]').forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-selected', String(active));
+      });
+      const design = button.dataset.editorMode === 'design';
+      document.getElementById('editorContentMode').hidden = design;
+      document.getElementById('editorDesignMode').hidden = !design;
+    });
+  });
+
+  document.querySelectorAll('[data-template-key]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.template_key = button.dataset.templateKey;
+      const template = config.templates.find((item) => item.template_key === state.template_key);
+      if (template) state.accent_color = template.color;
+      updateDesignControls();
+      stateChanged({ history: true });
+    });
+  });
+
+  document.querySelectorAll('[data-accent-color]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.accent_color = button.dataset.accentColor;
+      updateDesignControls();
+      stateChanged({ history: true });
+    });
+  });
+
+  document.getElementById('customColor')?.addEventListener('input', (event) => {
+    state.accent_color = event.target.value;
+    updateDesignControls();
+    stateChanged();
+  });
+  document.getElementById('customColor')?.addEventListener('change', () => pushHistory());
+
+  document.querySelectorAll('[data-resume-setting]').forEach((element) => {
+    element.addEventListener('change', () => {
+      state[element.dataset.resumeSetting] = element.value;
+      stateChanged({ history: true });
+    });
+  });
+
+  document.querySelectorAll('[data-density]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.content.settings.density = button.dataset.density;
+      updateDesignControls();
+      stateChanged({ history: true });
+    });
+  });
+
+  function applyZoom() {
+    zoom = Math.max(0.35, Math.min(1.2, zoom));
+    const preview = document.getElementById('resumePreview');
+    const scale = document.getElementById('previewScale');
+    preview.style.transform = 'scale(' + zoom + ')';
+    const pageWidth = 794;
+    const pageHeight = 1123;
+    scale.style.width = Math.max(scale.parentElement?.clientWidth || 0, Math.round(pageWidth * zoom + 64)) + 'px';
+    scale.style.minHeight = Math.round(pageHeight * zoom + 95) + 'px';
+    document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%';
+  }
+
+  function fitPage() {
+    const scroll = document.getElementById('previewScroll');
+    if (!scroll) return;
+    zoom = Math.min((scroll.clientWidth - 45) / 794, (scroll.clientHeight - 50) / 1123, 0.92);
+    applyZoom();
+    scroll.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  }
+
+  document.getElementById('zoomOutButton')?.addEventListener('click', () => { zoom -= 0.08; applyZoom(); });
+  document.getElementById('zoomInButton')?.addEventListener('click', () => { zoom += 0.08; applyZoom(); });
+  document.getElementById('fitButton')?.addEventListener('click', fitPage);
+  window.addEventListener('resize', () => setTimeout(applyZoom, 50));
+
+  document.getElementById('undoButton')?.addEventListener('click', () => restoreHistory(historyIndex - 1));
+  document.getElementById('redoButton')?.addEventListener('click', () => restoreHistory(historyIndex + 1));
+
+  document.addEventListener('keydown', (event) => {
+    if (!(event.ctrlKey || event.metaKey)) return;
+    if (event.key.toLowerCase() === 's') {
+      event.preventDefault();
+      saveResume(true).then((ok) => ok && window.Lunetti.toast('CV saved.'));
+    }
+    if (event.key.toLowerCase() === 'z') {
+      event.preventDefault();
+      restoreHistory(historyIndex + (event.shiftKey ? 1 : -1));
+    }
+  });
+
+  document.getElementById('exportJsonButton')?.addEventListener('click', async () => {
+    await saveResume();
+    const backup = {
+      schema_version: 1,
+      exported_at: new Date().toISOString(),
+      application: 'LunettiStar',
+      resume: buildSavePayload(),
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = safeFilename(state.name) + '.json';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 500);
+    recordExport('json');
+    window.Lunetti.toast('CV backup downloaded.');
+  });
+
+  document.getElementById('importButton')?.addEventListener('click', () => document.getElementById('importFile').click());
+  document.getElementById('importFile')?.addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      if (file.size > 1024 * 1024) throw new Error('Choose a JSON backup smaller than 1 MB.');
+      const parsed = JSON.parse(await file.text());
+      const imported = parsed.resume || parsed;
+      if (!imported.content || typeof imported.content !== 'object') throw new Error('This file is not a valid LunettiStar CV backup.');
+      Object.assign(state, {
+        name: String(imported.name || state.name).slice(0, 150),
+        template_key: imported.template_key || state.template_key,
+        language: imported.language || state.language,
+        accent_color: imported.accent_color || state.accent_color,
+        font_family: imported.font_family || state.font_family,
+        job_description: imported.job_description || '',
+        content: imported.content,
+      });
+      normalizeState();
+      document.getElementById('resumeTitle').value = state.name;
+      document.getElementById('jobDescription').value = state.job_description;
+      renderEditor();
+      renderPreview();
+      updateProgress();
+      updateDesignControls();
+      updateJobCount();
+      stateChanged({ history: true });
+      window.Lunetti.toast('Backup imported. Review the CV before exporting.');
+    } catch (error) {
+      window.Lunetti.toast(error.message || 'Could not import that file.', 'error');
+    } finally {
+      event.target.value = '';
+    }
+  });
+
+  function safeFilename(value) {
+    return String(value || 'cv').trim().replace(/[^\p{L}\p{N}_-]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'cv';
+  }
+
+  document.getElementById('printButton')?.addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    const original = button.innerHTML;
+    button.innerHTML = '<span class="spinner"></span> Preparing…';
+    const saved = await saveResume(true);
+    if (saved) {
+      window.open(config.endpoints.print, '_blank', 'noopener');
+    }
+    button.disabled = false;
+    button.innerHTML = original;
+  });
+
+  async function recordExport(format) {
+    try {
+      await window.Lunetti.api(config.endpoints.export, {
+        method: 'POST',
+        body: JSON.stringify({ format }),
+      });
+    } catch {
+      // Export itself should still succeed if analytics recording is unavailable.
+    }
+  }
+
+  document.querySelectorAll('[data-assistant-tab]').forEach((button) => {
+    button.addEventListener('click', () => switchAssistantTab(button.dataset.assistantTab));
+  });
+
+  function switchAssistantTab(tab) {
+    document.querySelectorAll('[data-assistant-tab]').forEach((button) => {
+      const active = button.dataset.assistantTab === tab;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-selected', String(active));
+    });
+    document.querySelectorAll('[data-assistant-view]').forEach((view) => view.classList.toggle('active', view.dataset.assistantView === tab));
+  }
+
+  document.querySelectorAll('[data-smart-action]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const action = button.dataset.smartAction;
+      if (action === 'summary') {
+        prefillSummaryModal();
+        window.Lunetti.openModal('summaryAssistantModal');
+        return;
+      }
+      if (action === 'bullet') {
+        document.getElementById('bulletAssistantModal').dataset.targetEntry = '0';
+        document.getElementById('bulletSource').value = state.content.experience[0]?.bullets?.[0] || '';
+        document.getElementById('bulletOutcome').value = '';
+        window.Lunetti.openModal('bulletAssistantModal');
+        return;
+      }
+      await requestAssistant(action, action === 'keywords' ? { job_description: state.job_description } : {});
+    });
+  });
+
+  function prefillSummaryModal() {
+    document.getElementById('summaryTargetRole').value = state.content.personal.headline || '';
+    document.getElementById('summaryYears').value = state.content.experience.filter((item) => item.role || item.company).length || '';
+    document.getElementById('summaryValue').value = '';
+  }
+
+  document.getElementById('generateSummaryButton')?.addEventListener('click', async (event) => {
+    const input = {
+      target_role: document.getElementById('summaryTargetRole').value,
+      years: document.getElementById('summaryYears').value,
+      value: document.getElementById('summaryValue').value,
+    };
+    window.Lunetti.closeModal('summaryAssistantModal');
+    await requestAssistant('summary', input, (result) => {
+      state.content.summary = result.text;
+      if (currentSection === 'summary') renderEditor();
+      stateChanged({ history: true });
+    });
+  });
+
+  document.getElementById('generateBulletButton')?.addEventListener('click', async () => {
+    const targetIndex = Number(document.getElementById('bulletAssistantModal').dataset.targetEntry || 0);
+    const input = {
+      text: document.getElementById('bulletSource').value,
+      outcome: document.getElementById('bulletOutcome').value,
+    };
+    window.Lunetti.closeModal('bulletAssistantModal');
+    await requestAssistant('bullet', input, (result) => {
+      if (!state.content.experience[targetIndex]) {
+        state.content.experience.push(defaultEntry('experience'));
+      }
+      state.content.experience[targetIndex].bullets = state.content.experience[targetIndex].bullets || [];
+      if (state.content.experience[targetIndex].bullets.length) {
+        state.content.experience[targetIndex].bullets[0] = result.text;
+      } else {
+        state.content.experience[targetIndex].bullets.push(result.text);
+      }
+      if (currentSection === 'experience') renderEditor();
+      stateChanged({ history: true });
+    });
+  });
+
+  async function requestAssistant(action, input, apply = null) {
+    switchAssistantTab('assistant');
+    const resultBox = document.getElementById('assistantResult');
+    const content = document.getElementById('assistantResultContent');
+    resultBox.hidden = false;
+    content.innerHTML = '<p><span class="spinner inline-spinner"></span> Preparing a focused suggestion…</p>';
+    document.getElementById('applySuggestion').hidden = true;
+
+    try {
+      if (!(await saveResume())) {
+        throw new Error('Save or reconcile your CV before requesting a suggestion.');
+      }
+      const response = await window.Lunetti.api(config.endpoints.assistant, {
+        method: 'POST',
+        body: JSON.stringify({ action, input }),
+      });
+      const result = response.data.result;
+      showAssistantResult(result, apply);
+    } catch (error) {
+      content.innerHTML = '<p>' + h(error.message) + '</p>';
+      window.Lunetti.toast(error.message, 'error');
+    }
+  }
+
+  function showAssistantResult(result, apply) {
+    const content = document.getElementById('assistantResultContent');
+    let html = result.text ? '<p>' + h(result.text) + '</p>' : '';
+    if (Array.isArray(result.items) && result.items.length) {
+      html += '<ul>' + result.items.map((item) => '<li>' + h(item) + '</li>').join('') + '</ul>';
+    }
+    if (Array.isArray(result.keywords) && result.keywords.length) {
+      html += '<div class="keyword-cloud missing">' + result.keywords.map((item) => '<span>' + h(item) + '</span>').join('') + '</div>';
+    }
+    if (result.tip) html += '<p class="muted result-tip">' + h(result.tip) + '</p>';
+    content.innerHTML = html || '<p>Review your content and keep only suggestions that accurately describe your experience.</p>';
+    pendingSuggestion = apply ? () => apply(result) : null;
+    document.getElementById('applySuggestion').hidden = !pendingSuggestion;
+    document.getElementById('assistantResult').hidden = false;
+  }
+
+  document.getElementById('applySuggestion')?.addEventListener('click', () => {
+    if (!pendingSuggestion) return;
+    pendingSuggestion();
+    pendingSuggestion = null;
+    document.getElementById('applySuggestion').hidden = true;
+    window.Lunetti.toast('Suggestion applied.');
+  });
+
+  document.getElementById('dismissSuggestion')?.addEventListener('click', () => {
+    document.getElementById('assistantResult').hidden = true;
+    pendingSuggestion = null;
+  });
+
+  document.getElementById('jobDescription')?.addEventListener('input', (event) => {
+    state.job_description = event.target.value;
+    updateJobCount();
+    stateChanged();
+  });
+  document.getElementById('jobDescription')?.addEventListener('change', () => pushHistory());
+
+  function updateJobCount() {
+    document.getElementById('jobDescriptionCount').textContent = String(state.job_description || '').length.toLocaleString();
+  }
+
+  document.getElementById('runAtsButton')?.addEventListener('click', () => runAts(false));
+  document.getElementById('matchJobButton')?.addEventListener('click', () => runAts(true));
+
+  async function runAts(showKeywords) {
+    const button = showKeywords ? document.getElementById('matchJobButton') : document.getElementById('runAtsButton');
+    const original = button.textContent;
+    button.disabled = true;
+    button.innerHTML = '<span class="spinner"></span> Analyzing…';
+    try {
+      if (!(await saveResume())) {
+        throw new Error('Save or reconcile your CV before running an ATS scan.');
+      }
+      const response = await window.Lunetti.api(config.endpoints.ats, {
+        method: 'POST',
+        body: JSON.stringify({ job_description: state.job_description }),
+      });
+      const report = response.data.report;
+      state.ats_score = report.score;
+      renderAtsReport(report);
+      if (showKeywords) {
+        switchAssistantTab('job');
+        renderKeywords(report);
+      } else {
+        switchAssistantTab('ats');
+      }
+      window.Lunetti.toast('ATS analysis complete.');
+    } catch (error) {
+      window.Lunetti.toast(error.message, 'error');
+    } finally {
+      button.disabled = false;
+      button.textContent = original;
+    }
+  }
+
+  function renderAtsReport(report) {
+    document.getElementById('atsScore').textContent = report.score;
+    document.getElementById('atsRing').style.setProperty('--score', report.score);
+    document.getElementById('atsGrade').textContent = report.grade;
+    document.getElementById('atsScoreMessage').textContent = report.score >= 85
+      ? 'A strong CV—finish with role-specific tailoring.'
+      : report.score >= 70
+        ? 'Good foundation with a few useful improvements.'
+        : 'Work through the recommendations below.';
+    const maximums = {
+      'Contact details': 15,
+      'Professional summary': 15,
+      'Experience impact': 25,
+      'Relevant skills': 15,
+      'Education': 10,
+      'Readability': 10,
+      'Job keywords': 10,
+    };
+    document.getElementById('atsCategories').innerHTML = Object.entries(report.categories).map(([name, value]) => {
+      const max = maximums[name] || 10;
+      return '<div class="ats-category"><span>' + h(name) + '</span><b>' + Number(value) + '/' + max +
+        '</b><div><i style="width:' + Math.min(100, Math.round((Number(value) / max) * 100)) + '%"></i></div></div>';
+    }).join('');
+    document.getElementById('atsRecommendations').innerHTML = report.recommendations.map((item, index) =>
+      '<div class="recommendation"><span>' + (index + 1) + '</span><p>' + h(item) + '</p></div>'
+    ).join('') || '<div class="recommendation"><span>Done</span><p>Your CV has a strong foundation. Tailor it for each application.</p></div>';
+  }
+
+  function renderKeywords(report) {
+    const result = document.getElementById('keywordResult');
+    result.hidden = false;
+    document.getElementById('matchedKeywords').innerHTML = (report.matched_keywords || []).map((word) => '<span>' + h(word) + '</span>').join('') || '<span>None yet</span>';
+    document.getElementById('missingKeywords').innerHTML = (report.missing_keywords || []).map((word) => '<span>' + h(word) + '</span>').join('') || '<span>No major gaps found</span>';
+  }
+
+  document.addEventListener('focusin', (event) => {
+    if (event.target.matches('input[type="text"], input[type="email"], input[type="tel"], textarea')) lastFocusedInput = event.target;
+  });
+
+  document.getElementById('voiceButton')?.addEventListener('click', () => {
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Recognition) {
+      window.Lunetti.toast('Voice input is not supported by this browser. Chrome and Edge work best.', 'error');
+      return;
+    }
+    if (!lastFocusedInput || !document.body.contains(lastFocusedInput)) {
+      window.Lunetti.toast('Select a text field first, then start voice input.', 'error');
+      return;
+    }
+    if (speechRecognition) {
+      speechRecognition.stop();
+      return;
+    }
+
+    speechRecognition = new Recognition();
+    speechRecognition.lang = state.language === 'fr' ? 'fr-FR' : state.language === 'es' ? 'es-ES' : 'en-GH';
+    speechRecognition.interimResults = false;
+    speechRecognition.continuous = false;
+    const voiceButton = document.getElementById('voiceButton');
+    voiceButton.textContent = 'Listening…';
+    voiceButton.classList.add('btn-danger');
+    speechRecognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      const separator = lastFocusedInput.value && !/\s$/.test(lastFocusedInput.value) ? ' ' : '';
+      lastFocusedInput.value += separator + transcript;
+      lastFocusedInput.dispatchEvent(new Event('input', { bubbles: true }));
+      lastFocusedInput.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+    speechRecognition.onerror = () => window.Lunetti.toast('Voice input stopped before text was captured.', 'error');
+    speechRecognition.onend = () => {
+      speechRecognition = null;
+      voiceButton.textContent = 'Start';
+      voiceButton.classList.remove('btn-danger');
+    };
+    speechRecognition.start();
+  });
+
+  document.querySelectorAll('[data-toggle-panel]').forEach((button) => {
+    button.addEventListener('click', () => openPanel(button.dataset.togglePanel));
+  });
+  document.querySelectorAll('[data-close-panel]').forEach((button) => {
+    button.addEventListener('click', closePanels);
+  });
+  document.getElementById('mobilePanelOverlay')?.addEventListener('click', closePanels);
+
+  function openPanel(name) {
+    closePanels();
+    document.getElementById(name + 'Panel')?.classList.add('open');
+    document.getElementById('mobilePanelOverlay').classList.add('open');
+    document.querySelectorAll('[data-toggle-panel]').forEach((button) => {
+      const active = button.dataset.togglePanel === name;
+      button.setAttribute('aria-expanded', String(active));
+      if (button.closest('.builder-mobile-switch')) button.classList.toggle('active', active);
+    });
+    const previewButton = document.querySelector('.builder-mobile-switch [data-close-panel="preview"]');
+    previewButton?.classList.remove('active');
+    previewButton?.removeAttribute('aria-current');
+  }
+
+  function closePanels() {
+    document.getElementById('editorPanel').classList.remove('open');
+    document.getElementById('assistantPanel').classList.remove('open');
+    document.getElementById('mobilePanelOverlay').classList.remove('open');
+    document.querySelectorAll('[data-toggle-panel]').forEach((button) => {
+      button.setAttribute('aria-expanded', 'false');
+      if (button.closest('.builder-mobile-switch')) button.classList.remove('active');
+    });
+    const previewButton = document.querySelector('.builder-mobile-switch [data-close-panel="preview"]');
+    previewButton?.classList.add('active');
+    previewButton?.setAttribute('aria-current', 'page');
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.querySelector('.editor-panel.open, .assistant-panel.open')) closePanels();
+  });
+
+  window.addEventListener('online', () => {
+    if (dirty) saveResume();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden' && dirty) {
+      saveLocalDraft();
+      saveResume();
+    }
+  });
+
+  window.addEventListener('beforeunload', (event) => {
+    if (!dirty) return;
+    saveLocalDraft();
+    event.preventDefault();
+    event.returnValue = '';
+  });
+})();

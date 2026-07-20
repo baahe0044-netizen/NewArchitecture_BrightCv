@@ -1,36 +1,43 @@
 <?php
 
-require_once __DIR__ . '/../Repositories/TemplateRepository.php';
+declare(strict_types=1);
 
-class TemplateService
+final class TemplateService
 {
-    private TemplateRepository $repository;
+    private const SUPPORTED = ['modern', 'executive', 'minimal', 'creative', 'graduate', 'tech'];
 
-    public function __construct()
+    public function __construct(private readonly TemplateRepository $templates = new TemplateRepository())
     {
-        $this->repository = new TemplateRepository();
     }
 
-    public function getTemplates()
+    public function all(): array
     {
-        return $this->repository->getTemplates();
+        return array_values(array_filter(array_map(
+            fn (array $template): ?array => $this->normalize($template),
+            $this->templates->allActive()
+        )));
     }
 
-    public function getTemplate($id)
+    public function find(string $key): ?array
     {
-        return $this->repository->getTemplate($id);
+        return $this->normalize($this->templates->findByKey($key));
     }
 
-    public function getSelectedTemplate($resumeId)
+    private function normalize(?array $template): ?array
     {
-        return $this->repository->getSelectedTemplate($resumeId);
-    }
+        if (!$template || !in_array((string) ($template['template_key'] ?? ''), self::SUPPORTED, true)) {
+            return null;
+        }
 
-    public function saveSelectedTemplate($resumeId, $templateId)
-    {
-        return $this->repository->saveSelectedTemplate(
-            $resumeId,
-            $templateId
-        );
+        $color = (string) ($template['color'] ?? '');
+        $template['color'] = preg_match('/^#[0-9a-f]{6}$/i', $color) ? strtolower($color) : '#5b4df7';
+        foreach (['name' => 100, 'category' => 60, 'description' => 255] as $field => $limit) {
+            $value = $template[$field] ?? '';
+            $template[$field] = is_string($value)
+                ? mb_substr(trim(strip_tags($value)), 0, $limit)
+                : '';
+        }
+        $template['is_premium'] = (int) ($template['is_premium'] ?? 0);
+        return $template;
     }
 }

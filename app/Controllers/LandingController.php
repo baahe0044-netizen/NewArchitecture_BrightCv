@@ -1,9 +1,14 @@
 <?php
 
-class LandingController
+declare(strict_types=1);
+
+final class LandingController extends Controller
 {
-    public function index()
+    public function index(Request $request): Response
     {
-        require VIEW_PATH . '/landing/index.php';
+        return $this->view('landing/index', [
+            'title' => 'Build a CV that gets noticed',
+            'user' => Auth::user(),
+        ]);
     }
 }
