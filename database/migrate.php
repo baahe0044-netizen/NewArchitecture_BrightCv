@@ -9,7 +9,7 @@ if (PHP_SAPI !== 'cli') {
 
 require_once dirname(__DIR__) . '/config/app.php';
 
-$database = (string) env('DB_DATABASE', 'lunettistar_db');
+$database = (string) env('DB_DATABASE', 'brightcv_db');
 if (!preg_match('/^[a-zA-Z0-9_]+$/', $database)) {
     throw new RuntimeException('DB_DATABASE may contain only letters, numbers, and underscores.');
 }
@@ -38,6 +38,47 @@ try {
     $pdo->exec('USE ' . $quotedDatabase);
 }
 
+$requiredColumns = [
+    'users' => [
+        'id', 'name', 'email', 'password_hash', 'auth_version', 'role', 'plan', 'locale',
+        'job_title', 'avatar_path', 'email_verified_at', 'last_login_at', 'created_at', 'updated_at',
+    ],
+    'resume_templates' => [
+        'id', 'template_key', 'name', 'category', 'description', 'color', 'is_active',
+        'is_premium', 'sort_order', 'created_at', 'updated_at',
+    ],
+    'resumes' => [
+        'id', 'user_id', 'name', 'template_key', 'language', 'accent_color', 'font_family',
+        'content_json', 'job_description', 'status', 'completion', 'ats_score', 'version',
+        'last_exported_at', 'deleted_at', 'created_at', 'updated_at',
+    ],
+];
+$columnsStatement = $pdo->prepare(
+    'SELECT COLUMN_NAME
+     FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?'
+);
+
+foreach ($requiredColumns as $table => $columns) {
+    $columnsStatement->execute([$database, $table]);
+    $existingColumns = $columnsStatement->fetchAll(PDO::FETCH_COLUMN);
+    if ($existingColumns === []) {
+        continue;
+    }
+
+    $missingColumns = array_values(array_diff($columns, $existingColumns));
+    if ($missingColumns !== []) {
+        throw new RuntimeException(sprintf(
+            'Database "%s" contains a legacy or incomplete "%s" table (missing: %s). '
+            . 'No schema changes were applied. Back up the legacy database, set '
+            . 'DB_DATABASE=brightcv_db in .env, and run this command again.',
+            $database,
+            $table,
+            implode(', ', $missingColumns)
+        ));
+    }
+}
+
 $sql = (string) file_get_contents(__DIR__ . '/schema.sql');
 $statements = array_filter(array_map('trim', preg_split('/;\s*(?:\r?\n|$)/', $sql) ?: []));
 
@@ -48,4 +89,4 @@ foreach ($statements as $statement) {
     $pdo->exec($statement);
 }
 
-echo "Database schema is ready.\n";
+echo sprintf("Database schema \"%s\" is ready.\n", $database);

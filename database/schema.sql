@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS lunettistar_db
+CREATE DATABASE IF NOT EXISTS brightcv_db
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE lunettistar_db;
+USE brightcv_db;
 
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

@@ -15,7 +15,7 @@ final class Database
         $driver = (string) env('DB_CONNECTION', 'mysql');
         $host = (string) env('DB_HOST', '127.0.0.1');
         $port = (string) env('DB_PORT', '3306');
-        $database = (string) env('DB_DATABASE', 'lunettistar_db');
+        $database = (string) env('DB_DATABASE', 'brightcv_db');
         $charset = (string) env('DB_CHARSET', 'utf8mb4');
 
         $dsn = sprintf(

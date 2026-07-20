@@ -31,5 +31,6 @@ not a replacement for database backups.
 
 The rebuilt schema uses resumes.content_json as the canonical document. Back up
 any earlier LunettiStar database before switching. For the safest transition,
-import database/schema.sql into a new database, update DB_DATABASE, create a
-test account, and verify exports before migrating legacy content.
+use the dedicated `brightcv_db` default, create a test account, and verify
+exports before migrating legacy content. The migration command detects the
+known legacy table layout and stops without altering it.

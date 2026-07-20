@@ -7,7 +7,8 @@
 3. Copy .env.example to .env.
 4. Set APP_URL to the folder’s public URL.
 5. Set APP_KEY to a long random value, then set DB_DATABASE, DB_USERNAME, and
-   DB_PASSWORD. Generate a key with:
+   DB_PASSWORD. Keep the dedicated `brightcv_db` database name when an older
+   LunettiStar installation already uses `lunettistar_db`. Generate a key with:
 
        php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
 6. Open a terminal in the project and run:
@@ -39,6 +40,12 @@ restart Apache.
 
 Confirm MySQL is running, the database exists, and the .env credentials are
 correct. Do not add quotation marks unless they are part of the password.
+
+### Legacy or incomplete database error
+
+The rebuilt application intentionally defaults to `brightcv_db`. Keep the old
+database as a backup, set `DB_DATABASE=brightcv_db`, and rerun the migration.
+The migration refuses to modify an incompatible legacy schema silently.
 
 ### Assets load from the wrong folder
 

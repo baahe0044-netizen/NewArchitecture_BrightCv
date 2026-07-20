@@ -45,7 +45,10 @@ loading but the application also has a safe fallback autoloader.
 
        APP_URL=http://localhost/NewArchitecture_BrightCv/public
 
-4. Create the schema using either option:
+4. Keep the dedicated default database (`DB_DATABASE=brightcv_db`). An earlier
+   LunettiStar installation may already use `lunettistar_db`, which has an
+   incompatible legacy structure.
+5. Create the schema using either option:
 
        php database/migrate.php
 
@@ -54,7 +57,7 @@ loading but the application also has a safe fallback autoloader.
        C:\wamp64\bin\php\php8.2.0\php.exe database\migrate.php
 
    You can instead import database/schema.sql through phpMyAdmin.
-5. Open:
+6. Open:
 
        http://localhost/NewArchitecture_BrightCv/public
 
