@@ -7,6 +7,8 @@ account-based storage.
 
 For complete beginner-friendly installation, testing, rebuild, troubleshooting,
 and production steps, see [SETUP_AND_REBUILD_GUIDE.md](SETUP_AND_REBUILD_GUIDE.md).
+For ready-to-paste Windows PowerShell commands, see
+[COPY_PASTE_SETUP_COMMANDS.md](COPY_PASTE_SETUP_COMMANDS.md).
 
 ## What is included
 
