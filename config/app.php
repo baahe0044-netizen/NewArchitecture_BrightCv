@@ -16,6 +16,7 @@ if (is_file(ROOT_PATH . '/vendor/autoload.php')) {
 spl_autoload_register(static function (string $class): void {
     $class = basename(str_replace('\\', '/', $class));
     $directories = [
+        CONFIG_PATH,
         APP_PATH . '/Core',
         APP_PATH . '/Controllers',
         APP_PATH . '/Services',

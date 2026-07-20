@@ -17,6 +17,8 @@ function assertTrue(bool $condition, string $message): void
     }
 }
 
+assertTrue(class_exists(Database::class), 'The database class should be available through the application autoloader.');
+
 $content = [
     'personal' => [
         'full_name' => 'Emmanuel Baah',
