@@ -102,7 +102,7 @@ See docs/Installation.md and docs/Deployment.md for full details.
       Repositories/   database queries and ownership boundaries
       Services/       business rules, ATS analysis, writing, accounts
       Views/          server-rendered pages
-    config/           environment bootstrap, database, routes
+    config/           environment bootstrap and routes
     database/         idempotent schema and migration command
     public/           the only web-accessible entry point and assets
     storage/          private generated data, logs, and temporary files
