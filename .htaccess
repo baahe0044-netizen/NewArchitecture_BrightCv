@@ -1,0 +1,11 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(app|config|database|docs|storage|tests|vendor|api|resume|Templates|account|HelpCenter)(/|$) - [F,L,NC]
+    RewriteRule ^$ public/ [L]
+</IfModule>
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

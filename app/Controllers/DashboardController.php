@@ -1,11 +1,26 @@
 <?php
 
-require_once __DIR__ . '/../Core/Controller.php';
+declare(strict_types=1);
 
-class DashboardController extends Controller
+final class DashboardController extends Controller
 {
-    public function index()
+    public function __construct(private readonly DashboardService $dashboard = new DashboardService())
     {
-        $this->view('dashboard/index');
+    }
+
+    public function index(Request $request): Response
+    {
+        $data = $this->dashboard->forUser((int) Auth::id());
+        return $this->view('dashboard/index', [
+            'title' => 'Dashboard',
+            'user' => Auth::user(),
+            'dashboard' => $data,
+            'message' => Session::pullFlash('message'),
+        ]);
+    }
+
+    public function data(Request $request): Response
+    {
+        return $this->success($this->dashboard->forUser((int) Auth::id()));
     }
 }

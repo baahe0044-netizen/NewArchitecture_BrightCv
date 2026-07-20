@@ -1,0 +1,112 @@
+.print-page {
+  min-height: 100vh;
+  background: #e8e8ed;
+}
+
+.print-toolbar {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  display: flex;
+  min-height: 66px;
+  padding: 10px 22px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: rgba(255,255,255,.95);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+
+.print-toolbar > div,
+.print-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.print-toolbar > div:first-child > span {
+  width: 1px;
+  height: 28px;
+  background: var(--line);
+}
+
+.print-toolbar b,
+.print-toolbar small {
+  display: block;
+}
+
+.print-toolbar b { font-size: 12px; }
+.print-toolbar small { color: var(--muted); font-size: 9px; }
+.print-toolbar .btn { min-height: 38px; font-size: 11px; }
+
+.print-tip {
+  width: min(760px, calc(100% - 30px));
+  margin: 18px auto 0;
+  padding: 9px 13px;
+  color: #655f4c;
+  background: #fff7df;
+  border: 1px solid #f1dfaa;
+  border-radius: 9px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.print-canvas {
+  display: grid;
+  padding: 24px 15px 65px;
+  place-items: start center;
+}
+
+#printResume {
+  box-shadow: 0 16px 45px rgba(30, 28, 48, .18);
+}
+
+.print-noscript {
+  padding: 30px;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .print-toolbar .brand,
+  .print-toolbar > div:first-child > span,
+  .print-toolbar > div:first-child > div,
+  .print-actions .btn-secondary {
+    display: none;
+  }
+
+  .print-toolbar {
+    justify-content: center;
+  }
+
+  .print-canvas {
+    overflow-x: auto;
+    place-items: start;
+  }
+
+  #printResume {
+    transform: scale(.55);
+    transform-origin: top left;
+  }
+}
+
+@media print {
+  .print-toolbar,
+  .print-tip,
+  .toast-region {
+    display: none !important;
+  }
+
+  .print-page,
+  .print-canvas,
+  #printResume {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+
+  #printResume {
+    transform: none !important;
+  }
+}
