@@ -22,12 +22,36 @@
   let pendingSuggestion = null;
   let lastFocusedInput = null;
   let speechRecognition = null;
+  let previewTimer = null;
   const localKey = 'lunettistar.resume.' + state.id;
+
+  // Declared before the bootstrap calls below: these are const, so anything
+  // that runs during init would hit the temporal dead zone otherwise.
+
+  // Ordered flow used by the step chips and the Back/Next footer.
+  const SECTIONS = [
+    { key: 'personal', label: 'Personal details' },
+    { key: 'summary', label: 'Summary' },
+    { key: 'experience', label: 'Experience' },
+    { key: 'education', label: 'Education' },
+    { key: 'skills', label: 'Skills' },
+    { key: 'projects', label: 'Projects' },
+    { key: 'extras', label: 'More sections' },
+  ];
+
+  // Entries collapse so a CV with several roles stays scannable instead of
+  // rendering as one long wall of inputs. Keyed by entry id, which survives
+  // reordering (index does not).
+  const collapsedEntries = new Set();
+  const entryKey = (array, entry, index) => array + ':' + (entry?.id || index);
+
+  const DATE_HINT = 'Use one consistent format across your CV, for example Jan 2023.';
 
   normalizeState();
   restoreLocalDraft();
   pushHistory(true);
   renderEditor();
+  updateStepNav();
   renderPreview();
   updateProgress();
   updateDesignControls();
@@ -178,12 +202,54 @@
     return '<div class="section-editor-heading"><div><h2>' + h(title) + '</h2><p>' + h(description) + '</p></div>' + actionHtml + '</div>';
   }
 
-  function entryHeader(array, index, title) {
-    return '<div class="entry-card-header"><b>' + h(title || ('Entry ' + (index + 1))) + '</b><div class="entry-card-actions">' +
+  function entryHeader(array, index, title, entry, summary) {
+    const key = entryKey(array, entry, index);
+    const collapsed = collapsedEntries.has(key);
+    return '<div class="entry-card-header">' +
+      '<button class="entry-toggle" type="button" data-toggle-entry="' + h(key) + '" aria-expanded="' + (!collapsed) + '">' +
+      '<span class="entry-caret" aria-hidden="true">' + (collapsed ? '▸' : '▾') + '</span>' +
+      '<span class="entry-titles"><b>' + h(title || ('Entry ' + (index + 1))) + '</b>' +
+      (summary ? '<small>' + h(summary) + '</small>' : '') + '</span></button>' +
+      '<div class="entry-card-actions">' +
       '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="-1" title="Move up" aria-label="Move up">↑</button>' +
       '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="1" title="Move down" aria-label="Move down">↓</button>' +
       '<button type="button" data-remove-entry="' + h(array) + '" data-entry-index="' + index + '" title="Remove" aria-label="Remove">×</button>' +
       '</div></div>';
+  }
+
+  // Wraps an entry so collapsing hides the body but keeps the header usable.
+  function entryCard(array, index, entry, title, summary, body) {
+    const collapsed = collapsedEntries.has(entryKey(array, entry, index));
+    return '<article class="entry-card' + (collapsed ? ' collapsed' : '') + '">' +
+      entryHeader(array, index, title, entry, summary) +
+      '<div class="entry-card-body"' + (collapsed ? ' hidden' : '') + '>' + body + '</div></article>';
+  }
+
+  function emptyState(message, actionLabel, array) {
+    return '<div class="section-empty"><p>' + h(message) + '</p>' +
+      '<button class="btn btn-secondary btn-small" type="button" data-add-entry="' + h(array) + '">' + h(actionLabel) + '</button></div>';
+  }
+
+  // Individual rows rather than one newline-separated textarea: the old field
+  // relied on an invisible "one per line" rule and gave no way to add, remove
+  // or reorder a single achievement.
+  function bulletRows(array, entryIndex, bullets) {
+    const rows = bullets.length ? bullets : [''];
+    return '<div class="bullet-rows">' + rows.map((bullet, bulletIndex) =>
+      '<div class="bullet-row">' +
+      '<span class="bullet-dot" aria-hidden="true">•</span>' +
+      '<textarea rows="2" maxlength="400" data-bullet-array="' + h(array) + '" data-bullet-entry="' + entryIndex +
+      '" data-bullet-index="' + bulletIndex + '" placeholder="Delivered X, which improved Y by Z…" aria-label="Achievement ' + (bulletIndex + 1) + '">' +
+      h(bullet) + '</textarea>' +
+      (rows.length > 1
+        ? '<button type="button" class="bullet-remove" data-remove-bullet="' + bulletIndex + '" data-bullet-entry="' + entryIndex +
+          '" data-bullet-array="' + h(array) + '" title="Remove achievement" aria-label="Remove achievement ' + (bulletIndex + 1) + '">×</button>'
+        : '') +
+      '</div>'
+    ).join('') + '</div>' +
+    (rows.length < 12
+      ? '<button class="add-bullet-button" type="button" data-add-bullet="' + entryIndex + '" data-bullet-array="' + h(array) + '">+ Add achievement</button>'
+      : '<span class="field-hint">Maximum of 12 achievements per role.</span>');
   }
 
   function renderEditor() {
@@ -224,90 +290,153 @@
 
     if (currentSection === 'experience') {
       mount.innerHTML = editorHeading('Experience', 'Show what changed because of your work.') +
-        '<div class="entry-list">' + c.experience.map((entry, index) => renderExperience(entry, index)).join('') + '</div>' +
-        '<button class="add-entry-button" type="button" data-add-entry="experience">+ Add experience</button>';
+        (c.experience.length
+          ? '<div class="entry-list">' + c.experience.map((entry, index) => renderExperience(entry, index)).join('') + '</div>' +
+            '<button class="add-entry-button" type="button" data-add-entry="experience">+ Add experience</button>'
+          : emptyState('No roles added yet. Start with your most recent position.', '+ Add your first role', 'experience'));
       return;
     }
 
     if (currentSection === 'education') {
       mount.innerHTML = editorHeading('Education', 'Include the qualifications most relevant to your next role.') +
-        '<div class="entry-list">' + c.education.map((entry, index) => renderEducation(entry, index)).join('') + '</div>' +
-        '<button class="add-entry-button" type="button" data-add-entry="education">+ Add education</button>';
+        (c.education.length
+          ? '<div class="entry-list">' + c.education.map((entry, index) => renderEducation(entry, index)).join('') + '</div>' +
+            '<button class="add-entry-button" type="button" data-add-entry="education">+ Add education</button>'
+          : emptyState('No qualifications added yet.', '+ Add your first qualification', 'education'));
       return;
     }
 
     if (currentSection === 'skills') {
       mount.innerHTML = editorHeading('Skills', 'Prioritize role-specific abilities recruiters actually search for.') +
-        '<div class="entry-list">' + c.skills.map((entry, index) => renderSkill(entry, index)).join('') + '</div>' +
-        '<button class="add-entry-button" type="button" data-add-entry="skills">+ Add skill</button>' +
+        (c.skills.length
+          ? '<div class="entry-list">' + c.skills.map((entry, index) => renderSkill(entry, index)).join('') + '</div>' +
+            '<button class="add-entry-button" type="button" data-add-entry="skills">+ Add skill</button>'
+          : emptyState('No skills added yet.', '+ Add your first skill', 'skills')) +
         '<div class="bullet-help" style="margin-top:10px"><span>ATS</span><div>Use the same truthful terminology as the target job description. Five to twelve focused skills usually work well.</div></div>';
       return;
     }
 
     if (currentSection === 'projects') {
       mount.innerHTML = editorHeading('Projects', 'Use projects to prove practical skills and initiative.') +
-        '<div class="entry-list">' + c.projects.map((entry, index) => renderProject(entry, index)).join('') + '</div>' +
-        '<button class="add-entry-button" type="button" data-add-entry="projects">+ Add project</button>';
+        (c.projects.length
+          ? '<div class="entry-list">' + c.projects.map((entry, index) => renderProject(entry, index)).join('') + '</div>' +
+            '<button class="add-entry-button" type="button" data-add-entry="projects">+ Add project</button>'
+          : emptyState('No projects added yet. Projects are a strong substitute for limited work history.', '+ Add your first project', 'projects'));
       return;
     }
 
     renderExtras();
   }
 
+  function updateStepNav() {
+    const index = SECTIONS.findIndex((section) => section.key === currentSection);
+    const previous = document.querySelector('[data-step-prev]');
+    const next = document.querySelector('[data-step-next]');
+    const count = document.getElementById('stepCount');
+    if (!previous || !next || !count) return;
+
+    previous.disabled = index <= 0;
+    next.disabled = index >= SECTIONS.length - 1;
+    count.textContent = 'Step ' + (index + 1) + ' of ' + SECTIONS.length;
+  }
+
+  function goToSection(key, { focusFirst = true } = {}) {
+    if (!SECTIONS.some((section) => section.key === key)) return;
+    currentSection = key;
+    document.querySelectorAll('[data-section]').forEach((item) => item.classList.toggle('active', item.dataset.section === key));
+    // Optional call: scrollIntoView is absent in the jsdom-based UI test.
+    document.querySelector('[data-section="' + key + '"]')?.scrollIntoView?.({ block: 'nearest', inline: 'center' });
+    renderEditor();
+    updateStepNav();
+
+    const scroller = document.getElementById('editorContentMode');
+    if (scroller) scroller.scrollTop = 0;
+    if (focusFirst) {
+      document.querySelector('#sectionEditor input:not([disabled]), #sectionEditor textarea, #sectionEditor select')?.focus();
+    }
+  }
+
+  // Re-rendering the panel replaces its markup, which would otherwise throw the
+  // reader back to the top of the form after adding or removing an entry.
+  function rerenderEditor(focusSelector) {
+    const scroller = document.getElementById('editorContentMode');
+    const top = scroller ? scroller.scrollTop : 0;
+    renderEditor();
+    if (scroller) scroller.scrollTop = top;
+    if (focusSelector) {
+      const target = document.querySelector(focusSelector);
+      target?.focus();
+      target?.scrollIntoView?.({ block: 'nearest' });
+    }
+  }
+
   function renderExperience(entry, index) {
-    const bullets = Array.isArray(entry.bullets) ? entry.bullets.join('\n') : '';
-    return '<article class="entry-card">' + entryHeader('experience', index, entry.role || 'New experience') +
-      '<div class="entry-card-body">' +
+    const bullets = Array.isArray(entry.bullets) ? entry.bullets : [];
+    const period = [entry.start_date, entry.current ? 'Present' : entry.end_date].filter(Boolean).join(' – ');
+    const summary = [entry.company, period].filter(Boolean).join(' · ');
+
+    const body =
       arrayField('Role title', 'experience', index, 'role', entry.role, { placeholder: 'e.g. Marketing Manager', maxlength: 160 }) +
       '<div class="field-grid">' +
       arrayField('Company', 'experience', index, 'company', entry.company, { placeholder: 'Company name', maxlength: 160 }) +
       arrayField('Location', 'experience', index, 'location', entry.location, { placeholder: 'City, Country', maxlength: 160 }) +
       '</div><div class="field-grid">' +
-      arrayField('Start date', 'experience', index, 'start_date', entry.start_date, { placeholder: 'e.g. Jan 2023', maxlength: 30 }) +
-      arrayField('End date', 'experience', index, 'end_date', entry.current ? '' : entry.end_date, { placeholder: 'e.g. Jun 2026', maxlength: 30 }) +
-      '</div><label class="checkbox-field"><input type="checkbox" data-array="experience" data-index="' + index + '" data-key="current"' +
+      arrayField('Start date', 'experience', index, 'start_date', entry.start_date, { placeholder: 'Jan 2023', maxlength: 30 }) +
+      (entry.current
+        ? '<div class="field"><label>End date</label><input value="Present" disabled aria-label="End date"></div>'
+        : arrayField('End date', 'experience', index, 'end_date', entry.end_date, { placeholder: 'Jun 2026', maxlength: 30 })) +
+      '</div><span class="field-hint">' + h(DATE_HINT) + '</span>' +
+      '<label class="checkbox-field"><input type="checkbox" data-array="experience" data-index="' + index + '" data-key="current"' +
       (entry.current ? ' checked' : '') + '><span>I currently work here</span></label>' +
-      '<div class="field"><div class="field-label-row"><label>Achievement bullets</label><button type="button" data-improve-entry="' + index + '">✦ Improve a bullet</button></div>' +
-      '<textarea data-array="experience" data-index="' + index + '" data-key="bullets" placeholder="One achievement per line…">' + h(bullets) + '</textarea>' +
-      '<span class="field-hint">Start with an action verb. Add scale, speed, money, quality, or another result where possible.</span></div>' +
-      '</div></article>';
+      '<div class="field"><div class="field-label-row"><label>Achievements</label><button type="button" data-improve-entry="' + index + '">✦ Improve a bullet</button></div>' +
+      bulletRows('experience', index, bullets) +
+      '<span class="field-hint">Start with an action verb. Add scale, speed, money, or quality where you genuinely have the result.</span></div>';
+
+    return entryCard('experience', index, entry, entry.role || 'New experience', summary, body);
   }
 
   function renderEducation(entry, index) {
-    return '<article class="entry-card">' + entryHeader('education', index, entry.degree || 'New qualification') +
-      '<div class="entry-card-body">' +
+    const period = [entry.start_date, entry.end_date].filter(Boolean).join(' – ');
+    const summary = [entry.school, period].filter(Boolean).join(' · ');
+
+    const body =
       arrayField('Degree or qualification', 'education', index, 'degree', entry.degree, { placeholder: 'e.g. Diploma in Software Engineering', maxlength: 180 }) +
       arrayField('Institution', 'education', index, 'school', entry.school, { placeholder: 'Institution name', maxlength: 180 }) +
       '<div class="field-grid">' +
       arrayField('Location', 'education', index, 'location', entry.location, { placeholder: 'Accra, Ghana', maxlength: 160 }) +
-      arrayField('Start date', 'education', index, 'start_date', entry.start_date, { placeholder: 'e.g. 2024', maxlength: 30 }) +
+      arrayField('Start date', 'education', index, 'start_date', entry.start_date, { placeholder: 'Sep 2024', maxlength: 30 }) +
       '</div>' +
-      arrayField('End date', 'education', index, 'end_date', entry.end_date, { placeholder: 'e.g. 2026', maxlength: 30 }) +
-      arrayField('Details', 'education', index, 'details', entry.details, { type: 'textarea', placeholder: 'Honours, relevant coursework, or achievement', maxlength: 1000 }) +
-      '</div></article>';
+      arrayField('End date', 'education', index, 'end_date', entry.end_date, { placeholder: 'Jun 2026', maxlength: 30, hint: DATE_HINT }) +
+      arrayField('Details', 'education', index, 'details', entry.details, { type: 'textarea', placeholder: 'Honours, relevant coursework, or achievement', maxlength: 1000 }) ;
+
+    return entryCard('education', index, entry, entry.degree || 'New qualification', summary, body);
   }
 
   function renderSkill(entry, index) {
-    return '<article class="entry-card">' + entryHeader('skills', index, entry.name || 'New skill') +
-      '<div class="entry-card-body"><div class="field-grid">' +
+    const body = '<div class="field-grid">' +
       arrayField('Skill', 'skills', index, 'name', entry.name, { placeholder: 'e.g. MySQL', maxlength: 100 }) +
       selectField('Level', 'skills', index, 'level', entry.level || 'Proficient', ['Beginner', 'Intermediate', 'Proficient', 'Advanced', 'Expert']) +
-      '</div></div></article>';
+      '</div>';
+
+    return entryCard('skills', index, entry, entry.name || 'New skill', entry.name ? entry.level : '', body);
   }
 
   function renderProject(entry, index) {
-    return '<article class="entry-card">' + entryHeader('projects', index, entry.name || 'New project') +
-      '<div class="entry-card-body">' +
+    const period = [entry.start_date, entry.end_date].filter(Boolean).join(' – ');
+    const summary = [entry.role, period].filter(Boolean).join(' · ');
+
+    const body =
       arrayField('Project name', 'projects', index, 'name', entry.name, { placeholder: 'e.g. Pharmacy Management System', maxlength: 180 }) +
       '<div class="field-grid">' +
       arrayField('Your role', 'projects', index, 'role', entry.role, { placeholder: 'e.g. Full-stack developer', maxlength: 160 }) +
       arrayField('Project link', 'projects', index, 'url', entry.url, { placeholder: 'github.com/you/project', maxlength: 255 }) +
       '</div><div class="field-grid">' +
-      arrayField('Start date', 'projects', index, 'start_date', entry.start_date, { placeholder: 'e.g. Mar 2026', maxlength: 30 }) +
-      arrayField('End date', 'projects', index, 'end_date', entry.end_date, { placeholder: 'e.g. Jul 2026', maxlength: 30 }) +
+      arrayField('Start date', 'projects', index, 'start_date', entry.start_date, { placeholder: 'Mar 2026', maxlength: 30 }) +
+      arrayField('End date', 'projects', index, 'end_date', entry.end_date, { placeholder: 'Jul 2026', maxlength: 30 }) +
       '</div>' +
-      arrayField('What you built and why it matters', 'projects', index, 'description', entry.description, { type: 'textarea', placeholder: 'Technology, problem solved, and result…', maxlength: 1600 }) +
-      '</div></article>';
+      arrayField('What you built and why it matters', 'projects', index, 'description', entry.description, { type: 'textarea', placeholder: 'Technology, problem solved, and result…', maxlength: 1600 }) ;
+
+    return entryCard('projects', index, entry, entry.name || 'New project', summary, body);
   }
 
   function renderExtras() {
@@ -320,42 +449,47 @@
     let body = '';
 
     if (currentExtra === 'certifications') {
-      body = '<div class="entry-list">' + c.certifications.map((entry, index) =>
-        '<article class="entry-card">' + entryHeader('certifications', index, entry.name || 'New certification') +
-        '<div class="entry-card-body">' +
-        arrayField('Certification', 'certifications', index, 'name', entry.name, { placeholder: 'e.g. AWS Cloud Practitioner', maxlength: 180 }) +
-        '<div class="field-grid">' +
-        arrayField('Issuer', 'certifications', index, 'issuer', entry.issuer, { placeholder: 'Issuing organization', maxlength: 180 }) +
-        arrayField('Date', 'certifications', index, 'date', entry.date, { placeholder: 'e.g. 2026', maxlength: 30 }) +
-        '</div>' +
-        arrayField('Credential link', 'certifications', index, 'url', entry.url, { placeholder: 'https://…', maxlength: 255 }) +
-        '</div></article>'
-      ).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="certifications">+ Add certification</button>';
+      body = (c.certifications.length
+        ? '<div class="entry-list">' + c.certifications.map((entry, index) => entryCard(
+            'certifications', index, entry, entry.name || 'New certification',
+            [entry.issuer, entry.date].filter(Boolean).join(' · '),
+            arrayField('Certification', 'certifications', index, 'name', entry.name, { placeholder: 'e.g. AWS Cloud Practitioner', maxlength: 180 }) +
+            '<div class="field-grid">' +
+            arrayField('Issuer', 'certifications', index, 'issuer', entry.issuer, { placeholder: 'Issuing organization', maxlength: 180 }) +
+            arrayField('Date', 'certifications', index, 'date', entry.date, { placeholder: 'Mar 2026', maxlength: 30 }) +
+            '</div>' +
+            arrayField('Credential link', 'certifications', index, 'url', entry.url, { placeholder: 'https://…', maxlength: 255 })
+          )).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="certifications">+ Add certification</button>'
+        : emptyState('No certifications added yet.', '+ Add a certification', 'certifications'));
     }
 
     if (currentExtra === 'languages') {
-      body = '<div class="entry-list">' + c.languages.map((entry, index) =>
-        '<article class="entry-card">' + entryHeader('languages', index, entry.name || 'New language') +
-        '<div class="entry-card-body"><div class="field-grid">' +
-        arrayField('Language', 'languages', index, 'name', entry.name, { placeholder: 'e.g. English', maxlength: 100 }) +
-        selectField('Proficiency', 'languages', index, 'level', entry.level || 'Professional', ['Basic', 'Conversational', 'Professional', 'Fluent', 'Native']) +
-        '</div></div></article>'
-      ).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="languages">+ Add language</button>';
+      body = (c.languages.length
+        ? '<div class="entry-list">' + c.languages.map((entry, index) => entryCard(
+            'languages', index, entry, entry.name || 'New language', entry.name ? entry.level : '',
+            '<div class="field-grid">' +
+            arrayField('Language', 'languages', index, 'name', entry.name, { placeholder: 'e.g. English', maxlength: 100 }) +
+            selectField('Proficiency', 'languages', index, 'level', entry.level || 'Professional', ['Basic', 'Conversational', 'Professional', 'Fluent', 'Native']) +
+            '</div>'
+          )).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="languages">+ Add language</button>'
+        : emptyState('No languages added yet.', '+ Add a language', 'languages'));
     }
 
     if (currentExtra === 'references') {
-      body = '<div class="entry-list">' + c.references.map((entry, index) =>
-        '<article class="entry-card">' + entryHeader('references', index, entry.name || 'New reference') +
-        '<div class="entry-card-body">' +
-        arrayField('Full name', 'references', index, 'name', entry.name, { placeholder: 'Reference name', maxlength: 160 }) +
-        '<div class="field-grid">' +
-        arrayField('Position', 'references', index, 'position', entry.position, { placeholder: 'Job title', maxlength: 160 }) +
-        arrayField('Company', 'references', index, 'company', entry.company, { placeholder: 'Organization', maxlength: 160 }) +
-        '</div><div class="field-grid">' +
-        arrayField('Email', 'references', index, 'email', entry.email, { type: 'email', placeholder: 'email@example.com', maxlength: 190 }) +
-        arrayField('Phone', 'references', index, 'phone', entry.phone, { placeholder: '+233…', maxlength: 80 }) +
-        '</div></div></article>'
-      ).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="references">+ Add reference</button>';
+      body = (c.references.length
+        ? '<div class="entry-list">' + c.references.map((entry, index) => entryCard(
+            'references', index, entry, entry.name || 'New reference',
+            [entry.position, entry.company].filter(Boolean).join(' · '),
+            arrayField('Full name', 'references', index, 'name', entry.name, { placeholder: 'Reference name', maxlength: 160 }) +
+            '<div class="field-grid">' +
+            arrayField('Position', 'references', index, 'position', entry.position, { placeholder: 'Job title', maxlength: 160 }) +
+            arrayField('Company', 'references', index, 'company', entry.company, { placeholder: 'Organization', maxlength: 160 }) +
+            '</div><div class="field-grid">' +
+            arrayField('Email', 'references', index, 'email', entry.email, { type: 'email', placeholder: 'email@example.com', maxlength: 190 }) +
+            arrayField('Phone', 'references', index, 'phone', entry.phone, { placeholder: '+233…', maxlength: 80 }) +
+            '</div>'
+          )).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="references">+ Add reference</button>'
+        : emptyState('No references added yet. "Available on request" is also acceptable.', '+ Add a reference', 'references'));
     }
 
     if (currentExtra === 'interests') {
@@ -383,12 +517,40 @@
     return entries[array];
   }
 
+  // Typing fires a state change per keystroke. Rebuilding the entire preview
+  // that often makes the editor feel sluggish and can fight with scrolling,
+  // so rapid edits are coalesced into one render. Non-typing paths (template
+  // changes, undo/redo, initial load) still render immediately.
+  function schedulePreview() {
+    if (previewTimer) clearTimeout(previewTimer);
+    previewTimer = setTimeout(() => {
+      previewTimer = null;
+      renderPreview();
+    }, 120);
+  }
+
   function renderPreview() {
+    if (previewTimer) {
+      clearTimeout(previewTimer);
+      previewTimer = null;
+    }
+
     const preview = document.getElementById('resumePreview');
+    if (!preview) return;
+
+    // Replacing the markup can clamp the scroll position, which reads as the
+    // preview jumping while the user edits. Restore where they were.
+    const scroller = preview.closest('.preview-scroll');
+    const scrollTop = scroller ? scroller.scrollTop : null;
+
     preview.innerHTML = window.LunettiResume.renderResume(state, { placeholders: true });
     const density = state.content.settings?.density || 'comfortable';
     preview.className = 'density-' + density;
     applyZoom();
+
+    if (scroller && scrollTop !== null) {
+      scroller.scrollTop = scrollTop;
+    }
   }
 
   function updateProgress() {
@@ -430,7 +592,7 @@
   function stateChanged(options = {}) {
     dirty = true;
     setSaveState('saving', 'Unsaved changes');
-    renderPreview();
+    schedulePreview();
     updateProgress();
     scheduleLocalBackup();
     scheduleSave();
@@ -579,9 +741,17 @@
   document.getElementById('sectionNav')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-section]');
     if (!button) return;
-    currentSection = button.dataset.section;
-    document.querySelectorAll('[data-section]').forEach((item) => item.classList.toggle('active', item === button));
-    renderEditor();
+    goToSection(button.dataset.section);
+  });
+
+  document.querySelector('[data-step-prev]')?.addEventListener('click', () => {
+    const index = SECTIONS.findIndex((section) => section.key === currentSection);
+    if (index > 0) goToSection(SECTIONS[index - 1].key);
+  });
+
+  document.querySelector('[data-step-next]')?.addEventListener('click', () => {
+    const index = SECTIONS.findIndex((section) => section.key === currentSection);
+    if (index < SECTIONS.length - 1) goToSection(SECTIONS[index + 1].key);
   });
 
   document.getElementById('sectionEditor')?.addEventListener('input', handleEditorInput);
@@ -602,6 +772,17 @@
       return;
     }
 
+    if (element.dataset.bulletArray) {
+      const entry = state.content[element.dataset.bulletArray]?.[Number(element.dataset.bulletEntry)];
+      if (!entry) return;
+      if (!Array.isArray(entry.bullets)) entry.bullets = [];
+      // Blank rows are kept while editing so the input does not disappear
+      // mid-typing; the renderer and the server both drop empty bullets.
+      entry.bullets[Number(element.dataset.bulletIndex)] = element.value;
+      stateChanged();
+      return;
+    }
+
     if (element.dataset.array) {
       const array = element.dataset.array;
       const index = Number(element.dataset.index);
@@ -613,17 +794,61 @@
         value = String(value).split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
       }
       entry[key] = value;
-      if (key === 'current' && value) entry.end_date = '';
+      if (key === 'current' && value) {
+        entry.end_date = '';
+        // The end-date input becomes a disabled "Present" field, so the card
+        // has to be redrawn rather than just updated in place.
+        rerenderEditor();
+      }
       stateChanged();
     }
   }
 
   document.getElementById('sectionEditor')?.addEventListener('click', (event) => {
+    const toggle = event.target.closest('[data-toggle-entry]');
+    if (toggle) {
+      const key = toggle.dataset.toggleEntry;
+      if (collapsedEntries.has(key)) {
+        collapsedEntries.delete(key);
+      } else {
+        collapsedEntries.add(key);
+      }
+      rerenderEditor('[data-toggle-entry="' + key.replace(/"/g, '\\"') + '"]');
+      return;
+    }
+
+    const addBullet = event.target.closest('[data-add-bullet]');
+    if (addBullet) {
+      const array = addBullet.dataset.bulletArray;
+      const entryIndex = Number(addBullet.dataset.addBullet);
+      const entry = state.content[array]?.[entryIndex];
+      if (!entry) return;
+      if (!Array.isArray(entry.bullets)) entry.bullets = [];
+      if (entry.bullets.length >= 12) return;
+      entry.bullets.push('');
+      rerenderEditor('[data-bullet-array="' + array + '"][data-bullet-entry="' + entryIndex + '"][data-bullet-index="' + (entry.bullets.length - 1) + '"]');
+      stateChanged({ history: true });
+      return;
+    }
+
+    const removeBullet = event.target.closest('[data-remove-bullet]');
+    if (removeBullet) {
+      const array = removeBullet.dataset.bulletArray;
+      const entryIndex = Number(removeBullet.dataset.bulletEntry);
+      const entry = state.content[array]?.[entryIndex];
+      if (!entry || !Array.isArray(entry.bullets)) return;
+      entry.bullets.splice(Number(removeBullet.dataset.removeBullet), 1);
+      rerenderEditor();
+      stateChanged({ history: true });
+      return;
+    }
+
     const add = event.target.closest('[data-add-entry]');
     if (add) {
       const array = add.dataset.addEntry;
       state.content[array].push(defaultEntry(array));
-      renderEditor();
+      // Land the caret in the new entry instead of leaving the user to find it.
+      rerenderEditor('.entry-card:last-of-type .entry-card-body input, .entry-card:last-of-type .entry-card-body textarea');
       stateChanged({ history: true });
       return;
     }
@@ -632,8 +857,10 @@
     if (remove) {
       const array = remove.dataset.removeEntry;
       const index = Number(remove.dataset.entryIndex);
+      const entry = state.content[array][index];
+      collapsedEntries.delete(entryKey(array, entry, index));
       state.content[array].splice(index, 1);
-      renderEditor();
+      rerenderEditor();
       stateChanged({ history: true });
       return;
     }
@@ -646,7 +873,7 @@
       if (to < 0 || to >= state.content[array].length) return;
       const [entry] = state.content[array].splice(from, 1);
       state.content[array].splice(to, 0, entry);
-      renderEditor();
+      rerenderEditor('[data-move-entry="' + array + '"][data-entry-index="' + to + '"][data-direction="' + move.dataset.direction + '"]');
       stateChanged({ history: true });
       return;
     }
@@ -799,7 +1026,7 @@
     const backup = {
       schema_version: 1,
       exported_at: new Date().toISOString(),
-      application: 'LunettiStar',
+      application: 'BrightCV',
       resume: buildSavePayload(),
     };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
@@ -820,7 +1047,7 @@
       if (file.size > 1024 * 1024) throw new Error('Choose a JSON backup smaller than 1 MB.');
       const parsed = JSON.parse(await file.text());
       const imported = parsed.resume || parsed;
-      if (!imported.content || typeof imported.content !== 'object') throw new Error('This file is not a valid LunettiStar CV backup.');
+      if (!imported.content || typeof imported.content !== 'object') throw new Error('This file is not a valid BrightCV CV backup.');
       Object.assign(state, {
         name: String(imported.name || state.name).slice(0, 150),
         template_key: imported.template_key || state.template_key,

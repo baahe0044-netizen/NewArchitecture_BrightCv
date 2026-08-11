@@ -40,6 +40,14 @@ final class AccountController extends Controller
         ]);
     }
 
+    public function appearance(Request $request): Response
+    {
+        return $this->view('account/appearance', [
+            'title' => 'Appearance',
+            'user' => Auth::user(),
+        ]);
+    }
+
     public function updatePassword(Request $request): Response
     {
         $result = $this->accounts->updatePassword(

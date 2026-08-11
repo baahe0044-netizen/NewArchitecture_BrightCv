@@ -89,7 +89,7 @@ $detectedUrl = $detectedScheme . '://' . $detectedHost . $detectedBasePath;
 $configuredUrl = rtrim((string) env('APP_URL', $detectedUrl), '/');
 $configuredPath = (string) parse_url($configuredUrl, PHP_URL_PATH);
 
-define('APP_NAME', (string) env('APP_NAME', 'LunettiStar'));
+define('APP_NAME', (string) env('APP_NAME', 'BrightCV'));
 define('APP_ENV', (string) env('APP_ENV', 'production'));
 define('APP_DEBUG', (bool) env('APP_DEBUG', false));
 define('BASE_URL', $configuredUrl);
@@ -105,7 +105,18 @@ if (!function_exists('base_url')) {
 if (!function_exists('asset')) {
     function asset(string $path): string
     {
-        return base_url('assets/' . ltrim($path, '/'));
+        $relative = ltrim($path, '/');
+        $url = base_url('assets/' . $relative);
+
+        // Cache-bust with the file's modification time. Apache serves these
+        // static files directly, so without this a browser can keep using a
+        // stale stylesheet or script long after a deployment.
+        $file = PUBLIC_PATH . '/assets/' . $relative;
+        if (is_file($file)) {
+            $url .= '?v=' . filemtime($file);
+        }
+
+        return $url;
     }
 }
 

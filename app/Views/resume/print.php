@@ -2,6 +2,7 @@
 <html lang="<?= e($resume['language'] ?? 'en') ?>">
 <head>
     <meta charset="utf-8">
+    <?php View::partial('components/theme_init'); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="app-url" content="<?= e(BASE_URL) ?>">
     <meta name="csrf-token" content="<?= e($csrfToken) ?>">

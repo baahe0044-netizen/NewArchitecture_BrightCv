@@ -1,5 +1,5 @@
 {
-  "name": "lunettistar/cv-builder",
+  "name": "brightcv/cv-builder",
   "description": "Production-ready CV builder with ATS guidance and smart writing tools.",
   "type": "project",
   "require": {

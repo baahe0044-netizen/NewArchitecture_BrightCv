@@ -1,14 +1,14 @@
 .landing-page {
   overflow-x: hidden;
-  background: #fff;
+  background: var(--surface);
 }
 
 .landing-nav {
   position: relative;
   z-index: 20;
   height: 76px;
-  background: rgba(255, 255, 255, .88);
-  border-bottom: 1px solid rgba(233, 231, 245, .8);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border-bottom: 1px solid var(--line);
   backdrop-filter: blur(14px);
 }
 
@@ -24,7 +24,7 @@
   display: flex;
   align-items: center;
   gap: 30px;
-  color: #5d5b6f;
+  color: var(--ink-soft);
   font-size: 14px;
   font-weight: 650;
 }
@@ -141,7 +141,7 @@
 .hero-lead {
   max-width: 600px;
   margin: 0;
-  color: #5e5b70;
+  color: var(--muted);
   font-size: 18px;
   line-height: 1.7;
 }
@@ -164,7 +164,7 @@
   margin-top: 22px;
   flex-wrap: wrap;
   gap: 17px;
-  color: #747184;
+  color: var(--muted);
   font-size: 12px;
 }
 
@@ -475,8 +475,8 @@
 .proof-strip {
   position: relative;
   z-index: 5;
-  background: #fff;
-  border-block: 1px solid #efedf5;
+  background: var(--surface);
+  border-block: 1px solid var(--line);
 }
 
 .proof-grid {
@@ -488,7 +488,7 @@
 .proof-grid div {
   display: grid;
   padding: 4px 25px;
-  border-right: 1px solid #eceaf3;
+  border-right: 1px solid var(--line);
 }
 
 .proof-grid div:last-child { border: 0; }
@@ -498,7 +498,7 @@
 .feature-section,
 .template-section {
   padding: 112px 0;
-  background: #fff;
+  background: var(--surface);
 }
 
 .section-heading {
@@ -534,8 +534,8 @@
   min-height: 300px;
   padding: 28px;
   overflow: hidden;
-  background: #fbfafd;
-  border: 1px solid #ebe9f3;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
   border-radius: 22px;
 }
 
@@ -664,7 +664,7 @@
 
 .workflow-section {
   padding: 112px 0;
-  background: #f7f5fc;
+  background: var(--canvas);
 }
 
 .workflow-grid {
@@ -784,7 +784,7 @@
 .note-two b { color: var(--brand-dark); }
 
 .template-section {
-  background: #fff;
+  background: var(--surface);
 }
 
 .landing-template-grid {
@@ -795,7 +795,7 @@
 
 .landing-template-card {
   padding: 14px 14px 18px;
-  background: #faf9fc;
+  background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: 20px;
   transition: transform .2s ease, box-shadow .2s ease;
@@ -837,7 +837,7 @@
 
 .final-cta {
   padding: 0 0 100px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .final-cta-card {

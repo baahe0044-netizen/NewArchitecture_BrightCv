@@ -1,23 +1,153 @@
+/*
+  Design tokens. Every color, shadow and radius used across the app shell
+  (header, buttons, cards, forms, modals, toasts) should reference one of
+  these rather than a one-off value, so the light/dark/system theme below
+  covers the whole interface from one place.
+
+  CV documents (public/assets/resume/preview.css) intentionally do NOT use
+  these tokens — a CV must render with the same print-safe colors no matter
+  what theme the app is in. Its own --cv-accent/--cv-font scope stays separate.
+*/
 :root {
+  color-scheme: light;
+
   --brand: #6557e8;
   --brand-dark: #4d3fd1;
   --brand-soft: #eeecff;
+  --on-brand: #ffffff;
+
   --ink: #17172a;
+  --ink-soft: #3d3d51;
   --muted: #69697c;
+  --subtle: #92909d;
+
   --line: #e8e8f0;
+  --line-strong: #d7d5e6;
+
   --surface: #ffffff;
+  --surface-2: #f5f4fb;
   --canvas: #f7f7fb;
+  --overlay: rgba(21, 20, 38, .58);
+  --soft-chip-bg: rgba(255, 255, 255, .68);
+
   --success: #16865b;
   --success-soft: #e8f8f1;
   --warning: #b76b00;
+  --warning-soft: #fff1d5;
   --danger: #ca3d4d;
   --danger-soft: #fff0f2;
+  --info: #2369b8;
+  --info-soft: #e7f2ff;
+
   --shadow-sm: 0 1px 2px rgba(25, 25, 50, .05), 0 4px 14px rgba(25, 25, 50, .04);
   --shadow-lg: 0 22px 60px rgba(35, 32, 78, .12);
+
   --radius-sm: 10px;
   --radius: 16px;
   --radius-lg: 24px;
   --content: 1180px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 21px;
+  --text-2xl: 28px;
+}
+
+/* System preference: applies automatically, and updates live if the OS theme
+   changes, as long as the user hasn't picked an explicit Light/Dark override
+   (theme_init.php sets data-theme only for explicit choices). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+
+    --brand: #8c7dff;
+    --brand-dark: #b3a4ff;
+    --brand-soft: rgba(140, 125, 255, .16);
+    --on-brand: #14121f;
+
+    --ink: #f1f0f7;
+    --ink-soft: #cfccdb;
+    --muted: #a29fb3;
+    --subtle: #7d7a8c;
+
+    --line: #322f45;
+    --line-strong: #45415c;
+
+    --surface: #1c1b29;
+    --surface-2: #242233;
+    --canvas: #131220;
+    --overlay: rgba(6, 6, 14, .72);
+    --soft-chip-bg: rgba(255, 255, 255, .08);
+
+    --success: #3ddc9a;
+    --success-soft: rgba(61, 220, 154, .14);
+    --warning: #ffb84d;
+    --warning-soft: rgba(255, 184, 77, .14);
+    --danger: #ff6b7a;
+    --danger-soft: rgba(255, 107, 122, .14);
+    --info: #5eb3ff;
+    --info-soft: rgba(94, 179, 255, .14);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 14px rgba(0, 0, 0, .22);
+    --shadow-lg: 0 22px 60px rgba(0, 0, 0, .45);
+  }
+}
+
+/* Explicit override, set via localStorage by the Appearance setting
+   regardless of the OS preference. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --brand: #8c7dff;
+  --brand-dark: #b3a4ff;
+  --brand-soft: rgba(140, 125, 255, .16);
+  --on-brand: #14121f;
+
+  --ink: #f1f0f7;
+  --ink-soft: #cfccdb;
+  --muted: #a29fb3;
+  --subtle: #7d7a8c;
+
+  --line: #322f45;
+  --line-strong: #45415c;
+
+  --surface: #1c1b29;
+  --surface-2: #242233;
+  --canvas: #131220;
+  --overlay: rgba(6, 6, 14, .72);
+  --soft-chip-bg: rgba(255, 255, 255, .08);
+
+  --success: #3ddc9a;
+  --success-soft: rgba(61, 220, 154, .14);
+  --warning: #ffb84d;
+  --warning-soft: rgba(255, 184, 77, .14);
+  --danger: #ff6b7a;
+  --danger-soft: rgba(255, 107, 122, .14);
+  --info: #5eb3ff;
+  --info-soft: rgba(94, 179, 255, .14);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 14px rgba(0, 0, 0, .22);
+  --shadow-lg: 0 22px 60px rgba(0, 0, 0, .45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 * {
@@ -36,6 +166,7 @@ body {
   font-size: 15px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  transition: background-color .15s ease, color .15s ease;
 }
 
 button,
@@ -89,6 +220,8 @@ svg {
 }
 
 .brand-mark {
+  /* Fixed brand gradient, not theme-reactive: the logo mark should look the
+     same regardless of app theme, same as a printed/exported wordmark would. */
   display: grid;
   width: 34px;
   height: 34px;
@@ -109,8 +242,8 @@ svg {
   z-index: 50;
   top: 0;
   height: 72px;
-  background: rgba(255, 255, 255, .92);
-  border-bottom: 1px solid rgba(230, 230, 240, .9);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-bottom: 1px solid var(--line);
   backdrop-filter: blur(16px);
 }
 
@@ -136,12 +269,34 @@ svg {
   border-radius: 9px;
   font-size: 14px;
   font-weight: 650;
+  transition: color .15s ease, background-color .15s ease;
 }
 
-.app-nav a:hover,
+.app-nav a:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+/* Active page is carried by weight and a filled pill, not colour alone. */
 .app-nav a.active {
   color: var(--brand-dark);
   background: var(--brand-soft);
+  font-weight: 750;
+}
+
+.theme-toggle svg {
+  display: none;
+}
+
+:root:not([data-theme-mode="light"]):not([data-theme-mode="dark"]) .theme-toggle [data-theme-icon="system"],
+:root[data-theme-mode="light"] .theme-toggle [data-theme-icon="light"],
+:root[data-theme-mode="dark"] .theme-toggle [data-theme-icon="dark"] {
+  display: block;
+}
+
+.theme-toggle:hover {
+  color: var(--brand-dark);
+  border-color: var(--brand);
 }
 
 .header-actions {
@@ -156,7 +311,7 @@ svg {
   gap: 9px;
   padding: 6px 10px 6px 6px;
   color: var(--muted);
-  background: #f5f4fb;
+  background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: 999px;
   font-size: 13px;
@@ -164,12 +319,13 @@ svg {
 }
 
 .user-avatar {
+  /* Fixed brand gradient — avatar identity color, not theme-reactive. */
   display: grid;
   width: 30px;
   height: 30px;
   place-items: center;
   color: #fff;
-  background: linear-gradient(135deg, var(--brand), #9b73f3);
+  background: linear-gradient(135deg, #6557e8, #9b73f3);
   border-radius: 50%;
   font-size: 12px;
   font-weight: 800;
@@ -200,7 +356,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 a:focus-visible {
-  outline: 3px solid rgba(101, 87, 232, .22);
+  outline: 3px solid color-mix(in srgb, var(--brand) 35%, transparent);
   outline-offset: 2px;
 }
 
@@ -223,13 +379,13 @@ a:focus-visible {
 
 .btn-secondary {
   color: var(--ink);
-  background: #fff;
+  background: var(--surface);
   border-color: var(--line);
 }
 
 .btn-secondary:hover {
-  border-color: #cbc7ef;
-  background: #faf9ff;
+  border-color: var(--line-strong);
+  background: var(--surface-2);
 }
 
 .btn-danger {
@@ -259,7 +415,7 @@ a:focus-visible {
   padding: 0;
   place-items: center;
   color: var(--muted);
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
   cursor: pointer;
@@ -288,7 +444,7 @@ a:focus-visible {
 }
 
 .field label {
-  color: #3d3d51;
+  color: var(--ink-soft);
   font-size: 13px;
   font-weight: 700;
 }
@@ -299,24 +455,37 @@ a:focus-visible {
 .input {
   width: 100%;
   padding: 11px 12px;
-  background: #fff;
-  border: 1px solid #dcdce7;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 10px;
   outline: none;
   transition: border-color .15s ease, box-shadow .15s ease;
 }
 
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--subtle);
+}
+
 .field input:hover,
 .field textarea:hover,
 .field select:hover {
-  border-color: #c2c0d2;
+  border-color: var(--line-strong);
 }
 
 .field input:focus,
 .field textarea:focus,
 .field select:focus {
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(101, 87, 232, .11);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+
+.field input:disabled,
+.field select:disabled {
+  color: var(--subtle);
+  background: var(--surface-2);
+  cursor: not-allowed;
 }
 
 .field textarea {
@@ -346,15 +515,15 @@ a:focus-visible {
 }
 
 .alert-success {
-  color: #0b6945;
+  color: var(--success);
   background: var(--success-soft);
-  border-color: #bee8d5;
+  border-color: color-mix(in srgb, var(--success) 35%, transparent);
 }
 
 .alert-danger {
-  color: #a52b3a;
+  color: var(--danger);
   background: var(--danger-soft);
-  border-color: #ffd0d7;
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
 }
 
 .modal {
@@ -365,7 +534,7 @@ a:focus-visible {
   padding: 20px;
   align-items: center;
   justify-content: center;
-  background: rgba(21, 20, 38, .58);
+  background: var(--overlay);
   backdrop-filter: blur(5px);
 }
 
@@ -376,7 +545,7 @@ a:focus-visible {
 .modal-dialog {
   width: min(100%, 480px);
   padding: 24px;
-  background: #fff;
+  background: var(--surface);
   border-radius: 20px;
   box-shadow: var(--shadow-lg);
 }
@@ -521,7 +690,7 @@ a:focus-visible {
     padding: 10px;
     flex-direction: column;
     align-items: stretch;
-    background: #fff;
+    background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 14px;
     box-shadow: var(--shadow-lg);

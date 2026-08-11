@@ -1,6 +1,6 @@
-# LunettiStar CV Builder
+# BrightCV CV Builder
 
-LunettiStar is a production-oriented PHP and MySQL CV builder. It combines a
+BrightCV is a production-oriented PHP and MySQL CV builder. It combines a
 focused three-panel writing workspace with live A4 preview, applicant tracking
 system guidance, job-description matching, smart writing support, and secure
 account-based storage.

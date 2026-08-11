@@ -117,7 +117,7 @@ final class AuthController extends Controller
     {
         $userId = Auth::id();
         if ($userId) {
-            (new ActivityRepository())->record($userId, 'signed_out', 'Signed out of LunettiStar');
+            (new ActivityRepository())->record($userId, 'signed_out', 'Signed out of BrightCV');
         }
         Auth::logout();
         return Response::redirect(base_url('/'));

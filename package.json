@@ -1,8 +1,8 @@
 {
-  "name": "lunettistar-quality-tools",
+  "name": "brightcv-quality-tools",
   "private": true,
   "version": "2.0.0",
-  "description": "Static validation and browser-side unit tests for LunettiStar.",
+  "description": "Static validation and browser-side unit tests for BrightCV.",
   "scripts": {
     "lint:php": "node scripts/lint-php.mjs",
     "lint:js": "node scripts/lint-js.mjs",

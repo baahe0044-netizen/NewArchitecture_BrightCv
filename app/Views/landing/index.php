@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <?php View::partial('components/theme_init'); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Build a polished, ATS-ready CV with live guidance, job matching, and professional templates.">
     <meta name="app-url" content="<?= e(BASE_URL) ?>">
@@ -19,6 +20,7 @@
             <a href="#templates">Templates</a>
         </nav>
         <div class="landing-actions">
+            <?php View::partial('components/theme_toggle'); ?>
             <?php if (!empty($user)): ?>
                 <a class="btn btn-primary" href="<?= e(base_url('/dashboard')) ?>">Open dashboard</a>
             <?php else: ?>
@@ -55,10 +57,10 @@
                 </div>
             </div>
 
-            <div class="product-stage" aria-label="Preview of the LunettiStar CV builder">
+            <div class="product-stage" aria-label="Preview of the BrightCV CV builder">
                 <div class="product-window">
                     <div class="window-bar">
-                        <div class="window-brand"><span>★</span> LunettiStar</div>
+                        <div class="window-brand"><span>★</span> BrightCV</div>
                         <span class="window-title">CV Generator</span>
                         <div class="window-actions"><i></i><i></i><i></i></div>
                     </div>
@@ -124,7 +126,7 @@
             <div class="section-heading">
                 <p class="eyebrow">Everything in one place</p>
                 <h2>Less formatting. More career impact.</h2>
-                <p>LunettiStar keeps the technology quiet so you can focus on the story your CV needs to tell.</p>
+                <p>BrightCV keeps the technology quiet so you can focus on the story your CV needs to tell.</p>
             </div>
             <div class="feature-grid">
                 <article class="feature-card feature-card-wide">
@@ -236,7 +238,7 @@
 <footer class="landing-footer">
     <div class="container">
         <?php View::partial('components/logo'); ?>
-        <p>© <?= date('Y') ?> LunettiStar. Built to help your work stand out.</p>
+        <p>© <?= date('Y') ?> BrightCV. Built to help your work stand out.</p>
         <div><a href="<?= e(base_url('/login')) ?>">Sign in</a><a href="#features">Features</a></div>
     </div>
 </footer>

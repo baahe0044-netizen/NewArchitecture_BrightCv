@@ -25,6 +25,7 @@ return static function (Router $router): void {
     $router->post('/account/profile', 'AccountController@updateProfile', ['auth', 'csrf']);
     $router->get('/account/security', 'AccountController@security', ['auth']);
     $router->post('/account/password', 'AccountController@updatePassword', ['auth', 'csrf']);
+    $router->get('/account/appearance', 'AccountController@appearance', ['auth']);
 
     $router->get('/api/dashboard', 'DashboardController@data', ['auth']);
     $router->get('/api/resumes', 'ResumeController@indexApi', ['auth']);

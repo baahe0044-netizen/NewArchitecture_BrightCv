@@ -46,7 +46,7 @@
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: 13px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 15px;
   box-shadow: var(--shadow-sm);
@@ -58,15 +58,15 @@
   height: 43px;
   grid-row: span 2;
   place-items: center;
-  color: #5141cb;
-  background: #eeebff;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
   border-radius: 13px;
 }
 
 .stat-icon svg { width: 21px; height: 21px; }
-.stat-icon.green { color: #0c8057; background: #e4f8ef; }
-.stat-icon.blue { color: #2369b8; background: #e7f2ff; }
-.stat-icon.amber { color: #a76300; background: #fff1d5; }
+.stat-icon.green { color: var(--success); background: var(--success-soft); }
+.stat-icon.blue { color: var(--info); background: var(--info-soft); }
+.stat-icon.amber { color: var(--warning); background: var(--warning-soft); }
 
 .stat-card > div {
   display: grid;
@@ -79,8 +79,8 @@
 }
 
 .stat-card strong small { font-size: 13px; }
-.stat-card > div span { margin-top: 4px; color: #454358; font-size: 12px; font-weight: 650; }
-.stat-card > small { grid-column: 2; color: #92909d; font-size: 10px; }
+.stat-card > div span { margin-top: 4px; color: var(--ink-soft); font-size: 12px; font-weight: 650; }
+.stat-card > small { grid-column: 2; color: var(--subtle); font-size: 10px; }
 
 .dashboard-grid {
   display: grid;
@@ -129,7 +129,7 @@
 .new-resume-card {
   min-width: 0;
   overflow: hidden;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 14px;
   transition: transform .18s ease, box-shadow .18s ease;
@@ -138,17 +138,19 @@
 .resume-card:hover,
 .new-resume-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 13px 28px rgba(30, 28, 65, .1);
+  box-shadow: var(--shadow-lg);
 }
 
 .resume-preview {
+  /* Backdrop behind the white "paper" mockup — a muted app-surface tone,
+     not the CV's own colors, so it can safely follow the app theme. */
   position: relative;
   display: grid;
   height: 220px;
   padding: 17px;
   place-items: center;
   overflow: hidden;
-  background: linear-gradient(145deg, #f2f0f8, #e9e7f1);
+  background: var(--surface-2);
   border-bottom: 1px solid var(--line);
 }
 
@@ -246,7 +248,7 @@
 
 .resume-card-heading p {
   margin: 3px 0 0;
-  color: #92909d;
+  color: var(--subtle);
   font-size: 9px;
 }
 
@@ -264,7 +266,7 @@
   display: none;
   width: 155px;
   padding: 6px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
   box-shadow: var(--shadow-lg);
@@ -275,7 +277,7 @@
 .resume-menu a,
 .resume-menu button {
   padding: 8px 9px;
-  color: #4f4d5e;
+  color: var(--ink-soft);
   background: none;
   border: 0;
   border-radius: 7px;
@@ -285,7 +287,7 @@
 }
 
 .resume-menu a:hover,
-.resume-menu button:hover { background: #f5f3fa; }
+.resume-menu button:hover { background: var(--surface-2); }
 .resume-menu .danger-link { color: var(--danger); }
 
 .resume-meta {
@@ -299,15 +301,15 @@
 
 .status-pill {
   padding: 4px 7px;
-  color: #9a650b;
-  background: #fff5dc;
+  color: var(--warning);
+  background: var(--warning-soft);
   border-radius: 999px;
   font-weight: 700;
 }
 
 .status-pill.ready {
-  color: #0c7851;
-  background: #e7f8ef;
+  color: var(--success);
+  background: var(--success-soft);
 }
 
 .new-resume-card {
@@ -318,7 +320,7 @@
   justify-content: center;
   flex-direction: column;
   color: var(--muted);
-  background: #faf9fd;
+  background: var(--surface-2);
   border-style: dashed;
   cursor: pointer;
   text-align: center;
@@ -402,7 +404,7 @@
 .activity-item b,
 .activity-item small { display: block; }
 .activity-item b { font-size: 10px; font-weight: 650; }
-.activity-item small { margin-top: 2px; color: #9996a2; font-size: 8px; }
+.activity-item small { margin-top: 2px; color: var(--subtle); font-size: 8px; }
 
 .dashboard-tip {
   color: #fff;

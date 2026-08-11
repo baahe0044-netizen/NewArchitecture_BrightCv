@@ -16,6 +16,7 @@ $builderPayload = [
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <?php View::partial('components/theme_init'); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="app-url" content="<?= e(BASE_URL) ?>">
     <meta name="csrf-token" content="<?= e($csrfToken) ?>">
@@ -44,6 +45,7 @@ $builderPayload = [
     </div>
 
     <div class="builder-actions">
+        <?php View::partial('components/theme_toggle'); ?>
         <button class="icon-btn" id="undoButton" type="button" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 7 4 12l5 5M5 12h9a5 5 0 0 1 5 5v1"/></svg>
         </button>
@@ -81,23 +83,42 @@ $builderPayload = [
         </div>
 
         <div class="editor-content-mode" id="editorContentMode">
-            <div class="completion-summary">
-                <div class="completion-copy"><span>CV progress</span><b id="completionPercent"><?= (int) $resume['completion'] ?>%</b></div>
-                <div class="completion-bar"><i id="completionBar" style="width:<?= (int) $resume['completion'] ?>%"></i></div>
-                <small id="completionHint">Complete the highlighted sections to strengthen your CV.</small>
+            <!--
+                Progress and the section switcher stay pinned so the form itself
+                is the first thing in view. They used to scroll with the content,
+                which pushed every field ~400px down the panel.
+            -->
+            <div class="editor-sticky">
+                <div class="completion-summary">
+                    <div class="completion-copy"><span>CV progress</span><b id="completionPercent"><?= (int) $resume['completion'] ?>%</b></div>
+                    <div class="completion-bar"><i id="completionBar" style="width:<?= (int) $resume['completion'] ?>%"></i></div>
+                    <small id="completionHint" class="sr-only">Complete the highlighted sections to strengthen your CV.</small>
+                </div>
+
+                <nav class="section-steps" id="sectionNav" aria-label="CV sections">
+                    <button class="active" type="button" data-section="personal"><i data-section-check="personal">○</i><b>Personal</b></button>
+                    <button type="button" data-section="summary"><i data-section-check="summary">○</i><b>Summary</b></button>
+                    <button type="button" data-section="experience"><i data-section-check="experience">○</i><b>Experience</b></button>
+                    <button type="button" data-section="education"><i data-section-check="education">○</i><b>Education</b></button>
+                    <button type="button" data-section="skills"><i data-section-check="skills">○</i><b>Skills</b></button>
+                    <button type="button" data-section="projects"><i data-section-check="projects">○</i><b>Projects</b></button>
+                    <button type="button" data-section="extras"><i data-section-check="extras">○</i><b>More</b></button>
+                </nav>
             </div>
 
-            <nav class="section-nav" id="sectionNav" aria-label="CV sections">
-                <button class="active" type="button" data-section="personal"><span>01</span><div><b>Personal details</b><small>Name and contact</small></div><i data-section-check="personal">○</i></button>
-                <button type="button" data-section="summary"><span>02</span><div><b>Summary</b><small>Your professional value</small></div><i data-section-check="summary">○</i></button>
-                <button type="button" data-section="experience"><span>03</span><div><b>Experience</b><small>Roles and achievements</small></div><i data-section-check="experience">○</i></button>
-                <button type="button" data-section="education"><span>04</span><div><b>Education</b><small>Qualifications</small></div><i data-section-check="education">○</i></button>
-                <button type="button" data-section="skills"><span>05</span><div><b>Skills</b><small>Relevant strengths</small></div><i data-section-check="skills">○</i></button>
-                <button type="button" data-section="projects"><span>06</span><div><b>Projects</b><small>Practical evidence</small></div><i data-section-check="projects">○</i></button>
-                <button type="button" data-section="extras"><span>07</span><div><b>More sections</b><small>Languages and more</small></div><i data-section-check="extras">○</i></button>
-            </nav>
-
             <section class="section-editor" id="sectionEditor" aria-live="polite"></section>
+
+            <div class="step-footer">
+                <button class="btn btn-secondary" type="button" data-step-prev>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                    Back
+                </button>
+                <span class="step-count" id="stepCount"></span>
+                <button class="btn btn-primary" type="button" data-step-next>
+                    Next
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+            </div>
         </div>
 
         <div class="editor-design-mode" id="editorDesignMode" hidden>

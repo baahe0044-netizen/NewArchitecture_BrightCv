@@ -1,6 +1,6 @@
 .auth-page {
   min-height: 100vh;
-  background: #fff;
+  background: var(--surface);
 }
 
 .auth-shell {
@@ -157,7 +157,7 @@
   padding: 50px 30px 30px;
   place-items: center;
   align-content: center;
-  background: #fbfafc;
+  background: var(--canvas);
 }
 
 .auth-mobile-brand {
@@ -262,7 +262,7 @@
 .auth-legal {
   align-self: end;
   margin: 34px 0 0;
-  color: #92909d;
+  color: var(--subtle);
   text-align: center;
   font-size: 10px;
 }
@@ -310,7 +310,21 @@
 .simple-auth-page {
   background:
     radial-gradient(circle at 50% 10%, rgba(226, 221, 255, .65), transparent 28%),
-    #f8f7fc;
+    var(--canvas);
+}
+
+:root[data-theme="dark"] .simple-auth-page {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(140, 125, 255, .12), transparent 28%),
+    var(--canvas);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .simple-auth-page {
+    background:
+      radial-gradient(circle at 50% 10%, rgba(140, 125, 255, .12), transparent 28%),
+      var(--canvas);
+  }
 }
 
 .simple-auth {
@@ -328,7 +342,7 @@
 
 .simple-auth .auth-card {
   padding: 36px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 20px;
   box-shadow: var(--shadow-lg);

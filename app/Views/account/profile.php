@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <?php View::partial('components/theme_init'); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="app-url" content="<?= e(BASE_URL) ?>">
     <meta name="csrf-token" content="<?= e(Csrf::token()) ?>">
@@ -17,11 +18,7 @@
             <div><p class="eyebrow">Account</p><h1>Profile settings</h1><p>Keep the account information associated with your career workspace up to date.</p></div>
         </section>
         <div class="account-grid">
-            <aside class="card account-nav">
-                <a class="active" href="<?= e(base_url('/account/profile')) ?>"><span>○</span><div><b>Profile</b><small>Name and preferences</small></div></a>
-                <a href="<?= e(base_url('/account/security')) ?>"><span>⌁</span><div><b>Security</b><small>Password and sessions</small></div></a>
-                <a href="<?= e(base_url('/dashboard')) ?>"><span>←</span><div><b>Dashboard</b><small>Return to your CVs</small></div></a>
-            </aside>
+            <?php View::partial('components/account_nav', ['active' => 'profile']); ?>
             <section class="card account-card">
                 <?php View::partial('components/flash', compact('message', 'error')); ?>
                 <div class="account-card-heading"><div class="large-avatar"><?= e(mb_strtoupper(mb_substr((string) $user['name'], 0, 1))) ?></div><div><h2>Personal information</h2><p>Used for your account only—not automatically placed on a CV.</p></div></div>

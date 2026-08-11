@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <?php View::partial('components/theme_init'); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="app-url" content="<?= e(BASE_URL) ?>">
     <meta name="csrf-token" content="<?= e(Csrf::token()) ?>">
@@ -56,9 +57,9 @@
                 <button class="btn btn-primary auth-submit" type="submit">Sign in</button>
             </form>
 
-            <p class="auth-switch">New to LunettiStar? <a href="<?= e(base_url('/register')) ?>">Create a free account</a></p>
+            <p class="auth-switch">New to BrightCV? <a href="<?= e(base_url('/register')) ?>">Create a free account</a></p>
         </div>
-        <p class="auth-legal">By continuing, you agree to use LunettiStar responsibly and keep your account secure.</p>
+        <p class="auth-legal">By continuing, you agree to use BrightCV responsibly and keep your account secure.</p>
     </section>
 </main>
 <script src="<?= e(asset('auth/auth.js')) ?>" defer></script>

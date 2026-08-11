@@ -4,6 +4,20 @@
     var(--canvas);
 }
 
+:root[data-theme="dark"] .templates-page {
+  background:
+    radial-gradient(circle at 85% 4%, rgba(140, 125, 255, .1), transparent 22%),
+    var(--canvas);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .templates-page {
+    background:
+      radial-gradient(circle at 85% 4%, rgba(140, 125, 255, .1), transparent 22%),
+      var(--canvas);
+  }
+}
+
 .templates-hero {
   display: flex;
   padding: 26px 0 36px;
@@ -34,7 +48,7 @@
   display: grid;
   min-width: 155px;
   padding: 17px 19px;
-  background: rgba(255,255,255,.72);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
   border: 1px solid var(--line);
   border-radius: 15px;
   box-shadow: var(--shadow-sm);
@@ -50,7 +64,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 14px;
   box-shadow: var(--shadow-sm);
@@ -86,7 +100,7 @@
   padding: 0 10px;
   align-items: center;
   gap: 7px;
-  background: #f8f7fb;
+  background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: 9px;
 }
@@ -103,7 +117,7 @@
 .template-card {
   min-width: 0;
   overflow: hidden;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 19px;
   box-shadow: var(--shadow-sm);
@@ -112,17 +126,18 @@
 
 .template-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 45px rgba(36, 31, 74, .13);
+  box-shadow: var(--shadow-lg);
 }
 
 .template-preview {
+  /* Backdrop behind the white "paper" mockup, not the CV's own colors. */
   position: relative;
   display: grid;
   height: 390px;
   padding: 31px;
   place-items: center;
   overflow: hidden;
-  background: linear-gradient(145deg, #f1eff6, #e8e6ef);
+  background: var(--surface-2);
   border-bottom: 1px solid var(--line);
 }
 
@@ -265,8 +280,8 @@
 .template-card-body h2 { margin: 0; font-size: 17px; }
 .template-card-body > div:first-child span { color: var(--brand-dark); font-size: 9px; font-weight: 750; }
 .template-card-body > p { min-height: 38px; margin: 8px 0 14px; color: var(--muted); font-size: 11px; }
-.template-features { display: flex; flex-wrap: wrap; gap: 8px; color: #74717f; font-size: 8px; }
-.template-features span { padding: 4px 6px; background: #f6f5f9; border-radius: 6px; }
+.template-features { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 8px; }
+.template-features span { padding: 4px 6px; background: var(--surface-2); border-radius: 6px; }
 .template-empty { grid-column: 1 / -1; }
 
 .preview-dialog {
@@ -281,7 +296,7 @@
   padding: 35px;
   place-items: center;
   overflow: hidden;
-  background: #eeecf2;
+  background: var(--surface-2);
   border-radius: 15px;
 }
 
