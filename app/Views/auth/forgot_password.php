@@ -11,13 +11,18 @@
 <body class="auth-page simple-auth-page">
 <main class="simple-auth">
     <div class="auth-mobile-brand"><?php View::partial('components/logo'); ?></div>
-    <section class="auth-card">
-        <a class="back-link" href="<?= e(base_url('/login')) ?>">← Back to sign in</a>
-        <div class="reset-icon">↗</div>
+    <section class="auth-card" aria-labelledby="reset-request-title">
+        <a class="back-link" href="<?= e(base_url('/login')) ?>">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            Back to sign in
+        </a>
+        <div class="reset-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+        </div>
         <div class="auth-heading">
             <p class="eyebrow">Account recovery</p>
-            <h2>Reset your password</h2>
-            <p>Enter your account email. If it exists, we will send secure reset instructions.</p>
+            <h1 id="reset-request-title">Reset your password</h1>
+            <p>Enter your account email. If it matches an account, we will send secure reset instructions.</p>
         </div>
         <?php View::partial('components/flash', ['message' => $message ?? null]); ?>
         <form class="auth-form" method="post" action="<?= e(base_url('/forgot-password')) ?>">
@@ -30,5 +35,6 @@
         </form>
     </section>
 </main>
+<script src="<?= e(asset('auth/auth.js')) ?>" defer></script>
 </body>
 </html>

@@ -5,6 +5,11 @@ focused three-panel writing workspace with live A4 preview, applicant tracking
 system guidance, job-description matching, smart writing support, and secure
 account-based storage.
 
+For complete beginner-friendly installation, testing, rebuild, troubleshooting,
+and production steps, see [SETUP_AND_REBUILD_GUIDE.md](SETUP_AND_REBUILD_GUIDE.md).
+For ready-to-paste Windows PowerShell commands, see
+[COPY_PASTE_SETUP_COMMANDS.md](COPY_PASTE_SETUP_COMMANDS.md).
+
 ## What is included
 
 - Secure registration, sign-in, logout, password reset, CSRF protection, and

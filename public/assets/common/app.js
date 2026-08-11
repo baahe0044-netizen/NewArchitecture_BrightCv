@@ -3,6 +3,11 @@
 
   const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
   const baseUrl = document.querySelector('meta[name="app-url"]')?.content?.replace(/\/$/, '') || '';
+  const modalFocus = new WeakMap();
+
+  const focusableElements = (container) => Array.from(container.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )).filter((element) => !element.hidden && element.getAttribute('aria-hidden') !== 'true');
 
   window.Lunetti = {
     baseUrl,
@@ -45,6 +50,7 @@
       }
       const toast = document.createElement('div');
       toast.className = 'toast ' + (type === 'error' ? 'error' : '');
+      toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
       toast.textContent = message;
       region.appendChild(toast);
       setTimeout(() => toast.remove(), 3600);
@@ -52,20 +58,29 @@
     openModal(id) {
       const modal = document.getElementById(id);
       if (!modal) return;
+      modalFocus.set(modal, document.activeElement);
       modal.classList.add('open');
       modal.setAttribute('aria-hidden', 'false');
-      modal.querySelector('input, button, textarea, select')?.focus();
+      modal.setAttribute('aria-modal', 'true');
+      if (!modal.hasAttribute('role')) modal.setAttribute('role', 'dialog');
+      document.body.classList.add('modal-open');
+      const preferredFocus = modal.querySelector('[autofocus], input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])');
+      (preferredFocus || focusableElements(modal)[0])?.focus();
     },
     closeModal(id) {
       const modal = document.getElementById(id);
       if (!modal) return;
       modal.classList.remove('open');
       modal.setAttribute('aria-hidden', 'true');
+      if (!document.querySelector('.modal.open')) document.body.classList.remove('modal-open');
+      const priorFocus = modalFocus.get(modal);
+      if (priorFocus instanceof HTMLElement && priorFocus.isConnected) priorFocus.focus();
+      modalFocus.delete(modal);
     },
   };
 
-  // Theme. The stored value is the source of truth for both the header
-  // toggle and the Appearance settings page, so they stay in sync.
+  // Theme. The stored value is the single source of truth for both the header
+  // toggle and the Appearance settings page, so the two stay in sync.
   const THEME_KEY = 'brightcv-theme';
   const THEME_MODES = ['system', 'light', 'dark'];
   const THEME_LABELS = { system: 'System', light: 'Light', dark: 'Dark' };
@@ -129,37 +144,60 @@
 
   const menuButton = document.querySelector('[data-mobile-menu]');
   const nav = document.querySelector('.app-nav');
-
-  const setMenu = (open) => {
-    nav?.classList.toggle('open', open);
-    menuButton?.setAttribute('aria-expanded', String(open));
+  const closeMenu = () => {
+    nav?.classList.remove('open');
+    menuButton?.setAttribute('aria-expanded', 'false');
+    menuButton?.setAttribute('aria-label', 'Open navigation menu');
   };
 
-  menuButton?.addEventListener('click', (event) => {
-    event.stopPropagation();
-    setMenu(!nav?.classList.contains('open'));
+  menuButton?.addEventListener('click', () => {
+    const open = nav?.classList.toggle('open');
+    menuButton.setAttribute('aria-expanded', String(Boolean(open)));
+    menuButton.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
   });
 
   document.addEventListener('click', (event) => {
+    if (nav?.classList.contains('open') && !nav.contains(event.target) && !menuButton?.contains(event.target)) {
+      closeMenu();
+    }
+    if (event.target.closest('.app-nav a')) closeMenu();
+
     const close = event.target.closest('[data-modal-close]');
     if (close) window.Lunetti.closeModal(close.dataset.modalClose);
     if (event.target.classList.contains('modal')) {
       window.Lunetti.closeModal(event.target.id);
     }
-
-    // Tapping anywhere outside the open mobile menu should dismiss it.
-    if (nav?.classList.contains('open') && !event.target.closest('.app-nav')) {
-      setMenu(false);
-    }
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
-      document.querySelectorAll('.modal.open').forEach((modal) => window.Lunetti.closeModal(modal.id));
-      if (nav?.classList.contains('open')) {
-        setMenu(false);
+      const openModal = document.querySelector('.modal.open');
+      if (openModal) {
+        window.Lunetti.closeModal(openModal.id);
+      } else if (nav?.classList.contains('open')) {
+        closeMenu();
         menuButton?.focus();
       }
     }
+
+    if (event.key === 'Tab') {
+      const openModal = document.querySelector('.modal.open');
+      if (!openModal) return;
+      const items = focusableElements(openModal);
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 760) closeMenu();
   });
 })();

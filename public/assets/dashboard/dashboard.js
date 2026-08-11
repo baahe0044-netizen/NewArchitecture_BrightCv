@@ -40,10 +40,14 @@
       : null;
     const shouldOpen = Boolean(targetMenu && !targetMenu.classList.contains('open'));
     document.querySelectorAll('.resume-menu.open').forEach((menu) => {
-      if (!insideMenu || menu !== insideMenu) menu.classList.remove('open');
+      if (!insideMenu || menu !== insideMenu) {
+        menu.classList.remove('open');
+        document.querySelector('[data-resume-menu="' + menu.dataset.menuFor + '"]')?.setAttribute('aria-expanded', 'false');
+      }
     });
     if (menuButton) {
       targetMenu?.classList.toggle('open', shouldOpen);
+      menuButton.setAttribute('aria-expanded', String(shouldOpen));
       return;
     }
 
@@ -65,10 +69,22 @@
     const remove = event.target.closest('[data-delete]');
     if (remove) {
       pendingDeleteId = remove.dataset.delete;
+      remove.closest('.resume-menu')?.classList.remove('open');
+      document.querySelector('[data-resume-menu="' + pendingDeleteId + '"]')?.setAttribute('aria-expanded', 'false');
       document.getElementById('deleteResumeMessage').textContent =
         '“' + (remove.dataset.name || 'This CV') + '” will no longer appear in your workspace.';
       window.Lunetti.openModal('deleteResumeModal');
     }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll('.resume-menu.open').forEach((menu) => {
+      menu.classList.remove('open');
+      const trigger = document.querySelector('[data-resume-menu="' + menu.dataset.menuFor + '"]');
+      trigger?.setAttribute('aria-expanded', 'false');
+      trigger?.focus();
+    });
   });
 
   document.getElementById('confirmDeleteResume')?.addEventListener('click', async (event) => {

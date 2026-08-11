@@ -179,7 +179,8 @@
   function arrayField(label, array, index, key, value, options = {}) {
     const type = options.type || 'text';
     const placeholder = options.placeholder || '';
-    const attrs = ' data-array="' + h(array) + '" data-index="' + Number(index) + '" data-key="' + h(key) + '"' +
+    const id = 'field-' + array + '-' + Number(index) + '-' + key;
+    const attrs = ' id="' + h(id) + '" data-array="' + h(array) + '" data-index="' + Number(index) + '" data-key="' + h(key) + '"' +
       (options.maxlength ? ' maxlength="' + Number(options.maxlength) + '"' : '');
     let control;
     if (type === 'textarea') {
@@ -187,12 +188,13 @@
     } else {
       control = '<input type="' + h(type) + '"' + attrs + ' value="' + h(value || '') + '" placeholder="' + h(placeholder) + '">';
     }
-    return '<div class="field"><label>' + h(label) + '</label>' + control +
+    return '<div class="field"><label for="' + h(id) + '">' + h(label) + '</label>' + control +
       (options.hint ? '<span class="field-hint">' + h(options.hint) + '</span>' : '') + '</div>';
   }
 
   function selectField(label, array, index, key, value, options) {
-    return '<div class="field"><label>' + h(label) + '</label><select data-array="' + h(array) +
+    const id = 'field-' + array + '-' + Number(index) + '-' + key;
+    return '<div class="field"><label for="' + h(id) + '">' + h(label) + '</label><select id="' + h(id) + '" data-array="' + h(array) +
       '" data-index="' + Number(index) + '" data-key="' + h(key) + '">' +
       options.map((option) => '<option value="' + h(option) + '"' + (value === option ? ' selected' : '') + '>' + h(option) + '</option>').join('') +
       '</select></div>';
@@ -211,9 +213,9 @@
       '<span class="entry-titles"><b>' + h(title || ('Entry ' + (index + 1))) + '</b>' +
       (summary ? '<small>' + h(summary) + '</small>' : '') + '</span></button>' +
       '<div class="entry-card-actions">' +
-      '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="-1" title="Move up" aria-label="Move up">↑</button>' +
-      '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="1" title="Move down" aria-label="Move down">↓</button>' +
-      '<button type="button" data-remove-entry="' + h(array) + '" data-entry-index="' + index + '" title="Remove" aria-label="Remove">×</button>' +
+      '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="-1" title="Move up" aria-label="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>' +
+      '<button type="button" data-move-entry="' + h(array) + '" data-entry-index="' + index + '" data-direction="1" title="Move down" aria-label="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>' +
+      '<button type="button" data-remove-entry="' + h(array) + '" data-entry-index="' + index + '" title="Remove" aria-label="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>' +
       '</div></div>';
   }
 
@@ -279,7 +281,7 @@
       mount.innerHTML = editorHeading(
         'Professional summary',
         'Lead with the role you want, your relevant experience, and the value you deliver.',
-        '<button class="btn btn-secondary" type="button" data-open-summary-assistant>✦ Smart writer</button>'
+        '<button class="btn btn-secondary" type="button" data-open-summary-assistant>Open summary writer</button>'
       ) +
         '<div class="editor-fields"><div class="field"><div class="field-label-row"><label for="summary">Summary</label><span class="character-count" id="summaryCount">' +
         count + ' / 3,000</span></div><textarea id="summary" data-field="summary" maxlength="3000" placeholder="Write 3–5 focused lines about your professional value…">' +
@@ -312,7 +314,7 @@
           ? '<div class="entry-list">' + c.skills.map((entry, index) => renderSkill(entry, index)).join('') + '</div>' +
             '<button class="add-entry-button" type="button" data-add-entry="skills">+ Add skill</button>'
           : emptyState('No skills added yet.', '+ Add your first skill', 'skills')) +
-        '<div class="bullet-help" style="margin-top:10px"><span>ATS</span><div>Use the same truthful terminology as the target job description. Five to twelve focused skills usually work well.</div></div>';
+        '<div class="bullet-help spaced"><span>ATS</span><div>Use the same truthful terminology as the target job description. Five to twelve focused skills usually work well.</div></div>';
       return;
     }
 
@@ -343,7 +345,12 @@
   function goToSection(key, { focusFirst = true } = {}) {
     if (!SECTIONS.some((section) => section.key === key)) return;
     currentSection = key;
-    document.querySelectorAll('[data-section]').forEach((item) => item.classList.toggle('active', item.dataset.section === key));
+    document.querySelectorAll('[data-section]').forEach((item) => {
+      const active = item.dataset.section === key;
+      item.classList.toggle('active', active);
+      if (active) item.setAttribute('aria-current', 'step');
+      else item.removeAttribute('aria-current');
+    });
     // Optional call: scrollIntoView is absent in the jsdom-based UI test.
     document.querySelector('[data-section="' + key + '"]')?.scrollIntoView?.({ block: 'nearest', inline: 'center' });
     renderEditor();
@@ -388,7 +395,11 @@
       '</div><span class="field-hint">' + h(DATE_HINT) + '</span>' +
       '<label class="checkbox-field"><input type="checkbox" data-array="experience" data-index="' + index + '" data-key="current"' +
       (entry.current ? ' checked' : '') + '><span>I currently work here</span></label>' +
-      '<div class="field"><div class="field-label-row"><label>Achievements</label><button type="button" data-improve-entry="' + index + '">✦ Improve a bullet</button></div>' +
+      // A group label rather than <label for>, since the achievements are now
+      // several inputs; each row carries its own accessible name.
+      '<div class="field" role="group" aria-labelledby="achievements-label-' + index + '">' +
+      '<div class="field-label-row"><span class="field-label" id="achievements-label-' + index + '">Achievements</span>' +
+      '<button type="button" data-improve-entry="' + index + '">Improve a bullet</button></div>' +
       bulletRows('experience', index, bullets) +
       '<span class="field-hint">Start with an action verb. Add scale, speed, money, or quality where you genuinely have the result.</span></div>';
 
@@ -494,13 +505,13 @@
 
     if (currentExtra === 'interests') {
       body = '<div class="field"><label for="interestInput">Add an interest</label><div class="tag-input-row"><input id="interestInput" maxlength="80" placeholder="e.g. Community volunteering"><button type="button" data-add-interest aria-label="Add interest">+</button></div></div>' +
-        '<div class="simple-tags" style="margin-top:10px">' + c.interests.map((interest, index) =>
+        '<div class="simple-tags spaced">' + c.interests.map((interest, index) =>
           '<span class="simple-tag">' + h(interest) + '<button type="button" data-remove-interest="' + index + '" aria-label="Remove">×</button></span>'
-        ).join('') + '</div><div class="bullet-help" style="margin-top:12px"><span>Tip</span><div>Interests are optional. Include them only when they add personality or support your professional story.</div></div>';
+        ).join('') + '</div><div class="bullet-help spaced"><span>Tip</span><div>Interests are optional. Include them only when they add personality or support your professional story.</div></div>';
     }
 
     document.getElementById('sectionEditor').innerHTML =
-      editorHeading('More sections', 'Add only the information that strengthens this application.') + nav + body;
+      editorHeading('Additional information', 'Add only the information that strengthens this application.') + nav + body;
   }
 
   function defaultEntry(array) {
@@ -584,7 +595,10 @@
     Object.entries(checks).forEach(([key, complete]) => {
       const element = document.querySelector('[data-section-check="' + key + '"]');
       if (!element) return;
-      element.textContent = complete ? '✓' : '○';
+      // The chips are compact, so status shows as a glyph, with the wording
+      // kept for screen readers rather than relying on the icon or colour.
+      element.innerHTML = '<span aria-hidden="true">' + (complete ? '✓' : '○') + '</span>' +
+        '<span class="sr-only">' + (complete ? 'Section complete' : 'Section incomplete') + '</span>';
       element.classList.toggle('complete', complete);
     });
   }
@@ -651,7 +665,7 @@
       if (documentHash() === sentHash) {
         dirty = false;
         localStorage.removeItem(localKey);
-        setSaveState('saved', 'All changes saved');
+        setSaveState('saved', 'Saved');
       } else {
         dirty = true;
         saveAgain = true;
@@ -661,7 +675,7 @@
       dirty = true;
       saveLocalDraft();
       const conflict = error.status === 409;
-      setSaveState('error', conflict ? 'Newer version found' : (navigator.onLine ? 'Could not save' : 'Saved on this device'));
+      setSaveState('error', conflict ? 'Newer version found' : (navigator.onLine ? 'Unable to save' : 'Saved on this device'));
       if (conflict || force) window.Lunetti.toast(error.message, 'error');
       if (conflict) saveAgain = false;
       return false;
@@ -728,9 +742,21 @@
   }
 
   function updateDesignControls() {
-    document.querySelectorAll('[data-template-key]').forEach((button) => button.classList.toggle('active', button.dataset.templateKey === state.template_key));
-    document.querySelectorAll('[data-accent-color]').forEach((button) => button.classList.toggle('active', button.dataset.accentColor.toLowerCase() === state.accent_color.toLowerCase()));
-    document.querySelectorAll('[data-density]').forEach((button) => button.classList.toggle('active', button.dataset.density === (state.content.settings?.density || 'comfortable')));
+    document.querySelectorAll('[data-template-key]').forEach((button) => {
+      const active = button.dataset.templateKey === state.template_key;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll('[data-accent-color]').forEach((button) => {
+      const active = button.dataset.accentColor.toLowerCase() === state.accent_color.toLowerCase();
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll('[data-density]').forEach((button) => {
+      const active = button.dataset.density === (state.content.settings?.density || 'comfortable');
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
     const font = document.getElementById('fontFamily');
     const language = document.getElementById('cvLanguage');
     if (font) font.value = state.font_family;
@@ -934,7 +960,11 @@
 
   document.querySelectorAll('[data-editor-mode]').forEach((button) => {
     button.addEventListener('click', () => {
-      document.querySelectorAll('[data-editor-mode]').forEach((item) => item.classList.toggle('active', item === button));
+      document.querySelectorAll('[data-editor-mode]').forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-selected', String(active));
+      });
       const design = button.dataset.editorMode === 'design';
       document.getElementById('editorContentMode').hidden = design;
       document.getElementById('editorDesignMode').hidden = !design;
@@ -1107,7 +1137,11 @@
   });
 
   function switchAssistantTab(tab) {
-    document.querySelectorAll('[data-assistant-tab]').forEach((button) => button.classList.toggle('active', button.dataset.assistantTab === tab));
+    document.querySelectorAll('[data-assistant-tab]').forEach((button) => {
+      const active = button.dataset.assistantTab === tab;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-selected', String(active));
+    });
     document.querySelectorAll('[data-assistant-view]').forEach((view) => view.classList.toggle('active', view.dataset.assistantView === tab));
   }
 
@@ -1177,7 +1211,7 @@
     const resultBox = document.getElementById('assistantResult');
     const content = document.getElementById('assistantResultContent');
     resultBox.hidden = false;
-    content.innerHTML = '<p><span class="spinner" style="display:inline-block;color:#6557e8;border-color:#ddd;border-top-color:#6557e8"></span> Preparing a focused suggestion…</p>';
+    content.innerHTML = '<p><span class="spinner inline-spinner"></span> Preparing a focused suggestion…</p>';
     document.getElementById('applySuggestion').hidden = true;
 
     try {
@@ -1205,7 +1239,7 @@
     if (Array.isArray(result.keywords) && result.keywords.length) {
       html += '<div class="keyword-cloud missing">' + result.keywords.map((item) => '<span>' + h(item) + '</span>').join('') + '</div>';
     }
-    if (result.tip) html += '<p class="muted" style="margin-top:8px">' + h(result.tip) + '</p>';
+    if (result.tip) html += '<p class="muted result-tip">' + h(result.tip) + '</p>';
     content.innerHTML = html || '<p>Review your content and keep only suggestions that accurately describe your experience.</p>';
     pendingSuggestion = apply ? () => apply(result) : null;
     document.getElementById('applySuggestion').hidden = !pendingSuggestion;
@@ -1295,7 +1329,7 @@
     }).join('');
     document.getElementById('atsRecommendations').innerHTML = report.recommendations.map((item, index) =>
       '<div class="recommendation"><span>' + (index + 1) + '</span><p>' + h(item) + '</p></div>'
-    ).join('') || '<div class="recommendation"><span>✓</span><p>Your CV has a strong foundation. Tailor it for each application.</p></div>';
+    ).join('') || '<div class="recommendation"><span>Done</span><p>Your CV has a strong foundation. Tailor it for each application.</p></div>';
   }
 
   function renderKeywords(report) {
@@ -1359,13 +1393,32 @@
     closePanels();
     document.getElementById(name + 'Panel')?.classList.add('open');
     document.getElementById('mobilePanelOverlay').classList.add('open');
+    document.querySelectorAll('[data-toggle-panel]').forEach((button) => {
+      const active = button.dataset.togglePanel === name;
+      button.setAttribute('aria-expanded', String(active));
+      if (button.closest('.builder-mobile-switch')) button.classList.toggle('active', active);
+    });
+    const previewButton = document.querySelector('.builder-mobile-switch [data-close-panel="preview"]');
+    previewButton?.classList.remove('active');
+    previewButton?.removeAttribute('aria-current');
   }
 
   function closePanels() {
     document.getElementById('editorPanel').classList.remove('open');
     document.getElementById('assistantPanel').classList.remove('open');
     document.getElementById('mobilePanelOverlay').classList.remove('open');
+    document.querySelectorAll('[data-toggle-panel]').forEach((button) => {
+      button.setAttribute('aria-expanded', 'false');
+      if (button.closest('.builder-mobile-switch')) button.classList.remove('active');
+    });
+    const previewButton = document.querySelector('.builder-mobile-switch [data-close-panel="preview"]');
+    previewButton?.classList.add('active');
+    previewButton?.setAttribute('aria-current', 'page');
   }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.querySelector('.editor-panel.open, .assistant-panel.open')) closePanels();
+  });
 
   window.addEventListener('online', () => {
     if (dirty) saveResume();

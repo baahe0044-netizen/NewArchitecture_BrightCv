@@ -6,6 +6,7 @@ $template = $template ?? ($data['template'] ?? []);
 
 <head>
     <meta charset="UTF-8">
+    <?php View::partial('components/theme_init'); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title><?= htmlspecialchars($template['name'] ?? 'Preview') ?></title>

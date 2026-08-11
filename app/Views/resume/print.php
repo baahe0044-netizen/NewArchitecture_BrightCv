@@ -13,9 +13,9 @@
 </head>
 <body class="print-page">
 <header class="print-toolbar">
-    <div>
+    <div class="print-document-name">
         <?php View::partial('components/logo'); ?>
-        <span></span>
+        <span aria-hidden="true"></span>
         <div><b><?= e($resume['name']) ?></b><small>A4 print preview</small></div>
     </div>
     <div class="print-actions">
@@ -26,9 +26,9 @@
         </button>
     </div>
 </header>
-<div class="print-tip" role="note"><b>Best result:</b> choose A4 paper, enable background graphics, set margins to none, and use 100% scale.</div>
+<div class="print-tip" role="note"><b>For a clean PDF:</b> choose A4 paper, set margins to none, use 100% scale, and enable background graphics.</div>
 <main class="print-canvas">
-    <div id="printResume"></div>
+    <div class="print-sheet-wrap" id="printSheetWrap"><div id="printResume"></div></div>
 </main>
 <noscript><p class="print-noscript">JavaScript is required to prepare this print preview.</p></noscript>
 <script type="application/json" id="printData"><?= json_encode([

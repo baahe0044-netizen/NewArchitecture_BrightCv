@@ -165,6 +165,13 @@ window.eval(fs.readFileSync(path.join(root, 'public/assets/resume/builder.js'), 
 assert.match(window.document.getElementById('resumePreview').innerHTML, /Alex Morgan/);
 assert.match(window.document.getElementById('sectionEditor').textContent, /Personal details/);
 
+const editorControls = [...window.document.querySelectorAll('#sectionEditor input:not([type="hidden"]), #sectionEditor textarea, #sectionEditor select')];
+editorControls.forEach((control) => {
+  assert.ok(control.labels?.length, `Builder field ${control.id || control.dataset.field || control.dataset.key} should have an associated label.`);
+});
+const builderIds = [...window.document.querySelectorAll('[id]')].map((element) => element.id);
+assert.equal(new Set(builderIds).size, builderIds.length, 'Builder should not render duplicate element IDs.');
+
 const nameInput = window.document.querySelector('[data-field="personal.full_name"]');
 nameInput.value = 'Ama Mensah';
 nameInput.dispatchEvent(new window.Event('input', { bubbles: true }));

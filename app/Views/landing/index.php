@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <?php View::partial('components/theme_init'); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Build a polished, ATS-ready CV with live guidance, job matching, and professional templates.">
+    <meta name="description" content="Create, improve, and download a professional CV with clear guidance and practical templates.">
     <meta name="app-url" content="<?= e(BASE_URL) ?>">
-    <title><?= e($title ?? 'Build a better CV') ?> · <?= e(APP_NAME) ?></title>
+    <title><?= e($title ?? 'Create a professional CV') ?> · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('landing/landing.css')) ?>">
 </head>
@@ -14,8 +14,8 @@
 <header class="landing-nav">
     <div class="container landing-nav-inner">
         <?php View::partial('components/logo'); ?>
-        <nav class="landing-links" aria-label="Landing navigation">
-            <a href="#features">Features</a>
+        <nav class="landing-links" aria-label="Landing page navigation">
+            <a href="#product">Product</a>
             <a href="#workflow">How it works</a>
             <a href="#templates">Templates</a>
         </nav>
@@ -25,198 +25,159 @@
                 <a class="btn btn-primary" href="<?= e(base_url('/dashboard')) ?>">Open dashboard</a>
             <?php else: ?>
                 <a class="login-link" href="<?= e(base_url('/login')) ?>">Sign in</a>
-                <a class="btn btn-primary" href="<?= e(base_url('/register')) ?>">Build my CV</a>
+                <a class="btn btn-primary" href="<?= e(base_url('/register')) ?>">Create your CV</a>
             <?php endif; ?>
         </div>
     </div>
 </header>
 
 <main>
-    <section class="hero">
-        <div class="hero-glow hero-glow-one"></div>
-        <div class="hero-glow hero-glow-two"></div>
+    <section class="hero" id="product">
         <div class="container hero-grid">
             <div class="hero-copy">
-                <div class="hero-badge">
-                    <span>✦</span>
-                    Your next opportunity starts with a stronger CV
-                </div>
-                <h1>Build the CV recruiters <em>want</em> to read.</h1>
-                <p class="hero-lead">Create a polished, ATS-ready CV with live guidance, job-specific keywords, and smart writing support—all in one focused workspace.</p>
+                <p class="eyebrow">A practical CV builder</p>
+                <h1>Create a professional CV, without fighting the formatting.</h1>
+                <p class="hero-lead">Write your experience clearly, see changes as you make them, and download a polished CV when you are ready to apply.</p>
                 <div class="hero-actions">
                     <a class="btn btn-primary hero-primary" href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/register')) ?>">
-                        Start building free
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                        <?= Auth::check() ? 'Continue building' : 'Create your CV' ?>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
                     </a>
-                    <a class="btn btn-secondary" href="#workflow">See how it works</a>
+                    <a class="btn btn-secondary" href="#templates">View templates</a>
                 </div>
-                <div class="hero-trust">
-                    <span><b>✓</b> No credit card</span>
-                    <span><b>✓</b> Private by design</span>
-                    <span><b>✓</b> Export to PDF</span>
-                </div>
+                <ul class="hero-points" aria-label="Product benefits">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+                        Saves as you work
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+                        ATS and job-match checks
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+                        Print-ready PDF output
+                    </li>
+                </ul>
             </div>
 
-            <div class="product-stage" aria-label="Preview of the BrightCV CV builder">
-                <div class="product-window">
-                    <div class="window-bar">
-                        <div class="window-brand"><span>★</span> BrightCV</div>
-                        <span class="window-title">CV Generator</span>
-                        <div class="window-actions"><i></i><i></i><i></i></div>
-                    </div>
-                    <div class="product-grid">
-                        <aside class="demo-tools">
-                            <span class="demo-tool active">▤ <b>Resume</b></span>
-                            <span class="demo-tool">✦ <b>Smart Writer</b></span>
-                            <span class="demo-tool">◉ <b>Style</b></span>
-                            <div class="demo-colors"><i></i><i></i><i></i><i></i></div>
-                            <span class="demo-tool checked">✓ <b>Content check</b></span>
-                            <span class="demo-tool checked">✓ <b>Keywords</b></span>
-                            <span class="demo-tool checked">✓ <b>ATS scan</b></span>
-                        </aside>
-                        <section class="demo-paper">
+            <div class="product-window" aria-label="Preview of the <?= e(APP_NAME) ?> CV editing workspace">
+                <div class="window-bar">
+                    <span class="window-title">Marketing CV</span>
+                    <span class="window-status"><i aria-hidden="true"></i> Saved</span>
+                </div>
+                <div class="product-grid">
+                    <aside class="sample-sections" aria-label="CV sections">
+                        <p>CV sections</p>
+                        <span class="active">Personal details</span>
+                        <span>Summary</span>
+                        <span>Experience</span>
+                        <span>Education</span>
+                        <span>Skills</span>
+                    </aside>
+                    <section class="sample-paper" aria-label="Example CV preview">
+                        <header>
                             <h2>JENNIFER DOE</h2>
-                            <div class="demo-contact">jennifer@example.com &nbsp; · &nbsp; +233 24 000 0000 &nbsp; · &nbsp; Accra</div>
-                            <div class="demo-rule"></div>
-                            <h3>PROFESSIONAL SUMMARY</h3>
-                            <p>Results-driven marketing professional with experience building campaigns that grow reach, engagement, and revenue.</p>
-                            <h3>EXPERIENCE</h3>
-                            <div class="demo-row"><b>Marketing Manager</b><span>2019 — Present</span></div>
-                            <small>ABC Company</small>
-                            <ul>
-                                <li>Led integrated campaigns across three growth channels</li>
-                                <li>Improved qualified leads by 32% in one year</li>
-                                <li>Managed a collaborative team of five</li>
-                            </ul>
-                            <h3>EDUCATION</h3>
-                            <div class="demo-row"><b>Bachelor of Science in Marketing</b><span>2018</span></div>
-                            <small>University of Ghana</small>
-                            <h3>SKILLS</h3>
-                            <div class="demo-skills"><span>Digital Marketing</span><span>SEO</span><span>Analytics</span><span>Content Strategy</span></div>
-                        </section>
-                        <aside class="demo-assistant">
-                            <h3>Optimize with ease</h3>
-                            <div class="assistant-card purple"><i>✦</i><div><b>Smart suggestions</b><small>Sharper summary and bullet ideas</small></div></div>
-                            <div class="assistant-card green"><i>✓</i><div><b>ATS feedback</b><small>Real-time readability checks</small></div></div>
-                            <div class="score-demo">
-                                <div class="score-ring">90</div>
-                                <div><b>Great foundation</b><small>2 improvements left</small></div>
-                            </div>
-                            <div class="assistant-card blue"><i>⌁</i><div><b>Job match</b><small>Keywords for your target role</small></div></div>
-                        </aside>
-                    </div>
+                            <p>Marketing Manager</p>
+                            <small>Accra, Ghana · jennifer@example.com · +233 24 000 0000</small>
+                        </header>
+                        <div class="sample-rule"></div>
+                        <h3>Professional summary</h3>
+                        <p>Marketing professional with experience planning campaigns, improving audience engagement, and coordinating collaborative teams.</p>
+                        <h3>Experience</h3>
+                        <div class="sample-role"><strong>Marketing Manager</strong><span>2019—Present</span></div>
+                        <small>ABC Company</small>
+                        <ul>
+                            <li>Led integrated campaigns across three growth channels.</li>
+                            <li>Improved qualified leads through clearer audience targeting.</li>
+                        </ul>
+                        <h3>Education</h3>
+                        <div class="sample-role"><strong>BSc Marketing</strong><span>2018</span></div>
+                        <small>University of Ghana</small>
+                    </section>
+                    <aside class="sample-guidance" aria-label="CV review summary">
+                        <p>CV review</p>
+                        <div class="review-item good">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+                            <div><strong>Strong structure</strong><span>Key sections are complete.</span></div>
+                        </div>
+                        <div class="review-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 19.5V16l10-10 4 4-10 10H4Z"/><path d="m12.5 7.5 4 4"/></svg>
+                            <div><strong>Improve one bullet</strong><span>Add a measurable result.</span></div>
+                        </div>
+                        <div class="review-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+                            <div><strong>Job match</strong><span>Review missing keywords.</span></div>
+                        </div>
+                    </aside>
                 </div>
-                <div class="floating-card floating-score"><span>ATS score</span><strong>90<small>/100</small></strong></div>
-                <div class="floating-card floating-save"><i>✓</i><div><strong>Changes saved</strong><span>Your work is protected</span></div></div>
             </div>
         </div>
     </section>
 
-    <section class="proof-strip">
-        <div class="container proof-grid">
-            <div><strong>6</strong><span>professional layouts</span></div>
-            <div><strong>3</strong><span>CV languages</span></div>
-            <div><strong>Live</strong><span>ATS and job-match feedback</span></div>
-            <div><strong>Auto</strong><span>secure saving and version history</span></div>
+    <section class="capability-strip" id="features" aria-label="Available CV tools">
+        <div class="container capability-grid">
+            <div><strong>Live editing</strong><span>See the finished page while you write.</span></div>
+            <div><strong>Practical feedback</strong><span>Check structure, wording, and job relevance.</span></div>
+            <div><strong>Flexible templates</strong><span>Change the layout without losing your content.</span></div>
         </div>
     </section>
 
-    <section class="feature-section" id="features">
+    <section class="process-section" id="workflow">
         <div class="container">
             <div class="section-heading">
-                <p class="eyebrow">Everything in one place</p>
-                <h2>Less formatting. More career impact.</h2>
-                <p>BrightCV keeps the technology quiet so you can focus on the story your CV needs to tell.</p>
+                <p class="eyebrow">How it works</p>
+                <h2>From first draft to finished CV in three clear steps.</h2>
+                <p>The workspace keeps the process simple, even if this is the first CV you have created.</p>
             </div>
-            <div class="feature-grid">
-                <article class="feature-card feature-card-wide">
-                    <span class="feature-icon purple">✦</span>
-                    <h3>Smart writing that sounds like you</h3>
-                    <p>Turn responsibilities into stronger achievement bullets, shape a focused summary, and receive practical suggestions without sending private CV data to a third party.</p>
-                    <div class="suggestion-demo">
-                        <span>Before</span>
-                        <p>Responsible for helping customers and managing sales.</p>
-                        <span>Improved</span>
-                        <p><b>Improved</b> customer support and coordinated daily sales activities, strengthening service consistency.</p>
-                    </div>
-                </article>
-                <article class="feature-card">
-                    <span class="feature-icon green">✓</span>
-                    <h3>ATS health check</h3>
-                    <p>See missing sections, weak bullets, readability issues, and practical next steps before you apply.</p>
-                    <div class="mini-meter"><i style="width:86%"></i></div>
-                    <small>Strong · 86/100</small>
-                </article>
-                <article class="feature-card">
-                    <span class="feature-icon blue">⌁</span>
-                    <h3>Job-specific keywords</h3>
-                    <p>Paste a job description to identify matched and missing terms, then add only the ones that honestly fit.</p>
-                    <div class="keyword-pills"><span>project delivery</span><span>SQL</span><span>stakeholders</span></div>
-                </article>
-                <article class="feature-card">
-                    <span class="feature-icon amber">◉</span>
-                    <h3>Your style, kept professional</h3>
-                    <p>Switch templates, colours, typefaces, spacing, and translated section headings without breaking the layout.</p>
-                    <div class="palette-row"><i></i><i></i><i></i><i></i><i></i></div>
-                </article>
-                <article class="feature-card feature-card-wide">
-                    <span class="feature-icon rose">↗</span>
-                    <h3>Build once, tailor often</h3>
-                    <p>Duplicate a strong CV for a new role, maintain version history, import or export JSON backups, and produce a clean A4 PDF whenever you are ready.</p>
-                    <div class="workflow-chips"><span>Autosave</span><b>→</b><span>Tailor</span><b>→</b><span>ATS scan</span><b>→</b><span>PDF</span></div>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <section class="workflow-section" id="workflow">
-        <div class="container workflow-grid">
-            <div class="workflow-copy">
-                <p class="eyebrow">A calmer workflow</p>
-                <h2>From blank page to application-ready.</h2>
-                <p>Each step gives you a clear action, a live preview, and feedback that explains what to improve next.</p>
-                <ol class="steps">
-                    <li><b>Choose a direction</b><span>Pick a role and one of six professional templates.</span></li>
-                    <li><b>Add your evidence</b><span>Build experience, education, skills, projects, and certifications.</span></li>
-                    <li><b>Tailor and check</b><span>Match a job description and improve ATS readiness.</span></li>
-                    <li><b>Export with confidence</b><span>Print a crisp A4 PDF or keep a portable JSON backup.</span></li>
-                </ol>
-            </div>
-            <div class="workflow-visual">
-                <div class="mini-cv">
-                    <div class="mini-cv-head"><span></span><div><b>YOUR NAME</b><i>Target role</i></div></div>
-                    <hr>
-                    <b class="mini-title">PROFILE</b><p></p><p class="short"></p>
-                    <b class="mini-title">EXPERIENCE</b><div class="mini-line"></div><p></p><p></p>
-                    <b class="mini-title">SKILLS</b><div class="mini-tags"><i></i><i></i><i></i><i></i></div>
-                </div>
-                <div class="workflow-note note-one"><b>✓ 100% complete</b><span>Every key section covered</span></div>
-                <div class="workflow-note note-two"><b>✦ 5 strong bullets</b><span>Clear action and impact</span></div>
-            </div>
+            <ol class="process-grid">
+                <li>
+                    <span class="step-number">1</span>
+                    <div><h3>Choose a template</h3><p>Start with a professional layout suited to your experience and target role.</p></div>
+                </li>
+                <li>
+                    <span class="step-number">2</span>
+                    <div><h3>Add and improve your content</h3><p>Complete each section, review practical suggestions, and tailor it to the job.</p></div>
+                </li>
+                <li>
+                    <span class="step-number">3</span>
+                    <div><h3>Preview and download</h3><p>Check the final A4 layout, then print or save it as a PDF for your application.</p></div>
+                </li>
+            </ol>
         </div>
     </section>
 
     <section class="template-section" id="templates">
         <div class="container">
-            <div class="section-heading">
-                <p class="eyebrow">Designed for real applications</p>
-                <h2>A professional first impression, every time.</h2>
-                <p>All layouts remain readable, printable, responsive, and easy for applicant tracking systems to parse.</p>
+            <div class="template-heading">
+                <div>
+                    <p class="eyebrow">Professional templates</p>
+                    <h2>Start with a layout that lets your experience lead.</h2>
+                    <p>Each template uses the same CV content, so you can change your mind without starting again.</p>
+                </div>
+                <a class="btn btn-secondary" href="<?= e(Auth::check() ? base_url('/templates') : base_url('/register')) ?>"><?= Auth::check() ? 'Browse all templates' : 'Create an account' ?></a>
             </div>
+
             <div class="landing-template-grid">
                 <?php foreach ([
-                    ['modern', 'Modern Focus', '#6757e8'],
-                    ['executive', 'Executive Edge', '#17334f'],
-                    ['minimal', 'Quiet Minimal', '#222222'],
-                ] as [$key, $name, $color]): ?>
+                    ['modern', 'Modern Focus', 'Clear single-column hierarchy', '#4052b5'],
+                    ['executive', 'Executive Edge', 'Structured layout for experienced professionals', '#16324f'],
+                    ['minimal', 'Quiet Minimal', 'Generous spacing and understated typography', '#202124'],
+                ] as [$key, $name, $description, $color]): ?>
                     <article class="landing-template-card">
-                        <div class="template-sheet template-<?= e($key) ?>" style="--preview-accent:<?= e($color) ?>">
-                            <div class="preview-name">ALEX MORGAN</div><span>PRODUCT DESIGNER</span><hr>
-                            <b>PROFILE</b><i></i><i></i>
-                            <b>EXPERIENCE</b><i></i><i></i><i></i>
-                            <b>EDUCATION</b><i></i>
+                        <div class="template-preview-wrap">
+                            <div class="template-sheet template-<?= e($key) ?>" style="--preview-accent:<?= e($color) ?>" aria-label="<?= e($name) ?> template preview">
+                                <header><strong>ALEX MORGAN</strong><span>PRODUCT &amp; OPERATIONS LEAD</span></header>
+                                <div class="template-contact-line"></div>
+                                <h3>PROFILE</h3><i></i><i class="short"></i>
+                                <h3>EXPERIENCE</h3><b></b><i></i><i></i><b></b><i class="short"></i>
+                                <h3>EDUCATION</h3><b></b><i></i>
+                            </div>
                         </div>
-                        <div><h3><?= e($name) ?></h3><span>ATS-friendly · A4 ready</span></div>
+                        <div class="template-card-copy">
+                            <h3><?= e($name) ?></h3>
+                            <p><?= e($description) ?></p>
+                        </div>
                     </article>
                 <?php endforeach; ?>
             </div>
@@ -224,22 +185,22 @@
     </section>
 
     <section class="final-cta">
-        <div class="container final-cta-card">
+        <div class="container final-cta-inner">
             <div>
-                <p class="eyebrow">Make the next application count</p>
-                <h2>Your experience deserves a better CV.</h2>
-                <p>Start with a professional structure and improve it one clear suggestion at a time.</p>
+                <p class="eyebrow">Ready when you are</p>
+                <h2>Build a CV you can send with confidence.</h2>
+                <p>Your content stays editable, and the layout stays professional.</p>
             </div>
-            <a class="btn final-cta-button" href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/register')) ?>">Build my CV →</a>
+            <a class="btn final-cta-button" href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/register')) ?>"><?= Auth::check() ? 'Open your dashboard' : 'Create your CV' ?></a>
         </div>
     </section>
 </main>
 
 <footer class="landing-footer">
-    <div class="container">
+    <div class="container landing-footer-inner">
         <?php View::partial('components/logo'); ?>
-        <p>© <?= date('Y') ?> BrightCV. Built to help your work stand out.</p>
-        <div><a href="<?= e(base_url('/login')) ?>">Sign in</a><a href="#features">Features</a></div>
+        <p>© <?= date('Y') ?> <?= e(APP_NAME) ?>. Professional CVs, made simpler.</p>
+        <a href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/login')) ?>"><?= Auth::check() ? 'Dashboard' : 'Sign in' ?></a>
     </div>
 </footer>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
