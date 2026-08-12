@@ -7,6 +7,11 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
+// The application bootstrap configures and starts the session. Buffer the
+// diagnostic lines written before it is loaded so CLI output does not count as
+// sent headers and trigger misleading session warnings.
+ob_start();
+
 $root = dirname(__DIR__);
 $failures = [];
 
@@ -50,7 +55,7 @@ $result(is_file(PUBLIC_PATH . DIRECTORY_SEPARATOR . 'index.php'), 'Public index.
 try {
     $pdo = Database::getConnection();
     $result(true, 'MySQL connection');
-    foreach (['users', 'resume_templates', 'resumes', 'resume_exports', 'password_resets'] as $table) {
+    foreach (['users', 'resume_templates', 'resumes', 'resume_generations', 'password_reset_tokens'] as $table) {
         $statement = $pdo->prepare(
             'SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?'
         );
