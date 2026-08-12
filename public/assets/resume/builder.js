@@ -606,7 +606,11 @@
   function stateChanged(options = {}) {
     dirty = true;
     setSaveState('saving', 'Unsaved changes');
-    schedulePreview();
+    if (options.immediatePreview) {
+      renderPreview();
+    } else {
+      schedulePreview();
+    }
     updateProgress();
     scheduleLocalBackup();
     scheduleSave();
@@ -977,7 +981,7 @@
       const template = config.templates.find((item) => item.template_key === state.template_key);
       if (template) state.accent_color = template.color;
       updateDesignControls();
-      stateChanged({ history: true });
+      stateChanged({ history: true, immediatePreview: true });
     });
   });
 
@@ -985,7 +989,7 @@
     button.addEventListener('click', () => {
       state.accent_color = button.dataset.accentColor;
       updateDesignControls();
-      stateChanged({ history: true });
+      stateChanged({ history: true, immediatePreview: true });
     });
   });
 
@@ -999,7 +1003,7 @@
   document.querySelectorAll('[data-resume-setting]').forEach((element) => {
     element.addEventListener('change', () => {
       state[element.dataset.resumeSetting] = element.value;
-      stateChanged({ history: true });
+      stateChanged({ history: true, immediatePreview: true });
     });
   });
 
@@ -1007,7 +1011,7 @@
     button.addEventListener('click', () => {
       state.content.settings.density = button.dataset.density;
       updateDesignControls();
-      stateChanged({ history: true });
+      stateChanged({ history: true, immediatePreview: true });
     });
   });
 

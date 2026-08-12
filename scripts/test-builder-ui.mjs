@@ -175,6 +175,9 @@ assert.equal(new Set(builderIds).size, builderIds.length, 'Builder should not re
 const nameInput = window.document.querySelector('[data-field="personal.full_name"]');
 nameInput.value = 'Ama Mensah';
 nameInput.dispatchEvent(new window.Event('input', { bubbles: true }));
+// Typing intentionally coalesces preview renders for 120 ms so the A4
+// document does not jump or rerender on every keystroke.
+await new Promise((resolve) => setTimeout(resolve, 150));
 assert.match(window.document.getElementById('resumePreview').innerHTML, /Ama Mensah/);
 
 window.document.querySelector('[data-template-key="executive"]').click();

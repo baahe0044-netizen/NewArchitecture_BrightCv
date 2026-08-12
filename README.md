@@ -62,7 +62,13 @@ loading but the application also has a safe fallback autoloader.
        C:\wamp64\bin\php\php8.2.0\php.exe database\migrate.php
 
    You can instead import database/schema.sql through phpMyAdmin.
-6. Open:
+6. Verify the complete WAMP environment:
+
+       C:\wamp64\bin\php\php8.2.0\php.exe scripts\doctor.php
+
+   Correct every `[FAIL]` line before opening the application. This checks
+   PHP and its extensions, `.env`, `APP_KEY`, storage, MySQL, and the schema.
+7. Open:
 
        http://localhost/NewArchitecture_BrightCv/public
 
