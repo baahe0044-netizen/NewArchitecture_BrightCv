@@ -1,0 +1,24 @@
+# Friendly error pages instead of the bare Apache defaults.
+ErrorDocument 400 /400.php
+ErrorDocument 403 /403.php
+ErrorDocument 404 /404.php
+ErrorDocument 500 /500.php
+
+# PHP must never print errors into the page; config/errors.php logs them instead.
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>
+
+Options -Indexes
+
+# Configuration, logs, SQL dumps and docs are never served directly.
+<FilesMatch "\.(sql|log|md|ini|bak|sample\.php|local\.php)$">
+    Require all denied
+</FilesMatch>
+
+RedirectMatch 403 ^/(config|storage)/

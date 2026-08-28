@@ -1,0 +1,20 @@
+# Local database credentials - never commit these.
+config/config.local.php
+config/debug.flag
+
+# Error logs.
+storage/logs/*.log
+
+# Files uploaded through the admin dashboard.
+uploads/projects/*
+uploads/testimonials/*
+assets/uploads/*
+!uploads/projects/.gitkeep
+!uploads/projects/.htaccess
+!uploads/testimonials/.gitkeep
+!uploads/testimonials/.htaccess
+
+# OS / editor noise.
+.DS_Store
+Thumbs.db
+*.swp
