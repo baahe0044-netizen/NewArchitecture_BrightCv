@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 final class ResumeService
 {
-    private const TEMPLATES = ['modern', 'executive', 'minimal', 'creative', 'graduate', 'tech'];
     private const LANGUAGES = ['en', 'fr', 'es'];
     private const FONTS = ['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
 
@@ -25,21 +24,15 @@ final class ResumeService
     public function create(int $userId, string $name = 'Untitled CV', string $templateKey = 'modern'): array
     {
         $name = $this->clean($name, 150) ?: 'Untitled CV';
-        $templateKey = $this->allowed($templateKey, self::TEMPLATES, 'modern');
-        $accentColors = [
-            'modern' => '#5b4df7',
-            'executive' => '#16324f',
-            'minimal' => '#202124',
-            'creative' => '#e25241',
-            'graduate' => '#087f5b',
-            'tech' => '#075985',
-        ];
+        $templateKey = $this->allowed($templateKey, TemplateCatalog::keys(), TemplateCatalog::DEFAULT_KEY);
         $resume = $this->resumes->create(
             $userId,
             $name,
-            self::defaultContent(),
+            // A new CV starts in the layout the chosen template was designed
+            // for, so the first preview matches the template card.
+            self::defaultContent(TemplateCatalog::layout($templateKey), TemplateCatalog::order($templateKey)),
             $templateKey,
-            $accentColors[$templateKey]
+            TemplateCatalog::color($templateKey)
         );
         (new ActivityRepository())->record($userId, 'resume_created', 'Created ' . $name, (int) $resume['id']);
         return $resume;
@@ -47,12 +40,20 @@ final class ResumeService
 
     public function save(int $id, int $userId, array $payload): ?array
     {
-        $content = $this->sanitizeContent(is_array($payload['content'] ?? null) ? $payload['content'] : []);
+        $templateKey = $this->allowed(
+            $payload['template_key'] ?? TemplateCatalog::DEFAULT_KEY,
+            TemplateCatalog::keys(),
+            TemplateCatalog::DEFAULT_KEY
+        );
+        $content = $this->sanitizeContent(
+            is_array($payload['content'] ?? null) ? $payload['content'] : [],
+            $templateKey
+        );
         $completion = $this->completion($content);
 
         $attributes = [
             'name' => $this->clean($payload['name'] ?? 'Untitled CV', 150) ?: 'Untitled CV',
-            'template_key' => $this->allowed($payload['template_key'] ?? 'modern', self::TEMPLATES, 'modern'),
+            'template_key' => $templateKey,
             'language' => $this->allowed($payload['language'] ?? 'en', self::LANGUAGES, 'en'),
             'accent_color' => $this->validColor($payload['accent_color'] ?? '#5b4df7'),
             'font_family' => $this->allowed($payload['font_family'] ?? 'Inter', self::FONTS, 'Inter'),
@@ -117,7 +118,7 @@ final class ResumeService
         return min(100, $score);
     }
 
-    public static function defaultContent(): array
+    public static function defaultContent(string $layout = 'stacked', string $sectionOrder = 'standard'): array
     {
         return [
             'personal' => [
@@ -157,11 +158,13 @@ final class ResumeService
             'interests' => [],
             'settings' => [
                 'density' => 'comfortable',
+                'layout' => in_array($layout, TemplateCatalog::LAYOUTS, true) ? $layout : 'stacked',
+                'section_order' => in_array($sectionOrder, TemplateCatalog::ORDERS, true) ? $sectionOrder : 'standard',
             ],
         ];
     }
 
-    private function sanitizeContent(array $content): array
+    private function sanitizeContent(array $content, string $templateKey = TemplateCatalog::DEFAULT_KEY): array
     {
         $clean = self::defaultContent();
         $personal = is_array($content['personal'] ?? null) ? $content['personal'] : [];
@@ -206,6 +209,18 @@ final class ResumeService
             $settings['density'] ?? 'comfortable',
             ['compact', 'comfortable', 'spacious'],
             'comfortable'
+        );
+        // Missing layout settings fall back to the template's own design so
+        // CVs saved before the layout control existed keep a sensible shape.
+        $clean['settings']['layout'] = $this->allowed(
+            $settings['layout'] ?? '',
+            TemplateCatalog::LAYOUTS,
+            TemplateCatalog::layout($templateKey)
+        );
+        $clean['settings']['section_order'] = $this->allowed(
+            $settings['section_order'] ?? '',
+            TemplateCatalog::ORDERS,
+            TemplateCatalog::order($templateKey)
         );
 
         return $clean;

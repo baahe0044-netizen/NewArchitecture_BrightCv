@@ -16,10 +16,14 @@ For ready-to-paste Windows PowerShell commands, see
   login throttling
 - Personal dashboard with CV status, completion, ATS trends, exports, and
   recent activity
-- Six responsive, print-ready CV templates
+- Eighteen responsive, print-ready CV templates: fifteen single column
+  (vertical) and three built around a sidebar. Each sets skills its own way -
+  chips, ruled rows, tiles, running type, strength bars, segmented meters or
+  dot ratings - so the section is never the same twice
 - Guided sections for contact details, summary, experience, education, skills,
   projects, certifications, languages, references, and interests
-- Live A4 preview with colour, typeface, density, layout, and language controls
+- Live A4 preview with colour, typeface, density, page layout (single or two
+  column), section order, and language controls
 - Debounced server autosave, local offline recovery, undo and redo, immutable
   version snapshots, duplication, and soft deletion
 - Rule-based smart summary and achievement writing that does not send private
@@ -27,7 +31,15 @@ For ready-to-paste Windows PowerShell commands, see
 - ATS scoring, content recommendations, keyword extraction, and target-job
   matching
 - Voice dictation where the browser supports the Web Speech API
-- Print-to-PDF, multilingual section headings, and portable JSON backup/import
+- Import an existing CV from PDF, Word (.docx), plain text, pasted text, or a
+  BrightCV JSON backup, reviewed before it replaces anything
+- Print-to-PDF, multilingual section headings, and portable JSON backup
+- Installable as an app (web manifest, service worker, offline page) with
+  cached assets; pages and API responses are deliberately never cached, and
+  signing out clears the cache
+- Built for phones first: 44px touch targets, 16px form controls so iOS does
+  not zoom on focus, safe-area insets for notched devices, and WCAG AA text
+  contrast in both the light and dark themes
 - Automated PHP parsing, JavaScript syntax checks, repository integrity checks,
   PHP domain tests, renderer unit tests, and a builder UI smoke test
 

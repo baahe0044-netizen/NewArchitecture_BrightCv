@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   let activeFilter = 'all';
+  let activeLayout = 'all';
   let previewedKey = 'modern';
   let previewedName = 'Modern Focus';
 
@@ -12,8 +13,9 @@
     let visible = 0;
     cards.forEach((card) => {
       const matchesCategory = activeFilter === 'all' || card.dataset.category === activeFilter;
+      const matchesLayout = activeLayout === 'all' || card.dataset.layout === activeLayout;
       const matchesSearch = !term || card.dataset.name.includes(term) || card.dataset.category.includes(term);
-      const show = matchesCategory && matchesSearch;
+      const show = matchesCategory && matchesLayout && matchesSearch;
       card.hidden = !show;
       if (show) visible++;
     });
@@ -31,6 +33,18 @@
       button.classList.add('active');
       button.setAttribute('aria-pressed', 'true');
       activeFilter = button.dataset.templateFilter;
+      applyFilters();
+    });
+  });
+  document.querySelectorAll('[data-layout-filter]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('[data-layout-filter]').forEach((item) => {
+        item.classList.remove('active');
+        item.setAttribute('aria-pressed', 'false');
+      });
+      button.classList.add('active');
+      button.setAttribute('aria-pressed', 'true');
+      activeLayout = button.dataset.layoutFilter;
       applyFilters();
     });
   });

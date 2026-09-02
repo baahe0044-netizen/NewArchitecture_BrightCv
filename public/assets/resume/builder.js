@@ -7,6 +7,7 @@
   const config = JSON.parse(payloadElement.textContent);
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const h = window.LunettiResume.escapeHtml;
+  const { TEMPLATES, TEMPLATE_KEYS, LAYOUTS, ORDERS } = window.LunettiResume;
   const serverResume = clone(config.resume);
   let state = clone(serverResume);
   let currentSection = 'personal';
@@ -73,7 +74,7 @@
       languages: [],
       references: [],
       interests: [],
-      settings: { density: 'comfortable' },
+      settings: { density: 'comfortable', layout: '', section_order: '' },
     };
     Object.keys(defaults).forEach((key) => {
       if (state.content[key] === undefined || state.content[key] === null) state.content[key] = clone(defaults[key]);
@@ -116,7 +117,12 @@
       .slice(0, 20);
 
     state.name = scalarText(state.name, 150) || 'Untitled CV';
-    if (!['modern', 'executive', 'minimal', 'creative', 'graduate', 'tech'].includes(state.template_key)) state.template_key = 'modern';
+    if (!TEMPLATE_KEYS.includes(state.template_key)) state.template_key = 'modern';
+    // Layout and order fall back to the template's own design, which is what a
+    // CV saved before these controls existed has stored.
+    const design = TEMPLATES[state.template_key];
+    if (!LAYOUTS.includes(state.content.settings.layout)) state.content.settings.layout = design.layout;
+    if (!ORDERS.includes(state.content.settings.section_order)) state.content.settings.section_order = design.order;
     if (!['en', 'fr', 'es'].includes(state.language)) state.language = 'en';
     if (!/^#[0-9a-f]{6}$/i.test(state.accent_color || '')) state.accent_color = '#5b4df7';
     if (!['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'].includes(state.font_family)) state.font_family = 'Inter';
@@ -555,8 +561,6 @@
     const scrollTop = scroller ? scroller.scrollTop : null;
 
     preview.innerHTML = window.LunettiResume.renderResume(state, { placeholders: true });
-    const density = state.content.settings?.density || 'comfortable';
-    preview.className = 'density-' + density;
     applyZoom();
 
     if (scroller && scrollTop !== null) {
@@ -758,6 +762,16 @@
     });
     document.querySelectorAll('[data-density]').forEach((button) => {
       const active = button.dataset.density === (state.content.settings?.density || 'comfortable');
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll('[data-layout]').forEach((button) => {
+      const active = button.dataset.layout === state.content.settings.layout;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll('[data-section-order]').forEach((button) => {
+      const active = button.dataset.sectionOrder === state.content.settings.section_order;
       button.classList.toggle('active', active);
       button.setAttribute('aria-pressed', String(active));
     });
@@ -980,6 +994,13 @@
       state.template_key = button.dataset.templateKey;
       const template = config.templates.find((item) => item.template_key === state.template_key);
       if (template) state.accent_color = template.color;
+      // Each template has a shape it was designed for, so picking one adopts
+      // that shape. The layout buttons below still override it afterwards.
+      const design = TEMPLATES[state.template_key];
+      if (design) {
+        state.content.settings.layout = design.layout;
+        state.content.settings.section_order = design.order;
+      }
       updateDesignControls();
       stateChanged({ history: true, immediatePreview: true });
     });
@@ -1015,15 +1036,48 @@
     });
   });
 
+  document.querySelectorAll('[data-layout]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.content.settings.layout = button.dataset.layout;
+      updateDesignControls();
+      stateChanged({ history: true, immediatePreview: true });
+    });
+  });
+
+  document.querySelectorAll('[data-section-order]').forEach((button) => {
+    button.addEventListener('click', () => {
+      state.content.settings.section_order = button.dataset.sectionOrder;
+      updateDesignControls();
+      stateChanged({ history: true, immediatePreview: true });
+    });
+  });
+
   function applyZoom() {
     zoom = Math.max(0.35, Math.min(1.2, zoom));
     const preview = document.getElementById('resumePreview');
     const scale = document.getElementById('previewScale');
     preview.style.transform = 'scale(' + zoom + ')';
-    const pageWidth = 794;
-    const pageHeight = 1123;
-    scale.style.width = Math.max(scale.parentElement?.clientWidth || 0, Math.round(pageWidth * zoom + 64)) + 'px';
-    scale.style.minHeight = Math.round(pageHeight * zoom + 95) + 'px';
+
+    // A CSS transform scales what is painted but not the space the element
+    // occupies, so the scroller keeps reserving the page at full size however
+    // far it is zoomed out. Down the page that left a long empty gap to scroll
+    // through, and across it left the document pushed off to the right with
+    // room to scroll that holds nothing. Margins take back the difference.
+    //
+    // The origin is the top centre, so the vertical correction all falls below
+    // the document while the horizontal one is split between its two sides.
+    preview.style.margin = '0px';
+    const documentHeight = preview.offsetHeight;
+    const documentWidth = preview.offsetWidth;
+    preview.style.marginBottom = Math.round(documentHeight * (zoom - 1)) + 'px';
+    preview.style.marginInline = Math.round(documentWidth * (zoom - 1) / 2) + 'px';
+
+    // With the box now the size it looks, the stylesheet's max-content width
+    // and 100% floor size the scrolling area on their own.
+    scale.style.width = '';
+    // A floor of one page keeps an empty CV from collapsing; anything longer
+    // is sized by the document itself through the margins above.
+    scale.style.minHeight = Math.round(1123 * zoom + 95) + 'px';
     document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%';
   }
 
@@ -1073,39 +1127,218 @@
     window.Lunetti.toast('CV backup downloaded.');
   });
 
-  document.getElementById('importButton')?.addEventListener('click', () => document.getElementById('importFile').click());
-  document.getElementById('importFile')?.addEventListener('change', async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    try {
-      if (file.size > 1024 * 1024) throw new Error('Choose a JSON backup smaller than 1 MB.');
-      const parsed = JSON.parse(await file.text());
-      const imported = parsed.resume || parsed;
-      if (!imported.content || typeof imported.content !== 'object') throw new Error('This file is not a valid BrightCV CV backup.');
-      Object.assign(state, {
-        name: String(imported.name || state.name).slice(0, 150),
-        template_key: imported.template_key || state.template_key,
-        language: imported.language || state.language,
-        accent_color: imported.accent_color || state.accent_color,
-        font_family: imported.font_family || state.font_family,
-        job_description: imported.job_description || '',
-        content: imported.content,
-      });
-      normalizeState();
-      document.getElementById('resumeTitle').value = state.name;
-      document.getElementById('jobDescription').value = state.job_description;
-      renderEditor();
-      renderPreview();
-      updateProgress();
-      updateDesignControls();
-      updateJobCount();
-      stateChanged({ history: true });
-      window.Lunetti.toast('Backup imported. Review the CV before exporting.');
-    } catch (error) {
-      window.Lunetti.toast(error.message || 'Could not import that file.', 'error');
-    } finally {
-      event.target.value = '';
+  // ------------------------------------------------------------------
+  // Importing an existing CV
+  //
+  // The file (or pasted text) is read on the server, which returns the parsed
+  // content plus a summary of what it found. Nothing touches the CV until the
+  // writer looks at that summary and confirms, because no parser reads every
+  // layout correctly and an import that silently overwrote a CV would be far
+  // worse than one that asks first.
+  // ------------------------------------------------------------------
+
+  const IMPORT_LABELS = {
+    experience: 'Roles',
+    education: 'Qualifications',
+    skills: 'Skills',
+    projects: 'Projects',
+    certifications: 'Certifications',
+    languages: 'Languages',
+    references: 'References',
+    interests: 'Interests',
+  };
+
+  let importedContent = null;
+
+  function resetImportDialog() {
+    importedContent = null;
+    const result = document.getElementById('importResult');
+    const apply = document.getElementById('applyImportButton');
+    const fileName = document.getElementById('importFileName');
+    const skippedNote = document.getElementById('importSkipped');
+    if (skippedNote) skippedNote.hidden = true;
+    if (result) result.hidden = true;
+    if (apply) apply.hidden = true;
+    if (fileName) {
+      fileName.hidden = true;
+      fileName.textContent = '';
     }
+  }
+
+  function showImportSummary(data) {
+    const detected = data.detected || {};
+    const rows = [];
+
+    ['full_name', 'headline', 'email', 'phone', 'location'].forEach((key) => {
+      if (detected[key]) {
+        rows.push([{ full_name: 'Name', headline: 'Job title', email: 'Email', phone: 'Phone', location: 'Location' }[key], detected[key]]);
+      }
+    });
+    if (detected.summary_words) rows.push(['Summary', detected.summary_words + ' words']);
+    Object.entries(IMPORT_LABELS).forEach(([key, label]) => {
+      if (detected[key]) rows.push([label, String(detected[key])]);
+    });
+
+    const list = document.getElementById('importDetected');
+    list.innerHTML = rows.length
+      ? rows.map(([label, value]) => '<div><dt>' + h(label) + '</dt><dd>' + h(value) + '</dd></div>').join('')
+      : '<div><dt>Nothing recognised</dt><dd>Try pasting the text instead.</dd></div>';
+
+    // Sections BrightCV has no home for are named rather than forced into the
+    // nearest category, so nothing is quietly dropped or misfiled.
+    const skipped = Array.isArray(detected.skipped) ? detected.skipped : [];
+    const note = document.getElementById('importSkipped');
+    if (skipped.length) {
+      note.textContent = 'Not imported, because BrightCV has no field for it: '
+        + skipped.join(', ') + '. Copy anything you still want across by hand.';
+      note.hidden = false;
+    } else {
+      note.hidden = true;
+      note.textContent = '';
+    }
+
+    document.getElementById('importSource').textContent = data.source || '';
+    document.getElementById('importTargetName').textContent = state.name;
+    document.getElementById('importResult').hidden = false;
+    document.getElementById('applyImportButton').hidden = rows.length === 0;
+  }
+
+  // The tool cluster collapses into a menu on narrow screens, so undo, redo,
+  // import, and backup stay reachable on a phone instead of being hidden.
+  const moreButton = document.getElementById('builderMoreButton');
+  const builderTools = document.getElementById('builderTools');
+
+  function setToolsOpen(open) {
+    if (!builderTools || !moreButton) return;
+    builderTools.classList.toggle('open', open);
+    moreButton.setAttribute('aria-expanded', String(open));
+  }
+
+  moreButton?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setToolsOpen(!builderTools.classList.contains('open'));
+  });
+
+  // Choosing an action closes the menu, as does tapping away or pressing Escape.
+  builderTools?.addEventListener('click', (event) => {
+    if (event.target.closest('button')) setToolsOpen(false);
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!builderTools?.classList.contains('open')) return;
+    if (!event.target.closest('#builderTools, #builderMoreButton')) setToolsOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && builderTools?.classList.contains('open')) {
+      setToolsOpen(false);
+      moreButton.focus();
+    }
+  });
+
+  document.getElementById('importButton')?.addEventListener('click', () => {
+    resetImportDialog();
+    window.Lunetti.openModal('importCvModal');
+  });
+
+  document.querySelectorAll('[data-import-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('[data-import-tab]').forEach((item) => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-selected', String(active));
+      });
+      document.querySelectorAll('[data-import-view]').forEach((view) => {
+        view.classList.toggle('active', view.dataset.importView === button.dataset.importTab);
+      });
+      resetImportDialog();
+    });
+  });
+
+  document.getElementById('importFile')?.addEventListener('change', (event) => {
+    resetImportDialog();
+    const file = event.target.files?.[0];
+    const label = document.getElementById('importFileName');
+    if (file && label) {
+      label.textContent = file.name + ' · ' + Math.max(1, Math.round(file.size / 1024)) + ' KB';
+      label.hidden = false;
+    }
+  });
+
+  const importDrop = document.getElementById('importDrop');
+  ['dragenter', 'dragover'].forEach((type) => importDrop?.addEventListener(type, (event) => {
+    event.preventDefault();
+    importDrop.classList.add('dragging');
+  }));
+  ['dragleave', 'drop'].forEach((type) => importDrop?.addEventListener(type, () => importDrop.classList.remove('dragging')));
+  importDrop?.addEventListener('drop', (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (!file) return;
+    const input = document.getElementById('importFile');
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    input.files = transfer.files;
+    input.dispatchEvent(new Event('change'));
+  });
+
+  document.getElementById('readImportButton')?.addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    const usingText = document.querySelector('[data-import-view="text"]')?.classList.contains('active');
+    const file = document.getElementById('importFile').files?.[0];
+    const text = document.getElementById('importText').value.trim();
+
+    if (usingText && text.length < 60) {
+      window.Lunetti.toast('Paste more of your CV so the sections can be recognised.', 'error');
+      return;
+    }
+    if (!usingText && !file) {
+      window.Lunetti.toast('Choose a CV file first.', 'error');
+      return;
+    }
+
+    const body = new FormData();
+    if (usingText) {
+      body.append('cv_text', text);
+    } else {
+      body.append('cv_file', file);
+    }
+
+    button.disabled = true;
+    const original = button.innerHTML;
+    button.innerHTML = '<span class="spinner"></span> Reading…';
+    try {
+      const response = await window.Lunetti.api(config.endpoints.import, { method: 'POST', body });
+      importedContent = response.data.content;
+      showImportSummary(response.data);
+    } catch (error) {
+      resetImportDialog();
+      window.Lunetti.toast(error.message || 'That CV could not be read.', 'error');
+    } finally {
+      button.disabled = false;
+      button.innerHTML = original;
+    }
+  });
+
+  document.getElementById('applyImportButton')?.addEventListener('click', () => {
+    if (!importedContent) return;
+
+    // Design settings belong to this CV, not to the file being imported, so
+    // only the written content is replaced.
+    const settings = clone(state.content.settings);
+    state.content = importedContent;
+    normalizeState();
+    state.content.settings = settings;
+
+    document.getElementById('resumeTitle').value = state.name;
+    renderEditor();
+    renderPreview();
+    updateProgress();
+    updateDesignControls();
+    stateChanged({ history: true });
+    window.Lunetti.closeModal('importCvModal');
+    resetImportDialog();
+    window.Lunetti.toast('CV imported. Check each section before exporting.');
   });
 
   function safeFilename(value) {

@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <?php View::partial('components/theme_init'); ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="app-url" content="<?= e(BASE_URL) ?>">
+    <?php View::partial('components/head_meta'); ?>
     <meta name="csrf-token" content="<?= e(Csrf::token()) ?>">
     <title>CV templates · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
@@ -34,6 +33,14 @@
                     <?php endforeach; ?>
                 </div>
             </div>
+            <div class="filter-group">
+                <span class="filter-label">Layout</span>
+                <div class="filter-tabs" role="group" aria-label="Template layouts">
+                    <button class="active" type="button" data-layout-filter="all" aria-pressed="true">All</button>
+                    <button type="button" data-layout-filter="stacked" aria-pressed="false">Single column</button>
+                    <button type="button" data-layout-filter="sidebar" aria-pressed="false">Two column</button>
+                </div>
+            </div>
             <label class="template-search" for="templateSearch">
                 <span class="filter-label">Search templates</span>
                 <span class="search-input-wrap">
@@ -50,8 +57,9 @@
 
         <section class="templates-grid" id="templatesGrid" aria-label="Available CV templates">
             <?php foreach ($templates as $template): ?>
-                <article class="template-card" data-template-card data-category="<?= e(mb_strtolower($template['category'])) ?>" data-name="<?= e(mb_strtolower($template['name'])) ?>">
-                    <div class="template-preview template-style-<?= e($template['template_key']) ?>" style="--accent:<?= e($template['color']) ?>" aria-label="<?= e($template['name']) ?> layout preview">
+                <?php $isStacked = ($template['layout'] ?? 'stacked') === 'stacked'; ?>
+                <article class="template-card" data-template-card data-category="<?= e(mb_strtolower($template['category'])) ?>" data-name="<?= e(mb_strtolower($template['name'])) ?>" data-layout="<?= e($template['layout'] ?? 'stacked') ?>">
+                    <div class="template-preview template-style-<?= e($template['template_key']) ?> template-layout-<?= e($template['layout'] ?? 'stacked') ?>" style="--accent:<?= e($template['color']) ?>" aria-label="<?= e($template['name']) ?> layout preview">
                         <div class="template-paper" aria-hidden="true">
                             <header><div class="template-avatar">AM</div><div><h2>ALEX MORGAN</h2><span>PRODUCT &amp; OPERATIONS LEAD</span></div></header>
                             <div class="template-contact">Accra, Ghana · alex@example.com · +233 24 000 0000</div>
@@ -69,7 +77,7 @@
                             <?php if ((int) $template['is_premium'] === 1): ?><span class="premium-label">Pro</span><?php endif; ?>
                         </div>
                         <p><?= e($template['description']) ?></p>
-                        <p class="template-features">ATS-friendly · A4 print · Custom colours</p>
+                        <p class="template-features"><?= $isStacked ? 'Single column' : 'Two column' ?> · A4 print · Custom colours</p>
                         <div class="template-card-actions">
                             <button class="btn btn-secondary btn-small" type="button" data-preview-template="<?= e($template['template_key']) ?>" data-template-name="<?= e($template['name']) ?>">Preview</button>
                             <button class="btn btn-primary btn-small" type="button" data-use-template="<?= e($template['template_key']) ?>" data-template-name="<?= e($template['name']) ?>">Use this template</button>
@@ -128,6 +136,7 @@
 </div>
 
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
+<script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 <script src="<?= e(asset('templates/template.js')) ?>" defer></script>
 </body>
 </html>

@@ -192,6 +192,14 @@
   font-size: 6.4pt;
 }
 
+/* Drawn proficiency, sized from --cv-skill (0-100) and --cv-skill-dots (1-5).
+   Off unless a template asks for it, because most name the level in words. */
+.cv-level-meter {
+  display: none;
+  position: relative;
+  flex: none;
+}
+
 .cv-languages {
   display: grid;
   gap: 5px;
@@ -421,6 +429,1070 @@
   color: #fff;
   background: var(--cv-accent);
   border: 0;
+}
+
+
+/* ==========================================================================
+   Stacked (vertical) layout
+   The body runs as one full-width column down the page: the shape most
+   recruiters and ATS parsers expect, and the default for every template
+   except the two that are designed around a sidebar.
+   ========================================================================== */
+
+.cv-body {
+  display: block;
+}
+
+.cv-layout-stacked .cv-section {
+  margin-bottom: 15px;
+}
+
+.cv-layout-stacked .cv-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Chips and short list items would waste a lot of vertical space at full page
+   width, so they wrap into columns instead of one item per line. */
+.cv-layout-stacked .cv-skills,
+.cv-layout-stacked .cv-languages {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px 7px;
+}
+
+.cv-layout-stacked .cv-certifications-section,
+.cv-layout-stacked .cv-references-section {
+  columns: 2;
+  column-gap: 9mm;
+}
+
+.cv-layout-stacked .cv-certifications-section h2,
+.cv-layout-stacked .cv-references-section h2 {
+  column-span: all;
+}
+
+.cv-layout-stacked .cv-compact-entry,
+.cv-layout-stacked .cv-reference {
+  break-inside: avoid;
+}
+
+.cv-layout-stacked .cv-entry ul {
+  padding-left: 16px;
+}
+
+.cv-layout-stacked .cv-detail {
+  font-size: 8.4pt;
+}
+
+/* ==========================================================================
+   Content density
+   Declared on the document so the print sheet matches the builder preview.
+   ========================================================================== */
+
+.cv-density-compact {
+  padding-top: 11mm;
+  padding-bottom: 11mm;
+  font-size: 8.6pt;
+  line-height: 1.34;
+}
+
+.cv-density-compact .cv-section {
+  margin-bottom: 12px;
+}
+
+.cv-density-compact .cv-entry {
+  margin-bottom: 9px;
+}
+
+.cv-density-spacious {
+  padding-top: 19mm;
+  padding-bottom: 19mm;
+  line-height: 1.55;
+}
+
+.cv-density-spacious .cv-section {
+  margin-bottom: 21px;
+}
+
+.cv-density-spacious .cv-entry {
+  margin-bottom: 15px;
+}
+
+/* ==========================================================================
+   Classic - centred heading block over full-width sections. Mirrors the plain
+   one-column CV most employers ask for.
+   ========================================================================== */
+
+.cv-template-classic {
+  padding: 16mm 18mm;
+}
+
+.cv-template-classic .cv-header {
+  justify-content: center;
+  text-align: center;
+}
+
+.cv-template-classic .cv-monogram {
+  display: none;
+}
+
+.cv-template-classic .cv-identity h1 {
+  font-size: 22pt;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.cv-template-classic .cv-identity p {
+  color: #3f3f47;
+  font-size: 9.5pt;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: none;
+}
+
+.cv-template-classic .cv-contact {
+  margin: 9px 0 14px;
+  padding: 7px 0;
+  color: #45444c;
+  background: transparent;
+  border-bottom: 1px solid var(--cv-accent);
+  font-size: 8pt;
+}
+
+.cv-template-classic .cv-contact i {
+  background: #9a9aa2;
+}
+
+.cv-template-classic .cv-section h2 {
+  color: #1c1c21;
+  border-bottom-width: 1px;
+  border-color: #c6c6cd;
+  font-size: 10pt;
+  letter-spacing: .06em;
+}
+
+/* ==========================================================================
+   Elegant - serif typography with roomy margins.
+   ========================================================================== */
+
+.cv-template-elegant {
+  padding: 18mm 19mm;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.cv-template-elegant .cv-header {
+  display: block;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--cv-accent);
+  text-align: left;
+}
+
+.cv-template-elegant .cv-monogram {
+  display: none;
+}
+
+.cv-template-elegant .cv-identity h1 {
+  font-size: 26pt;
+  font-weight: 400;
+  letter-spacing: .01em;
+}
+
+.cv-template-elegant .cv-identity p {
+  color: #63615c;
+  font-size: 9pt;
+  letter-spacing: .22em;
+}
+
+.cv-template-elegant .cv-contact {
+  margin: 10px 0 16px;
+  padding: 0;
+  justify-content: flex-start;
+  color: #5c5a55;
+  background: transparent;
+  font-size: 8pt;
+}
+
+.cv-template-elegant .cv-section h2 {
+  border: 0;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Compact - fits more history on one page without shrinking readability.
+   ========================================================================== */
+
+.cv-template-compact {
+  padding: 12mm 13mm;
+  font-size: 8.7pt;
+  line-height: 1.36;
+}
+
+.cv-template-compact .cv-header {
+  gap: 12px;
+}
+
+.cv-template-compact .cv-monogram {
+  width: 42px;
+  height: 42px;
+  flex-basis: 42px;
+  border-radius: 6px;
+  font-size: 11pt;
+}
+
+.cv-template-compact .cv-identity h1 {
+  font-size: 20pt;
+}
+
+.cv-template-compact .cv-contact {
+  margin: 10px 0 12px;
+  padding: 5px 8px;
+  justify-content: flex-start;
+  font-size: 7.2pt;
+}
+
+.cv-template-compact .cv-section {
+  margin-bottom: 11px;
+}
+
+.cv-template-compact .cv-section h2 {
+  margin-bottom: 5px;
+  padding-bottom: 2px;
+  border-bottom-width: 1px;
+  font-size: 8.6pt;
+}
+
+.cv-template-compact .cv-entry {
+  margin-bottom: 8px;
+}
+
+.cv-template-compact .cv-entry ul {
+  margin-top: 3px;
+}
+
+/* ==========================================================================
+   Timeline - a rail down the left of each entry so career order reads at a
+   glance while the page stays a single column.
+   ========================================================================== */
+
+.cv-template-timeline .cv-header {
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--cv-accent);
+}
+
+.cv-template-timeline .cv-monogram {
+  border-radius: 8px;
+}
+
+.cv-template-timeline .cv-section h2 {
+  padding: 0 0 0 8px;
+  border: 0;
+  border-left: 3px solid var(--cv-accent);
+}
+
+.cv-template-timeline .cv-experience-section .cv-entry,
+.cv-template-timeline .cv-education-section .cv-entry,
+.cv-template-timeline .cv-projects-section .cv-entry {
+  position: relative;
+  padding-left: 15px;
+  border-left: 1px solid color-mix(in srgb, var(--cv-accent) 35%, white);
+}
+
+.cv-template-timeline .cv-experience-section .cv-entry::before,
+.cv-template-timeline .cv-education-section .cv-entry::before,
+.cv-template-timeline .cv-projects-section .cv-entry::before {
+  position: absolute;
+  top: 4px;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  background: var(--cv-accent);
+  border-radius: 50%;
+  content: "";
+}
+
+/* ==========================================================================
+   Academic - serif body with room for long qualification and project detail.
+   ========================================================================== */
+
+.cv-template-academic {
+  padding: 17mm 20mm;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 9.5pt;
+}
+
+.cv-template-academic .cv-header {
+  display: block;
+  text-align: center;
+}
+
+.cv-template-academic .cv-monogram {
+  display: none;
+}
+
+.cv-template-academic .cv-identity h1 {
+  font-size: 21pt;
+  font-weight: 400;
+  letter-spacing: .04em;
+}
+
+.cv-template-academic .cv-identity p {
+  color: #4a4956;
+  letter-spacing: .1em;
+}
+
+.cv-template-academic .cv-contact {
+  margin: 8px 0 16px;
+  padding: 6px 0;
+  color: #4a4956;
+  background: transparent;
+  border-block: 1px solid #ccccd6;
+  font-size: 8pt;
+}
+
+.cv-template-academic .cv-section h2 {
+  border-bottom-width: 1px;
+  font-size: 10pt;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.cv-template-academic .cv-detail {
+  font-size: 8.8pt;
+}
+
+/* ==========================================================================
+   Bold - full-bleed accent header for roles where presence matters.
+   ========================================================================== */
+
+.cv-template-bold {
+  padding: 0;
+}
+
+.cv-template-bold .cv-header {
+  padding: 16mm 16mm 8mm;
+  color: #fff;
+  background: var(--cv-accent);
+}
+
+.cv-template-bold .cv-monogram {
+  width: 58px;
+  height: 58px;
+  flex-basis: 58px;
+  color: var(--cv-accent);
+  background: #fff;
+  border-radius: 10px;
+  font-size: 15pt;
+}
+
+.cv-template-bold .cv-identity h1 {
+  color: #fff;
+  font-size: 28pt;
+  font-weight: 800;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+
+.cv-template-bold .cv-identity p {
+  color: rgba(255, 255, 255, .86);
+}
+
+.cv-template-bold .cv-contact {
+  margin: 0;
+  padding: 9px 16mm;
+  color: #fff;
+  background: color-mix(in srgb, var(--cv-accent) 78%, black);
+}
+
+.cv-template-bold .cv-contact i {
+  background: rgba(255, 255, 255, .7);
+}
+
+.cv-template-bold .cv-body,
+.cv-template-bold .cv-columns {
+  padding: 11mm 16mm 15mm;
+}
+
+.cv-template-bold .cv-section h2 {
+  display: inline-block;
+  padding: 4px 9px;
+  color: #fff;
+  background: var(--cv-accent);
+  border: 0;
+  border-radius: 3px;
+}
+
+/* Sidebar templates rendered stacked: their header and contact bar are
+   full-bleed, so the body needs the matching inset back. */
+.cv-template-executive.cv-layout-stacked .cv-body {
+  padding: 12mm 17mm 15mm;
+}
+
+.cv-template-creative.cv-layout-stacked .cv-body {
+  padding: 12mm 16mm 15mm;
+}
+
+/* ==========================================================================
+   Skills and languages, template by template.
+
+   Every template gets the same markup: a name, the level in the applicant's
+   own words, and an empty meter element carrying that level as numbers
+   (--cv-skill 0-100, --cv-skill-dots 1-5). What a template does with it is
+   entirely a matter of style, so the treatments below differ on purpose -
+   chips, ruled rows, bars, dots, tiles and plain running type.
+
+   Meters are drawn with gradients and clip-path rather than images so they
+   survive printing to PDF.
+   ========================================================================== */
+
+.cv-level-meter::before {
+  content: "";
+  display: block;
+}
+
+/* A track with the filled part clipped to the stated level. Clipping rather
+   than resizing keeps the fill in step with the track underneath it. */
+.cv-template-modern .cv-level-meter,
+.cv-template-graduate .cv-level-meter,
+.cv-template-executive .cv-level-meter {
+  display: block;
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--cv-accent) 20%, white);
+  border-radius: 999px;
+}
+
+.cv-template-modern .cv-level-meter::before,
+.cv-template-graduate .cv-level-meter::before,
+.cv-template-executive .cv-level-meter::before {
+  height: 100%;
+  background: var(--cv-accent);
+  clip-path: inset(0 calc(100% - var(--cv-skill, 0) * 1%) 0 0);
+}
+
+/* Five dots, filled a whole dot at a time. */
+.cv-template-creative .cv-level-meter,
+.cv-template-slate .cv-level-meter {
+  display: block;
+  width: 34px;
+  height: 5px;
+  background: color-mix(in srgb, var(--cv-accent) 25%, white);
+  -webkit-mask-image: radial-gradient(circle at 2.5px 50%, #000 2px, transparent 2.2px);
+  mask-image: radial-gradient(circle at 2.5px 50%, #000 2px, transparent 2.2px);
+  -webkit-mask-size: 7px 100%;
+  mask-size: 7px 100%;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+
+.cv-template-creative .cv-level-meter::before,
+.cv-template-slate .cv-level-meter::before {
+  position: absolute;
+  inset: 0;
+  background: var(--cv-accent);
+  clip-path: inset(0 calc(100% - var(--cv-skill-dots, 0) * 20%) 0 0);
+}
+
+/* Five separated blocks, likewise filled whole. */
+.cv-template-spectrum .cv-level-meter {
+  display: block;
+  width: 100%;
+  height: 5px;
+  background: repeating-linear-gradient(
+    to right,
+    color-mix(in srgb, var(--cv-accent) 20%, white) 0 calc(20% - 2px),
+    transparent calc(20% - 2px) 20%
+  );
+}
+
+.cv-template-spectrum .cv-level-meter::before {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to right,
+    var(--cv-accent) 0 calc(20% - 2px),
+    transparent calc(20% - 2px) 20%
+  );
+  clip-path: inset(0 calc(100% - var(--cv-skill-dots, 0) * 20%) 0 0);
+}
+
+/* --- Modern: the tinted chip, with the level read off a hairline. --------- */
+.cv-template-modern .cv-skill,
+.cv-template-modern .cv-language {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  padding: 5px 8px 6px;
+}
+
+.cv-template-modern .cv-skill small,
+.cv-template-modern .cv-language small {
+  order: 3;
+  font-size: 6pt;
+}
+
+.cv-template-modern .cv-level-meter {
+  order: 2;
+  height: 2px;
+}
+
+/* --- Classic: a plain list with the level set against the right margin. --- */
+.cv-template-classic .cv-skill,
+.cv-template-classic .cv-language {
+  padding: 3px 0;
+  background: transparent;
+  border-bottom: 1px dotted #d3d3da;
+  border-radius: 0;
+}
+
+.cv-template-classic .cv-skill small,
+.cv-template-classic .cv-language small {
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: 5.8pt;
+}
+
+/* --- Minimal: one quiet running line, levels left unsaid. ---------------- */
+.cv-template-minimal .cv-skills,
+.cv-template-minimal .cv-languages,
+.cv-template-minimal.cv-layout-stacked .cv-skills,
+.cv-template-minimal.cv-layout-stacked .cv-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  justify-content: center;
+}
+
+.cv-template-minimal .cv-skill,
+.cv-template-minimal .cv-language {
+  padding: 1px 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.cv-template-minimal .cv-skill::after,
+.cv-template-minimal .cv-language::after {
+  margin: 0 7px;
+  color: #b9b8bf;
+  content: "\00b7";
+}
+
+.cv-template-minimal .cv-skill:last-child::after,
+.cv-template-minimal .cv-language:last-child::after {
+  content: none;
+}
+
+.cv-template-minimal .cv-skill b,
+.cv-template-minimal .cv-language b {
+  font-weight: 400;
+}
+
+.cv-template-minimal .cv-skill small,
+.cv-template-minimal .cv-language small {
+  display: none;
+}
+
+/* --- Elegant: a serif list ruled off, the level in italics. -------------- */
+.cv-template-elegant .cv-skills,
+.cv-template-elegant .cv-languages {
+  gap: 0 9mm;
+}
+
+.cv-template-elegant .cv-skill,
+.cv-template-elegant .cv-language {
+  align-items: baseline;
+  padding: 4px 0 3px;
+  background: transparent;
+  border-bottom: 1px solid #e0ded9;
+  border-radius: 0;
+}
+
+.cv-template-elegant .cv-skill b,
+.cv-template-elegant .cv-language b {
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+
+.cv-template-elegant .cv-skill small,
+.cv-template-elegant .cv-language small {
+  color: #8a8378;
+  font-style: italic;
+}
+
+/* --- Compact: dense tags that wrap, so a long list costs few lines. ------ */
+.cv-template-compact .cv-skills,
+.cv-template-compact .cv-languages,
+.cv-template-compact.cv-layout-stacked .cv-skills,
+.cv-template-compact.cv-layout-stacked .cv-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.cv-template-compact .cv-skill,
+.cv-template-compact .cv-language {
+  gap: 3px;
+  padding: 2px 5px;
+  background: color-mix(in srgb, var(--cv-accent) 11%, white);
+  border-radius: 3px;
+}
+
+.cv-template-compact .cv-skill b,
+.cv-template-compact .cv-language b {
+  font-size: 6.8pt;
+}
+
+.cv-template-compact .cv-skill small,
+.cv-template-compact .cv-language small {
+  font-size: 5.6pt;
+}
+
+/* --- Timeline: outlined pills matching the rail down the entries. -------- */
+.cv-template-timeline .cv-skills,
+.cv-template-timeline .cv-languages,
+.cv-template-timeline.cv-layout-stacked .cv-skills,
+.cv-template-timeline.cv-layout-stacked .cv-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 5px;
+}
+
+.cv-template-timeline .cv-skill,
+.cv-template-timeline .cv-language {
+  padding: 3px 9px;
+  color: var(--cv-accent);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 45%, white);
+  border-radius: 999px;
+}
+
+.cv-template-timeline .cv-skill small,
+.cv-template-timeline .cv-language small {
+  color: color-mix(in srgb, var(--cv-accent) 65%, #6c6b74);
+}
+
+/* --- Tech: monospace tokens tagged with an accent edge. ------------------ */
+.cv-template-tech .cv-skills,
+.cv-template-tech .cv-languages,
+.cv-template-tech.cv-layout-stacked .cv-skills,
+.cv-template-tech.cv-layout-stacked .cv-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cv-template-tech .cv-skill,
+.cv-template-tech .cv-language {
+  padding: 2px 6px;
+  background: color-mix(in srgb, var(--cv-accent) 10%, white);
+  border-left: 2px solid var(--cv-accent);
+  border-radius: 0 3px 3px 0;
+}
+
+.cv-template-tech .cv-skill b,
+.cv-template-tech .cv-language b {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 6.8pt;
+  font-weight: 600;
+}
+
+.cv-template-tech .cv-skill small,
+.cv-template-tech .cv-language small {
+  color: color-mix(in srgb, var(--cv-accent) 60%, #5f5e66);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 5.6pt;
+}
+
+/* --- Graduate: the level shown as a bar, since the words carry weight when
+       there is little history to point at. ------------------------------- */
+.cv-template-graduate .cv-skill,
+.cv-template-graduate .cv-language {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 5px 7px 7px;
+}
+
+.cv-template-graduate .cv-skill b,
+.cv-template-graduate .cv-language b {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.cv-template-graduate .cv-skill small,
+.cv-template-graduate .cv-language small {
+  order: 3;
+  font-size: 5.8pt;
+  text-align: right;
+}
+
+/* --- Academic: a plain two-column list, the level in brackets. ----------- */
+.cv-template-academic .cv-skills,
+.cv-template-academic .cv-languages,
+.cv-template-academic.cv-layout-stacked .cv-skills,
+.cv-template-academic.cv-layout-stacked .cv-languages {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px 12mm;
+}
+
+.cv-template-academic .cv-skill,
+.cv-template-academic .cv-language {
+  justify-content: flex-start;
+  padding: 2px 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.cv-template-academic .cv-skill b,
+.cv-template-academic .cv-language b {
+  font-weight: 400;
+}
+
+.cv-template-academic .cv-skill small::before,
+.cv-template-academic .cv-language small::before {
+  content: "(";
+}
+
+.cv-template-academic .cv-skill small::after,
+.cv-template-academic .cv-language small::after {
+  content: ")";
+}
+
+/* --- Executive: small caps over a hairline bar, sized for the sidebar. --- */
+.cv-template-executive .cv-skill,
+.cv-template-executive .cv-language {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 0 0 6px;
+  background: transparent;
+  border-radius: 0;
+}
+
+.cv-template-executive .cv-skill b,
+.cv-template-executive .cv-language b {
+  font-size: 6.8pt;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.cv-template-executive .cv-skill small,
+.cv-template-executive .cv-language small {
+  display: none;
+}
+
+/* --- Bold: solid accent blocks, as loud as the header. ------------------- */
+.cv-template-bold .cv-skills,
+.cv-template-bold .cv-languages,
+.cv-template-bold.cv-layout-stacked .cv-skills,
+.cv-template-bold.cv-layout-stacked .cv-languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cv-template-bold .cv-skill,
+.cv-template-bold .cv-language {
+  padding: 4px 9px;
+  color: #fff;
+  background: var(--cv-accent);
+  border-radius: 2px;
+}
+
+.cv-template-bold .cv-skill b,
+.cv-template-bold .cv-language b {
+  font-size: 7pt;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.cv-template-bold .cv-skill small,
+.cv-template-bold .cv-language small {
+  color: rgba(255,255,255,.82);
+}
+
+/* --- Creative: a name and a row of dots on the coloured sidebar. --------- */
+.cv-template-creative .cv-skill,
+.cv-template-creative .cv-language,
+.cv-template-creative .cv-side .cv-skill,
+.cv-template-creative .cv-side .cv-language {
+  padding: 3px 0;
+  background: transparent;
+}
+
+.cv-template-creative .cv-skill small,
+.cv-template-creative .cv-language small {
+  display: none;
+}
+
+/* On the coloured sidebar the accent is the ground, so the dots are white. */
+.cv-template-creative .cv-side .cv-level-meter {
+  background: rgba(255,255,255,.35);
+}
+
+.cv-template-creative .cv-side .cv-level-meter::before {
+  background: #fff;
+}
+
+/* --- Editorial: skills set as running type, the way a masthead lists. ---- */
+.cv-template-editorial .cv-skills,
+.cv-template-editorial .cv-languages,
+.cv-template-editorial.cv-layout-stacked .cv-skills,
+.cv-template-editorial.cv-layout-stacked .cv-languages {
+  display: block;
+  line-height: 1.9;
+}
+
+.cv-template-editorial .cv-skill,
+.cv-template-editorial .cv-language {
+  display: inline;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.cv-template-editorial .cv-skill b,
+.cv-template-editorial .cv-language b {
+  font-size: 8pt;
+  font-weight: 500;
+  font-variant: small-caps;
+  letter-spacing: .04em;
+}
+
+.cv-template-editorial .cv-skill small,
+.cv-template-editorial .cv-language small {
+  color: #8d8b93;
+  font-size: 6.2pt;
+  font-style: italic;
+}
+
+.cv-template-editorial .cv-skill small::before,
+.cv-template-editorial .cv-language small::before {
+  content: " ";
+}
+
+/* A thin rule between entries rather than a comma, so nothing runs together. */
+.cv-template-editorial .cv-skill:not(:last-child)::after,
+.cv-template-editorial .cv-language:not(:last-child)::after {
+  margin: 0 8px;
+  padding-left: 1px;
+  border-left: 1px solid #cfced5;
+  content: "";
+}
+
+/* --- Metro: flat square tiles on a grid, nothing rounded. ---------------- */
+.cv-template-metro .cv-skills,
+.cv-template-metro .cv-languages,
+.cv-template-metro.cv-layout-stacked .cv-skills,
+.cv-template-metro.cv-layout-stacked .cv-languages {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.cv-template-metro .cv-skill,
+.cv-template-metro .cv-language {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 34px;
+  padding: 6px 4px;
+  color: #fff;
+  text-align: center;
+  background: var(--cv-accent);
+  border-radius: 0;
+}
+
+/* Every other tile drops a shade so the grid reads as blocks, not a slab. */
+.cv-template-metro .cv-skill:nth-child(even),
+.cv-template-metro .cv-language:nth-child(even) {
+  background: color-mix(in srgb, var(--cv-accent) 72%, black);
+}
+
+.cv-template-metro .cv-skill b,
+.cv-template-metro .cv-language b {
+  font-size: 6.8pt;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.cv-template-metro .cv-skill small,
+.cv-template-metro .cv-language small {
+  color: rgba(255,255,255,.8);
+  font-size: 5.6pt;
+}
+
+/* --- Ledger: a register of ruled rows, level against the right rule. ----- */
+.cv-template-ledger .cv-skills,
+.cv-template-ledger .cv-languages,
+.cv-template-ledger.cv-layout-stacked .cv-skills,
+.cv-template-ledger.cv-layout-stacked .cv-languages {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border-top: 1px solid #d8d7dd;
+}
+
+.cv-template-ledger .cv-skill,
+.cv-template-ledger .cv-language {
+  padding: 4px 2px;
+  background: transparent;
+  border-bottom: 1px solid #e6e5ea;
+  border-radius: 0;
+}
+
+/* The two ends of the row are tied together by a leader, as on a contents
+   page, so a short name still reads across to its level. */
+.cv-template-ledger .cv-skill b,
+.cv-template-ledger .cv-language b {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.cv-template-ledger .cv-skill b::after,
+.cv-template-ledger .cv-language b::after {
+  flex: 1;
+  height: .55em;
+  border-bottom: 1px dotted #c8c7cf;
+  content: "";
+}
+
+.cv-template-ledger .cv-skill small,
+.cv-template-ledger .cv-language small {
+  flex: none;
+  color: var(--cv-accent);
+  font-weight: 600;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+/* --- Spectrum: skills lead the page, each on a segmented strength bar. --- */
+.cv-template-spectrum .cv-skills,
+.cv-template-spectrum .cv-languages,
+.cv-template-spectrum.cv-layout-stacked .cv-skills,
+.cv-template-spectrum.cv-layout-stacked .cv-languages {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12mm;
+}
+
+.cv-template-spectrum .cv-skill,
+.cv-template-spectrum .cv-language {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.cv-template-spectrum .cv-skill b,
+.cv-template-spectrum .cv-language b {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  font-size: 7.8pt;
+}
+
+.cv-template-spectrum .cv-skill small,
+.cv-template-spectrum .cv-language small {
+  order: 3;
+  color: color-mix(in srgb, var(--cv-accent) 70%, #55545c);
+  font-size: 5.8pt;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* --- Slate: dot ratings down a dark sidebar. ---------------------------- */
+.cv-template-slate .cv-side {
+  padding: 12px;
+  color: #fff;
+  background: var(--cv-accent);
+  border-radius: 6px;
+}
+
+.cv-template-slate .cv-side .cv-section h2,
+.cv-template-slate .cv-side .cv-entry h3,
+.cv-template-slate .cv-side .cv-skill b,
+.cv-template-slate .cv-side .cv-language b {
+  color: #fff;
+}
+
+.cv-template-slate .cv-side .cv-section h2 {
+  border-color: rgba(255,255,255,.5);
+}
+
+.cv-template-slate .cv-side .cv-organization,
+.cv-template-slate .cv-side .cv-detail,
+.cv-template-slate .cv-side .cv-compact-entry span,
+.cv-template-slate .cv-side .cv-reference span,
+.cv-template-slate .cv-side .cv-reference small,
+.cv-template-slate .cv-side .cv-interests span {
+  color: rgba(255,255,255,.78);
+}
+
+.cv-template-slate .cv-skill,
+.cv-template-slate .cv-language {
+  padding: 3px 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.cv-template-slate .cv-skill small,
+.cv-template-slate .cv-language small {
+  display: none;
+}
+
+.cv-template-slate .cv-side .cv-level-meter {
+  background: rgba(255,255,255,.3);
+}
+
+.cv-template-slate .cv-side .cv-level-meter::before {
+  background: #fff;
+}
+
+/* --- Aurora: each pill filled up to the level it names. ----------------- */
+.cv-template-aurora .cv-skills,
+.cv-template-aurora .cv-languages,
+.cv-template-aurora.cv-layout-stacked .cv-skills,
+.cv-template-aurora.cv-layout-stacked .cv-languages {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 8px;
+}
+
+/* The wash stops at the stated level, so the pill itself is the meter. */
+.cv-template-aurora .cv-skill,
+.cv-template-aurora .cv-language {
+  padding: 5px 10px;
+  background:
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--cv-accent) 32%, white) 0 calc(var(--cv-skill, 0) * 1%),
+      color-mix(in srgb, var(--cv-accent) 7%, white) calc(var(--cv-skill, 0) * 1%) 100%
+    );
+  border-radius: 999px;
+}
+
+.cv-template-aurora .cv-skill b,
+.cv-template-aurora .cv-language b {
+  color: color-mix(in srgb, var(--cv-accent) 80%, black);
+}
+
+.cv-template-aurora .cv-skill small,
+.cv-template-aurora .cv-language small {
+  color: color-mix(in srgb, var(--cv-accent) 55%, #45444d);
+  font-size: 5.8pt;
+  letter-spacing: .05em;
+  text-transform: uppercase;
 }
 
 @page {

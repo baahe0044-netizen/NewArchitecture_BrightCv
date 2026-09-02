@@ -456,3 +456,54 @@
     padding: 25px 20px;
   }
 }
+/* ==========================================================================
+   Touch and small screens
+   ========================================================================== */
+
+@media (max-width: 820px) {
+  .auth-form input,
+  .auth-form select,
+  .simple-auth input,
+  .simple-auth select {
+    font-size: 16px;
+  }
+
+  .auth-submit,
+  .auth-switch a,
+  .back-link,
+  .login-link,
+  .password-wrap button,
+  .label-row a {
+    min-height: 44px;
+  }
+
+  /* The row centres its contents, so the taller link simply makes the row
+     taller rather than knocking the label out of alignment. */
+  .label-row a {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .password-wrap button {
+    min-width: 44px;
+  }
+
+  .auth-legal,
+  .auth-switch,
+  .auth-kicker,
+  .form-errors,
+  .label-row a,
+  .auth-heading p {
+    font-size: 12px;
+  }
+}
+
+/* Mobile browser chrome makes 100vh overshoot the visible area, which hides
+   the bottom of a full-height sign-in screen behind the address bar. */
+@supports (height: 100dvh) {
+  .auth-page,
+  .auth-shell,
+  .simple-auth {
+    min-height: 100dvh;
+  }
+}

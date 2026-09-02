@@ -6,6 +6,7 @@ $builderPayload = [
         'save' => '/api/resumes/' . $resume['id'],
         'ats' => '/api/resumes/' . $resume['id'] . '/ats',
         'assistant' => '/api/resumes/' . $resume['id'] . '/assistant',
+        'import' => '/api/resumes/' . $resume['id'] . '/import',
         'export' => '/api/resumes/' . $resume['id'] . '/export',
         'print' => base_url('/resume/' . $resume['id'] . '/print'),
         'dashboard' => base_url('/dashboard'),
@@ -17,8 +18,7 @@ $builderPayload = [
 <head>
     <meta charset="utf-8">
     <?php View::partial('components/theme_init'); ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="app-url" content="<?= e(BASE_URL) ?>">
+    <?php View::partial('components/head_meta'); ?>
     <meta name="csrf-token" content="<?= e($csrfToken) ?>">
     <title><?= e($title) ?> · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
@@ -46,20 +46,32 @@ $builderPayload = [
 
     <div class="builder-actions">
         <?php View::partial('components/theme_toggle'); ?>
-        <button class="icon-btn" id="undoButton" type="button" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 7 4 12l5 5M5 12h9a5 5 0 0 1 5 5v1"/></svg>
-        </button>
-        <button class="icon-btn" id="redoButton" type="button" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 7 5 5-5 5M19 12h-9a5 5 0 0 0-5 5v1"/></svg>
-        </button>
-        <button class="btn btn-secondary builder-secondary-action" id="importButton" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
-            Import
-        </button>
-        <input class="sr-only" id="importFile" type="file" accept="application/json,.json">
-        <button class="btn btn-secondary builder-secondary-action" id="exportJsonButton" type="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 20h14"/></svg>
-            Backup
+        <!--
+            These four sit inline in the topbar on a wide screen and collapse
+            into the "More actions" menu on a phone. They stay one set of
+            buttons so history, import, and backup behave identically on
+            every device.
+        -->
+        <div class="builder-tools" id="builderTools">
+            <button class="icon-btn" id="undoButton" type="button" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 7 4 12l5 5M5 12h9a5 5 0 0 1 5 5v1"/></svg>
+                <span class="tool-label">Undo</span>
+            </button>
+            <button class="icon-btn" id="redoButton" type="button" title="Redo (Ctrl+Shift+Z)" aria-label="Redo" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 7 5 5-5 5M19 12h-9a5 5 0 0 0-5 5v1"/></svg>
+                <span class="tool-label">Redo</span>
+            </button>
+            <button class="btn btn-secondary builder-secondary-action" id="importButton" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+                Import CV
+            </button>
+            <button class="btn btn-secondary builder-secondary-action" id="exportJsonButton" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 20h14"/></svg>
+                Backup
+            </button>
+        </div>
+        <button class="icon-btn builder-more-button" id="builderMoreButton" type="button" data-builder-more aria-controls="builderTools" aria-expanded="false" aria-label="More actions">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
         </button>
         <button class="btn btn-primary" id="printButton" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg>
@@ -134,6 +146,24 @@ $builderPayload = [
                         </button>
                     <?php endforeach; ?>
                 </div>
+            </div>
+
+            <div class="design-group">
+                <p class="control-label">Page layout</p>
+                <div class="segmented-control" role="group" aria-label="Page layout">
+                    <button type="button" data-layout="stacked" aria-pressed="false">Single column</button>
+                    <button type="button" data-layout="sidebar" aria-pressed="false">Two column</button>
+                </div>
+                <p class="field-hint">Single column runs every section down the full width of the page, which most employers and applicant tracking systems read best.</p>
+            </div>
+
+            <div class="design-group">
+                <p class="control-label">Section order</p>
+                <div class="segmented-control" role="group" aria-label="Section order">
+                    <button type="button" data-section-order="standard" aria-pressed="false">Experience first</button>
+                    <button type="button" data-section-order="skills_first" aria-pressed="false">Skills first</button>
+                </div>
+                <p class="field-hint">Skills first suits technical roles, career changers, and new graduates.</p>
             </div>
 
             <div class="design-group">
@@ -310,6 +340,56 @@ $builderPayload = [
 
 <div class="mobile-panel-overlay" id="mobilePanelOverlay"></div>
 
+<div class="modal" id="importCvModal" role="dialog" aria-modal="true" aria-labelledby="importCvTitle" aria-hidden="true">
+    <div class="modal-dialog import-dialog">
+        <div class="modal-header">
+            <div><p class="eyebrow">Import</p><h2 id="importCvTitle">Bring in a CV you already have</h2></div>
+            <button class="icon-btn" type="button" data-modal-close="importCvModal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        </div>
+
+        <div class="import-body">
+            <div class="import-tabs" role="tablist">
+                <button class="active" type="button" role="tab" data-import-tab="file" aria-selected="true">Upload a file</button>
+                <button type="button" role="tab" data-import-tab="text" aria-selected="false">Paste the text</button>
+            </div>
+
+            <section class="import-tab-view active" data-import-view="file">
+                <label class="import-drop" id="importDrop" for="importFile">
+                    <span class="import-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span>
+                    <b>Choose a file or drop it here</b>
+                    <small>PDF, Word (.docx), plain text, or a BrightCV backup. Up to 5 MB.</small>
+                    <input class="sr-only" id="importFile" type="file" accept=".pdf,.docx,.txt,.md,.json,application/pdf,application/json,text/plain">
+                </label>
+                <p class="import-file-name" id="importFileName" hidden></p>
+            </section>
+
+            <section class="import-tab-view" data-import-view="text">
+                <div class="field">
+                    <label for="importText">CV text</label>
+                    <textarea id="importText" rows="10" maxlength="30000" placeholder="Open your CV, select everything, copy, and paste it here…"></textarea>
+                    <span class="field-hint">Use this for scanned PDFs, or any file the reader cannot open.</span>
+                </div>
+            </section>
+
+            <div class="import-result" id="importResult" hidden>
+                <div class="import-result-head">
+                    <b>Here is what was found</b>
+                    <span id="importSource"></span>
+                </div>
+                <dl class="import-detected" id="importDetected"></dl>
+                <p class="import-skipped" id="importSkipped" role="note" hidden></p>
+                <p class="import-warning" role="note">Applying this replaces the content of <strong id="importTargetName">this CV</strong>. Your design settings stay as they are, and undo (Ctrl+Z) reverses it.</p>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary" type="button" data-modal-close="importCvModal">Cancel</button>
+            <button class="btn btn-secondary" id="readImportButton" type="button">Read CV</button>
+            <button class="btn btn-primary" id="applyImportButton" type="button" hidden>Apply to my CV</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal" id="summaryAssistantModal" role="dialog" aria-modal="true" aria-labelledby="summaryAssistantTitle" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-header"><div><p class="eyebrow">Summary writer</p><h2 id="summaryAssistantTitle">Shape your summary</h2></div><button class="icon-btn" type="button" data-modal-close="summaryAssistantModal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
@@ -335,6 +415,7 @@ $builderPayload = [
 
 <script type="application/json" id="builderData"><?= json_encode($builderPayload, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) ?></script>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
+<script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/renderer.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/builder.js')) ?>" defer></script>
 </body>

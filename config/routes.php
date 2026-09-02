@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 return static function (Router $router): void {
     $router->get('/', 'LandingController@index');
+    $router->get('/manifest.webmanifest', 'PwaController@manifest');
 
     $router->get('/login', 'AuthController@loginPage', ['guest']);
     $router->post('/login', 'AuthController@login', ['guest', 'csrf']);
@@ -34,6 +35,7 @@ return static function (Router $router): void {
     $router->put('/api/resumes/{id}', 'ResumeController@updateApi', ['auth', 'csrf']);
     $router->delete('/api/resumes/{id}', 'ResumeController@deleteApi', ['auth', 'csrf']);
     $router->post('/api/resumes/{id}/duplicate', 'ResumeController@duplicateApi', ['auth', 'csrf']);
+    $router->post('/api/resumes/{id}/import', 'ImportController@parseApi', ['auth', 'csrf']);
     $router->post('/api/resumes/{id}/ats', 'ResumeController@atsApi', ['auth', 'csrf']);
     $router->post('/api/resumes/{id}/assistant', 'ResumeController@assistantApi', ['auth', 'csrf']);
     $router->post('/api/resumes/{id}/export', 'PdfController@recordExport', ['auth', 'csrf']);

@@ -17,7 +17,11 @@
   }
 
   requestAnimationFrame(fitPreview);
+  // Fonts and the rendered CV can change the height after the first frame, so
+  // fit again once everything has loaded.
+  window.addEventListener('load', fitPreview);
   window.addEventListener('resize', fitPreview);
+  window.addEventListener('orientationchange', fitPreview);
 
   document.getElementById('printNowButton').addEventListener('click', async (event) => {
     const button = event.currentTarget;

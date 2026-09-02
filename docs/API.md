@@ -12,6 +12,18 @@ require the X-CSRF-Token header. JSON responses use this shape:
 Validation and other expected failures return success false, a human-readable
 message, and an errors object where relevant.
 
+## Application shell
+
+GET /manifest.webmanifest
+
+The web app manifest. Generated per request so `start_url` and `scope` match
+the directory the app is installed under. No authentication required.
+
+The service worker is served as a static file at `/sw.js`, which scopes it to
+the application directory. It caches static assets and an offline page only:
+HTML pages and every `/api/` response stay uncached because they carry the
+signed-in person's CV content. Signing out posts `clear-caches` to the worker.
+
 ## Dashboard
 
 GET /api/dashboard
@@ -59,6 +71,19 @@ Soft-deletes an owned CV.
 POST /api/resumes/{id}/duplicate
 
 Creates an owned copy and returns its builder URL.
+
+POST /api/resumes/{id}/import
+
+Reads an existing CV and returns editable content. Send multipart/form-data with
+either field:
+
+- cv_file: a PDF, Word (.docx), plain text, or BrightCV JSON backup, up to 5 MB
+- cv_text: the CV text pasted directly
+
+The response carries the parsed content document, the source that was read, and
+a detected summary (names, contact details, and per-section counts). Nothing is
+written to the CV: the builder shows the summary and the writer confirms before
+the content is applied and saved through PUT /api/resumes/{id}.
 
 ## Guidance
 

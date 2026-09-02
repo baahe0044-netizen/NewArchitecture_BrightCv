@@ -23,8 +23,32 @@ $result = static function (bool $ok, string $label, string $detail = '') use (&$
 };
 
 $result(version_compare(PHP_VERSION, '8.1.0', '>='), 'PHP 8.1 or newer', PHP_VERSION);
-foreach (['json', 'mbstring', 'pdo', 'pdo_mysql', 'session'] as $extension) {
+foreach (['json', 'mbstring', 'pdo', 'pdo_mysql', 'session', 'zlib'] as $extension) {
     $result(extension_loaded($extension), 'PHP extension ' . $extension);
+}
+
+// Optional: their absence narrows what a CV can be imported from, but the rest
+// of the app is unaffected, so these are reported rather than failed.
+if (!extension_loaded('zip')) {
+    echo '[NOTE] PHP extension zip is missing — Word (.docx) import is unavailable. '
+        . 'PDF, plain text, and pasted text still work.' . PHP_EOL;
+}
+
+// The importer accepts files up to 5 MB, so PHP has to as well.
+$toBytes = static function (string $value): float {
+    $value = trim($value);
+    $unit = strtolower(substr($value, -1));
+    $number = (float) $value;
+    return match ($unit) {
+        'g' => $number * 1024 ** 3,
+        'm' => $number * 1024 ** 2,
+        'k' => $number * 1024,
+        default => $number,
+    };
+};
+foreach (['upload_max_filesize', 'post_max_size'] as $setting) {
+    $configured = (string) ini_get($setting);
+    $result($toBytes($configured) >= 5 * 1024 * 1024, 'PHP ' . $setting . ' is at least 5M', $configured);
 }
 
 $envFile = $root . DIRECTORY_SEPARATOR . '.env';
@@ -36,8 +60,48 @@ if (!is_file($envFile)) {
 
 require_once $root . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
 
-$expectedUrl = 'http://localhost/NewArchitecture_BrightCv/public';
-$result(BASE_URL === $expectedUrl, 'APP_URL matches the WAMP folder', 'current: ' . BASE_URL);
+$result(
+    filter_var(BASE_URL, FILTER_VALIDATE_URL) !== false && !str_ends_with(BASE_URL, '/'),
+    'APP_URL is a valid URL with no trailing slash',
+    BASE_URL
+);
+if (APP_ENV === 'production') {
+    $result(str_starts_with(BASE_URL, 'https://'), 'APP_URL uses HTTPS in production', BASE_URL);
+    $result(!APP_DEBUG, 'APP_DEBUG is off in production');
+
+    // A broken mail setup is invisible until someone cannot reset a password,
+    // so it is worth failing here instead.
+    $mailDriver = (string) env('MAIL_DRIVER', 'api');
+    $result(
+        in_array($mailDriver, MailService::DRIVERS, true) && $mailDriver !== 'log',
+        'MAIL_DRIVER sends mail in production',
+        $mailDriver === 'log' ? 'log only writes to storage/logs/mail.log' : $mailDriver
+    );
+
+    if ($mailDriver === 'api') {
+        $result(
+            in_array((string) env('MAIL_API_PROVIDER', 'brevo'), HttpMailer::PROVIDERS, true),
+            'MAIL_API_PROVIDER is one of: ' . implode(', ', HttpMailer::PROVIDERS)
+        );
+        $result(trim((string) env('MAIL_API_KEY', '')) !== '', 'MAIL_API_KEY is set');
+        $result(
+            function_exists('curl_init') || (bool) ini_get('allow_url_fopen'),
+            'curl or allow_url_fopen is available to reach the mail provider'
+        );
+    }
+
+    if ($mailDriver === 'smtp') {
+        $result(trim((string) env('MAIL_HOST', '')) !== '', 'MAIL_HOST is set');
+        $result(trim((string) env('MAIL_PASSWORD', '')) !== '', 'MAIL_PASSWORD is set');
+    }
+
+    $from = (string) env('MAIL_FROM_ADDRESS', '');
+    $result(
+        filter_var($from, FILTER_VALIDATE_EMAIL) !== false && !str_contains($from, 'example.com'),
+        'MAIL_FROM_ADDRESS is a real address on a domain you verified',
+        $from
+    );
+}
 
 $key = trim((string) env('APP_KEY', ''));
 $placeholder = $key === '' || str_contains($key, 'replace-') || str_contains($key, 'PASTE_');
@@ -72,5 +136,5 @@ if ($failures !== []) {
     exit(1);
 }
 
-echo 'BrightCV is ready. Restart WAMP and open:' . PHP_EOL;
-echo $expectedUrl . '/' . PHP_EOL;
+echo 'BrightCV is ready. Open:' . PHP_EOL;
+echo BASE_URL . '/' . PHP_EOL;

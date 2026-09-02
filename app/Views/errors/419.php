@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <?php View::partial('components/theme_init'); ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php View::partial('components/head_meta'); ?>
     <title>Session expired · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
 </head>
@@ -20,5 +20,6 @@
         </section>
     </div>
 </main>
+<script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 </body>
 </html>

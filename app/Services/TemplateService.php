@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 final class TemplateService
 {
-    private const SUPPORTED = ['modern', 'executive', 'minimal', 'creative', 'graduate', 'tech'];
-
     public function __construct(private readonly TemplateRepository $templates = new TemplateRepository())
     {
     }
@@ -25,7 +23,11 @@ final class TemplateService
 
     private function normalize(?array $template): ?array
     {
-        if (!$template || !in_array((string) ($template['template_key'] ?? ''), self::SUPPORTED, true)) {
+        if (!$template) {
+            return null;
+        }
+        $key = (string) ($template['template_key'] ?? '');
+        if (!TemplateCatalog::supports($key)) {
             return null;
         }
 
@@ -38,6 +40,8 @@ final class TemplateService
                 : '';
         }
         $template['is_premium'] = (int) ($template['is_premium'] ?? 0);
+        $template['layout'] = TemplateCatalog::layout($key);
+        $template['section_order'] = TemplateCatalog::order($key);
         return $template;
     }
 }

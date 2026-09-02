@@ -3,9 +3,8 @@
 <head>
     <meta charset="utf-8">
     <?php View::partial('components/theme_init'); ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?php View::partial('components/head_meta'); ?>
     <meta name="description" content="Create, improve, and download a professional CV with clear guidance and practical templates.">
-    <meta name="app-url" content="<?= e(BASE_URL) ?>">
     <title><?= e($title ?? 'Create a professional CV') ?> · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('landing/landing.css')) ?>">
@@ -204,5 +203,6 @@
     </div>
 </footer>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
+<script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 </body>
 </html>

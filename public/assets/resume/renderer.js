@@ -26,6 +26,48 @@
     },
   };
 
+  // Template registry. `layout` is the shape the template was designed for and
+  // `order` is its natural section sequence; both are only defaults — the CV's
+  // own settings win when the writer picks something else in the Design panel.
+  const TEMPLATES = {
+    modern: { layout: 'stacked', order: 'standard' },
+    classic: { layout: 'stacked', order: 'skills_first' },
+    minimal: { layout: 'stacked', order: 'standard' },
+    elegant: { layout: 'stacked', order: 'standard' },
+    compact: { layout: 'stacked', order: 'standard' },
+    timeline: { layout: 'stacked', order: 'standard' },
+    tech: { layout: 'stacked', order: 'skills_first' },
+    graduate: { layout: 'stacked', order: 'skills_first' },
+    academic: { layout: 'stacked', order: 'standard' },
+    executive: { layout: 'sidebar', order: 'standard' },
+    bold: { layout: 'stacked', order: 'standard' },
+    creative: { layout: 'sidebar', order: 'standard' },
+    editorial: { layout: 'stacked', order: 'standard' },
+    metro: { layout: 'stacked', order: 'standard' },
+    ledger: { layout: 'stacked', order: 'standard' },
+    spectrum: { layout: 'stacked', order: 'skills_first' },
+    slate: { layout: 'sidebar', order: 'skills_first' },
+    aurora: { layout: 'stacked', order: 'standard' },
+  };
+
+  const TEMPLATE_KEYS = Object.keys(TEMPLATES);
+  const LAYOUTS = ['stacked', 'sidebar'];
+  const ORDERS = ['standard', 'skills_first'];
+  const DENSITIES = ['compact', 'comfortable', 'spacious'];
+
+  // Section sequences per layout. The stacked orders run down the page in one
+  // column, which is what most recruiters and ATS parsers expect.
+  const SECTION_ORDER = {
+    stacked: {
+      standard: ['summary', 'experience', 'education', 'skills', 'projects', 'certifications', 'languages', 'interests', 'references'],
+      skills_first: ['summary', 'skills', 'experience', 'projects', 'education', 'certifications', 'languages', 'interests', 'references'],
+    },
+    sidebar: {
+      main: ['summary', 'experience', 'projects'],
+      side: ['education', 'skills', 'certifications', 'languages', 'interests', 'references'],
+    },
+  };
+
   function escapeHtml(value) {
     return String(value ?? '')
       .replace(/&/g, '&amp;')
@@ -66,6 +108,63 @@
     return escapeHtml(start + ' — ' + end);
   }
 
+  /**
+   * How far along a stated proficiency is, from 0 to 100.
+   *
+   * Only used for drawing: a template may show a bar or a row of dots, and one
+   * that names the level in words ignores this entirely. An unrecognised or
+   * missing level scores 0, which draws nothing rather than guessing.
+   */
+  const SKILL_STRENGTH = [
+    [/\b(expert|master|native|fluent|advanced high)\b/i, 100],
+    [/\b(advanced|proficient|strong|professional|experienced)\b/i, 78],
+    [/\b(intermediate|working|competent|conversational|good)\b/i, 55],
+    [/\b(beginner|basic|foundation\w*|elementary|novice|learning)\b/i, 30],
+  ];
+
+  function skillStrength(level) {
+    const value = String(level || '').trim();
+    if (value === '') return 0;
+
+    // "85%", "4/5" and "3 of 5" are all written on CVs.
+    const percent = value.match(/(\d{1,3})\s*%/);
+    if (percent) return Math.max(0, Math.min(100, Number(percent[1])));
+
+    const ratio = value.match(/(\d)\s*(?:\/|of)\s*(\d)/i);
+    if (ratio && Number(ratio[2]) > 0) {
+      return Math.max(0, Math.min(100, Math.round((Number(ratio[1]) / Number(ratio[2])) * 100)));
+    }
+
+    for (const [pattern, strength] of SKILL_STRENGTH) {
+      if (pattern.test(value)) return strength;
+    }
+    return 0;
+  }
+
+  /**
+   * A named thing with a stated level: a skill or a language.
+   *
+   * The level is written out in the applicant's own words and, when those words
+   * carry a recognisable strength, repeated as numbers a template can draw. The
+   * meter element is decorative, which is why it is empty and hidden from
+   * assistive software; templates that only name the level leave it hidden.
+   *
+   * @param {string} className Chip class, already trusted.
+   * @param {string} name      Already escaped.
+   * @param {string} level     Raw text, escaped here.
+   */
+  function levelChip(className, name, level) {
+    const strength = skillStrength(level);
+    const dots = strength > 0 ? Math.max(1, Math.min(5, Math.round(strength / 20))) : 0;
+    const style = strength > 0 ? ' style="--cv-skill:' + strength + ';--cv-skill-dots:' + dots + '"' : '';
+
+    return '<span class="' + className + '"' + style + '>' +
+      '<b>' + name + '</b>' +
+      (level ? '<small>' + escapeHtml(level) + '</small>' : '') +
+      (strength > 0 ? '<i class="cv-level-meter" aria-hidden="true"></i>' : '') +
+      '</span>';
+  }
+
   function section(title, body, className = '') {
     if (!body) return '';
     return '<section class="cv-section ' + className + '"><h2>' + escapeHtml(title) + '</h2>' + body + '</section>';
@@ -77,13 +176,20 @@
     const placeholders = Boolean(options.placeholders);
     const locale = ['en', 'fr', 'es'].includes(resume?.language) ? resume.language : 'en';
     const t = translations[locale];
-    const template = ['modern', 'executive', 'minimal', 'creative', 'graduate', 'tech'].includes(resume?.template_key)
-      ? resume.template_key
-      : 'modern';
+    const template = TEMPLATE_KEYS.includes(resume?.template_key) ? resume.template_key : 'modern';
     const accent = /^#[0-9a-f]{6}$/i.test(resume?.accent_color || '') ? resume.accent_color : '#5b4df7';
     const font = ['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'].includes(resume?.font_family)
       ? resume.font_family
       : 'Inter';
+
+    // Layout, section order, and density are CV settings that fall back to the
+    // template's own design when the writer has not chosen explicitly.
+    const settings = content.settings || {};
+    const layout = LAYOUTS.includes(settings.layout) ? settings.layout : TEMPLATES[template].layout;
+    const sectionOrder = ORDERS.includes(settings.section_order)
+      ? settings.section_order
+      : TEMPLATES[template].order;
+    const density = DENSITIES.includes(settings.density) ? settings.density : 'comfortable';
 
     const name = text(personal.full_name, 'YOUR NAME', placeholders);
     const headline = text(personal.headline, 'TARGET ROLE', placeholders);
@@ -135,8 +241,7 @@
       { name: 'Add a key skill', level: 'Advanced' },
       { name: 'Add another skill', level: 'Intermediate' },
     ] : [])).map((skill) =>
-      '<span class="cv-skill"><b>' + text(skill.name, 'Skill', placeholders) + '</b>' +
-      (skill.level ? '<small>' + escapeHtml(skill.level) + '</small>' : '') + '</span>'
+      levelChip('cv-skill', text(skill.name, 'Skill', placeholders), skill.level)
     ).join('');
 
     const projects = meaningful(content.projects, ['name', 'description']);
@@ -157,8 +262,7 @@
 
     const languages = meaningful(content.languages, ['name']);
     const languageBody = languages.map((item) =>
-      '<span class="cv-language"><b>' + escapeHtml(item.name || '') + '</b>' +
-      (item.level ? '<small>' + escapeHtml(item.level) + '</small>' : '') + '</span>'
+      levelChip('cv-language', escapeHtml(item.name || ''), item.level)
     ).join('');
 
     const references = meaningful(content.references, ['name']);
@@ -172,27 +276,40 @@
     const interests = (Array.isArray(content.interests) ? content.interests : []).filter(hasText);
     const interestBody = interests.map((item) => '<span>' + escapeHtml(item) + '</span>').join('');
 
-    const mainSections = [
-      section(t.summary, summaryText ? '<p class="cv-summary">' + summaryText.replace(/\n/g, '<br>') + '</p>' : '', 'cv-summary-section'),
-      section(t.experience, experienceBody, 'cv-experience-section'),
-      section(t.projects, projectBody, 'cv-projects-section'),
-    ].join('');
+    // Every section is built once and keyed, then arranged by the active
+    // layout. `section()` drops anything with an empty body.
+    const blocks = {
+      summary: section(t.summary, summaryText ? '<p class="cv-summary">' + summaryText.replace(/\n/g, '<br>') + '</p>' : '', 'cv-summary-section'),
+      experience: section(t.experience, experienceBody, 'cv-experience-section'),
+      projects: section(t.projects, projectBody, 'cv-projects-section'),
+      education: section(t.education, educationBody, 'cv-education-section'),
+      skills: section(t.skills, skillBody ? '<div class="cv-skills">' + skillBody + '</div>' : '', 'cv-skills-section'),
+      certifications: section(t.certifications, certificationBody, 'cv-certifications-section'),
+      languages: section(t.languages, languageBody ? '<div class="cv-languages">' + languageBody + '</div>' : '', 'cv-languages-section'),
+      interests: section(t.interests, interestBody ? '<div class="cv-interests">' + interestBody + '</div>' : '', 'cv-interests-section'),
+      references: section(t.references, referenceBody, 'cv-references-section'),
+    };
 
-    const secondarySections = [
-      section(t.education, educationBody, 'cv-education-section'),
-      section(t.skills, skillBody ? '<div class="cv-skills">' + skillBody + '</div>' : '', 'cv-skills-section'),
-      section(t.certifications, certificationBody, 'cv-certifications-section'),
-      section(t.languages, languageBody ? '<div class="cv-languages">' + languageBody + '</div>' : '', 'cv-languages-section'),
-      section(t.interests, interestBody ? '<div class="cv-interests">' + interestBody + '</div>' : '', 'cv-interests-section'),
-      section(t.references, referenceBody, 'cv-references-section'),
-    ].join('');
+    const pick = (keys) => keys.map((key) => blocks[key] || '').join('');
 
-    return '<article class="cv-document cv-template-' + template + '" style="--cv-accent:' + accent + ';--cv-font:' +
-      escapeHtml(font) + '">' +
-      '<header class="cv-header"><div class="cv-monogram">' + escapeHtml((personal.full_name || 'CV').split(/\s+/).map((part) => part[0] || '').slice(0, 2).join('').toUpperCase()) +
-      '</div><div class="cv-identity"><h1>' + name + '</h1><p>' + headline + '</p></div></header>' +
+    // Stacked is one full-width column down the page; sidebar keeps the older
+    // two-column split for the templates designed around it.
+    const body = layout === 'sidebar'
+      ? '<div class="cv-columns"><main class="cv-main">' + pick(SECTION_ORDER.sidebar.main) +
+        '</main><aside class="cv-side">' + pick(SECTION_ORDER.sidebar.side) + '</aside></div>'
+      : '<main class="cv-body">' + pick(SECTION_ORDER.stacked[sectionOrder]) + '</main>';
+
+    const monogram = escapeHtml(
+      (personal.full_name || 'CV').split(/\s+/).map((part) => part[0] || '').slice(0, 2).join('').toUpperCase()
+    );
+
+    return '<article class="cv-document cv-template-' + template + ' cv-layout-' + layout +
+      ' cv-order-' + sectionOrder + ' cv-density-' + density +
+      '" style="--cv-accent:' + accent + ';--cv-font:' + escapeHtml(font) + '">' +
+      '<header class="cv-header"><div class="cv-monogram">' + monogram + '</div>' +
+      '<div class="cv-identity"><h1>' + name + '</h1><p>' + headline + '</p></div></header>' +
       '<div class="cv-contact">' + contactItems.join('<i aria-hidden="true"></i>') + '</div>' +
-      '<div class="cv-columns"><main class="cv-main">' + mainSections + '</main><aside class="cv-side">' + secondarySections + '</aside></div>' +
+      body +
       '</article>';
   }
 
@@ -216,5 +333,8 @@
     return Math.min(100, score);
   }
 
-  return { renderResume, calculateProgress, escapeHtml, safeUrl, translations };
+  return {
+    renderResume, calculateProgress, escapeHtml, safeUrl, translations, skillStrength,
+    TEMPLATES, TEMPLATE_KEYS, LAYOUTS, ORDERS, DENSITIES, SECTION_ORDER,
+  };
 });

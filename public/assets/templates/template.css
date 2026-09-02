@@ -303,6 +303,329 @@
   border-bottom: 8px solid var(--accent);
 }
 
+/* Two column templates show their sidebar in the card mock, so the shape on
+   the card is the shape the writer gets. */
+.template-layout-sidebar .template-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, .9fr);
+  align-items: start;
+  gap: 10px;
+}
+
+.template-layout-sidebar .template-content section:nth-child(1),
+.template-layout-sidebar .template-content section:nth-child(2) {
+  grid-column: 1;
+}
+
+.template-layout-sidebar .template-content section:nth-child(3),
+.template-layout-sidebar .template-content section:nth-child(4) {
+  grid-column: 2;
+}
+
+.template-style-classic .template-paper header {
+  justify-content: center;
+  text-align: center;
+}
+
+.template-style-classic .template-avatar {
+  display: none;
+}
+
+.template-style-classic .template-paper h2 {
+  color: #1c1c21;
+  letter-spacing: .08em;
+}
+
+.template-style-classic .template-contact {
+  background: transparent;
+  border-bottom: 1px solid var(--accent);
+}
+
+.template-style-classic .template-content h3 {
+  color: #1c1c21;
+  border-color: #c6c6cd;
+}
+
+.template-style-elegant .template-avatar {
+  display: none;
+}
+
+.template-style-elegant .template-paper header {
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+}
+
+.template-style-elegant .template-paper h2 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+
+.template-style-elegant .template-content h3 {
+  border: 0;
+  font-style: italic;
+}
+
+.template-style-compact .template-contact {
+  margin: 7px 0 8px;
+}
+
+.template-style-compact .template-content h3 {
+  margin: 6px 0 3px;
+}
+
+.template-style-compact .template-content i {
+  height: 2px;
+  margin: 2px 0;
+}
+
+.template-style-timeline .template-content section {
+  padding-left: 7px;
+  border-left: 1px solid var(--accent);
+}
+
+.template-style-timeline .template-content h3 {
+  border: 0;
+}
+
+.template-style-academic .template-avatar {
+  display: none;
+}
+
+.template-style-academic .template-paper header {
+  justify-content: center;
+  text-align: center;
+}
+
+.template-style-academic .template-paper h2 {
+  color: #2f2c43;
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+
+.template-style-academic .template-contact {
+  background: transparent;
+  border-block: 1px solid #ccccd6;
+}
+
+.template-style-bold .template-paper header {
+  margin: -27px -25px 0;
+  padding: 16px 25px;
+  background: var(--accent);
+}
+
+.template-style-bold .template-paper h2 {
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.template-style-bold .template-paper header span {
+  color: rgba(255, 255, 255, .8);
+}
+
+.template-style-bold .template-avatar {
+  color: var(--accent);
+  background: #fff;
+}
+
+.template-style-bold .template-contact {
+  margin: 0 -25px 12px;
+  padding: 5px 25px;
+  color: #fff;
+  background: color-mix(in srgb, var(--accent) 78%, black);
+}
+
+.template-style-bold .template-content h3 {
+  display: inline-block;
+  padding: 2px 4px;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+}
+
+/* ==========================================================================
+   Card previews for the templates added with the reworked skills.
+   ========================================================================== */
+
+.template-style-editorial .template-paper header {
+  border-bottom: 2px solid var(--accent);
+}
+
+.template-style-editorial .template-paper h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: .08em;
+}
+
+.template-style-editorial .template-content h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  text-transform: none;
+}
+
+.template-style-metro .template-avatar {
+  color: #fff;
+  background: var(--accent);
+  border-radius: 0;
+}
+
+.template-style-metro .template-content h3 {
+  display: inline-block;
+  padding: 1px 4px;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+}
+
+.template-style-ledger .template-content section {
+  border-top: 1px solid #dcdce3;
+}
+
+.template-style-ledger .template-content h3 {
+  border: 0;
+  letter-spacing: .12em;
+}
+
+.template-style-spectrum .template-content h3 {
+  color: var(--accent);
+  border-bottom: 2px solid var(--accent);
+}
+
+.template-style-slate .template-paper {
+  padding-left: 55px;
+  border-left: 36px solid var(--accent);
+}
+
+.template-style-slate .template-avatar {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, white);
+}
+
+.template-style-aurora .template-paper header {
+  padding-bottom: 6px;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(to right, var(--accent), color-mix(in srgb, var(--accent) 15%, white)) 1;
+}
+
+.template-style-aurora .template-avatar {
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 45%, white));
+}
+
+/* --------------------------------------------------------------------------
+   The skills row in each card mirrors how that template really sets skills,
+   so the difference is visible before anyone opens the builder.
+   -------------------------------------------------------------------------- */
+
+.template-style-minimal .preview-skills {
+  justify-content: center;
+  gap: 5px;
+}
+
+.template-style-minimal .preview-skills span {
+  padding: 0;
+  color: #4c4b52;
+  background: transparent;
+}
+
+.template-style-classic .preview-skills,
+.template-style-elegant .preview-skills,
+.template-style-academic .preview-skills,
+.template-style-ledger .preview-skills {
+  flex-direction: column;
+  gap: 0;
+}
+
+.template-style-classic .preview-skills span,
+.template-style-elegant .preview-skills span,
+.template-style-academic .preview-skills span,
+.template-style-ledger .preview-skills span {
+  padding: 1px 0;
+  color: #4c4b52;
+  background: transparent;
+  border-bottom: 1px dotted #d3d3da;
+  border-radius: 0;
+}
+
+.template-style-timeline .preview-skills span {
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, white);
+  border-radius: 999px;
+}
+
+.template-style-tech .preview-skills span {
+  background: color-mix(in srgb, var(--accent) 12%, white);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+  font-family: Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.template-style-bold .preview-skills span,
+.template-style-metro .preview-skills span {
+  color: #fff;
+  background: var(--accent);
+  border-radius: 0;
+}
+
+.template-style-editorial .preview-skills span {
+  padding: 0 4px 0 0;
+  color: #4c4b52;
+  background: transparent;
+  border-right: 1px solid #cfced5;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.template-style-aurora .preview-skills span {
+  color: #fff;
+  background: linear-gradient(to right, var(--accent), color-mix(in srgb, var(--accent) 30%, white));
+  border-radius: 999px;
+}
+
+/* Templates that draw the level rather than name it show a bar under each. */
+.template-style-modern .preview-skills,
+.template-style-graduate .preview-skills,
+.template-style-spectrum .preview-skills,
+.template-style-executive .preview-skills,
+.template-style-slate .preview-skills,
+.template-style-creative .preview-skills {
+  align-items: flex-end;
+}
+
+.template-style-modern .preview-skills span,
+.template-style-graduate .preview-skills span,
+.template-style-spectrum .preview-skills span,
+.template-style-executive .preview-skills span,
+.template-style-slate .preview-skills span,
+.template-style-creative .preview-skills span {
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.template-style-modern .preview-skills span::after,
+.template-style-graduate .preview-skills span::after,
+.template-style-spectrum .preview-skills span::after,
+.template-style-executive .preview-skills span::after,
+.template-style-slate .preview-skills span::after,
+.template-style-creative .preview-skills span::after {
+  position: absolute;
+  right: 2px;
+  bottom: 1px;
+  left: 2px;
+  height: 1.5px;
+  background: linear-gradient(to right, var(--accent) 0 70%, color-mix(in srgb, var(--accent) 22%, white) 70%);
+  content: "";
+}
+
+.template-style-spectrum .preview-skills span::after,
+.template-style-creative .preview-skills span::after,
+.template-style-slate .preview-skills span::after {
+  background:
+    repeating-linear-gradient(
+      to right,
+      var(--accent) 0 3px,
+      transparent 3px 5px
+    );
+}
+
 .template-card-body {
   padding: 19px;
 }
@@ -488,5 +811,35 @@
 
   .template-card-actions .btn {
     width: 100%;
+  }
+}
+/* ==========================================================================
+   Touch and small screens
+   The paper mockups inside the cards are pictures of a document, so their
+   small type is deliberate and left alone; only real interface text moves.
+   ========================================================================== */
+
+@media (max-width: 820px) {
+  .template-search input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .filter-tabs button,
+  .template-card-actions .btn {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  .template-card-body > .template-features,
+  .template-results-row p,
+  .filter-label,
+  .template-card-body > p,
+  .template-name-row div span {
+    font-size: 12px;
+  }
+
+  .premium-label {
+    font-size: 11px;
   }
 }

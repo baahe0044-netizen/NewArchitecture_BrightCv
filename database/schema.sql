@@ -138,11 +138,23 @@ INSERT INTO resume_templates
     (template_key, name, category, description, color, is_active, is_premium, sort_order)
 VALUES
     ('modern', 'Modern Focus', 'Modern', 'Clean hierarchy with an ATS-friendly single-column body.', '#5b4df7', 1, 0, 10),
-    ('executive', 'Executive Edge', 'Professional', 'Refined two-column layout for experienced professionals.', '#16324f', 1, 0, 20),
+    ('classic', 'Classic Column', 'Classic', 'Centred name over plain full-width sections, the format most employers expect.', '#1f2933', 1, 0, 20),
     ('minimal', 'Quiet Minimal', 'Classic', 'Elegant typography and generous white space.', '#202124', 1, 0, 30),
-    ('creative', 'Creative Spark', 'Creative', 'Expressive sidebar design for creative portfolios.', '#e25241', 1, 0, 40),
-    ('graduate', 'Graduate Start', 'Modern', 'Skills-forward format for students and new graduates.', '#087f5b', 1, 0, 50),
-    ('tech', 'Technical Pro', 'Professional', 'Compact project and impact layout for technology roles.', '#075985', 1, 0, 60)
+    ('elegant', 'Elegant Serif', 'Classic', 'Serif headings and roomy margins for senior and client-facing roles.', '#6b4423', 1, 0, 40),
+    ('compact', 'Compact One Page', 'Modern', 'Tight vertical rhythm that keeps a longer history on a single page.', '#334155', 1, 0, 50),
+    ('timeline', 'Timeline Track', 'Modern', 'Single column with a dated rail so career progression reads at a glance.', '#0f766e', 1, 0, 60),
+    ('tech', 'Technical Pro', 'Professional', 'Skills and projects first, built for engineering and data roles.', '#075985', 1, 0, 70),
+    ('graduate', 'Graduate Start', 'Modern', 'Skills-forward format for students and new graduates.', '#087f5b', 1, 0, 80),
+    ('academic', 'Academic Record', 'Academic', 'Serif layout with space for research, publications, and long qualifications.', '#3b3663', 1, 0, 90),
+    ('executive', 'Executive Edge', 'Professional', 'Refined two-column layout for experienced professionals.', '#16324f', 1, 0, 100),
+    ('bold', 'Bold Impact', 'Creative', 'Full-width accent header over stacked sections for high-visibility roles.', '#c2255c', 1, 0, 110),
+    ('creative', 'Creative Spark', 'Creative', 'Expressive sidebar design for creative portfolios.', '#e25241', 1, 0, 120),
+    ('editorial', 'Editorial Serif', 'Classic', 'Magazine typography with skills set as a flowing line of type.', '#7f1d1d', 1, 0, 130),
+    ('metro', 'Metro Blocks', 'Modern', 'Square blocks and flat colour, with skills as solid uppercase tiles.', '#1d4ed8', 1, 0, 140),
+    ('ledger', 'Ledger Lines', 'Professional', 'Ruled rows throughout, listing each skill against its level like a register.', '#3f3f46', 1, 0, 150),
+    ('spectrum', 'Spectrum Bars', 'Modern', 'Skills lead the page as segmented strength bars.', '#7c3aed', 1, 0, 160),
+    ('slate', 'Slate Sidebar', 'Professional', 'Dark sidebar with skills rated as dots beside each name.', '#0f172a', 1, 0, 170),
+    ('aurora', 'Aurora Gradient', 'Creative', 'Soft gradient accents, with each skill pill filled to its level.', '#be185d', 1, 0, 180)
 ON DUPLICATE KEY UPDATE
     name = VALUES(name),
     category = VALUES(category),

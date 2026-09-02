@@ -7,8 +7,7 @@ $jobTitleErrors = $errors['job_title'] ?? [];
 <head>
     <meta charset="utf-8">
     <?php View::partial('components/theme_init'); ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="app-url" content="<?= e(BASE_URL) ?>">
+    <?php View::partial('components/head_meta'); ?>
     <meta name="csrf-token" content="<?= e(Csrf::token()) ?>">
     <title>Profile settings · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
@@ -61,5 +60,6 @@ $jobTitleErrors = $errors['job_title'] ?? [];
     </div>
 </main>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
+<script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 </body>
 </html>

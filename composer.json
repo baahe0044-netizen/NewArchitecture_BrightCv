@@ -7,7 +7,8 @@
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-pdo": "*",
-    "ext-pdo_mysql": "*"
+    "ext-pdo_mysql": "*",
+    "ext-zlib": "*"
   },
   "autoload": {
     "classmap": [
@@ -25,5 +26,9 @@
   "config": {
     "optimize-autoloader": true,
     "sort-packages": true
+  },
+  "suggest": {
+    "ext-zip": "Reading Word (.docx) CVs on import. Without it, PDF and plain text import still work.",
+    "ext-gd": "Only to regenerate the app icons with scripts/generate-icons.php; the icons are committed."
   }
 }

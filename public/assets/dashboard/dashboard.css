@@ -545,11 +545,13 @@
   font-size: 9px;
 }
 
+/* Pinned light colours here left dark-theme text on a pale mint panel at
+   1.45:1; the success tokens already flip with the palette. */
 .dashboard-tip {
   padding: 18px 20px;
   color: var(--ink-soft);
-  background: #eef4f1;
-  border: 1px solid #cfe0d8;
+  background: var(--success-soft);
+  border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
   border-radius: var(--radius);
 }
 
@@ -645,5 +647,67 @@
   .resume-card-actions > button,
   .resume-menu-button {
     padding-inline: 5px;
+  }
+}
+/* ==========================================================================
+   Touch and small screens
+   The card thumbnails are pictures of a document, so their tiny type is
+   deliberate; only real interface text and controls change here.
+   ========================================================================== */
+
+@media (max-width: 820px) {
+  .resume-status,
+  .resume-meta,
+  .resume-progress,
+  .activity-item small,
+  .activity-item span,
+  .dashboard-hero p,
+  .dashboard-tip,
+  .dashboard-tip span,
+  .next-step-card p,
+  .side-card-heading p,
+  .section-title-row p,
+  .stat-card > small,
+  .stat-card strong small,
+  .resume-card-heading p,
+  .new-resume-card small {
+    font-size: 12px;
+  }
+
+  /* The score sits on the card thumbnail, so it stays compact but readable. */
+  .resume-score b {
+    font-size: 12px;
+  }
+
+  .resume-score span {
+    font-size: 10px;
+  }
+
+  .resume-card-actions > a,
+  .resume-card-actions > button,
+  .resume-menu-button,
+  .create-cv-button,
+  .dashboard-hero .btn,
+  .section-title-row > a,
+  .section-title-row .btn {
+    min-height: 44px;
+    font-size: 12px;
+  }
+
+  .resume-menu-button {
+    min-width: 44px;
+  }
+
+  .resume-menu button {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  .stat-card b {
+    font-size: 22px;
+  }
+
+  .stat-card span {
+    font-size: 12px;
   }
 }

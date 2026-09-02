@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <?php View::partial('components/theme_init'); ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="app-url" content="<?= e(BASE_URL) ?>">
+    <?php View::partial('components/head_meta'); ?>
     <meta name="csrf-token" content="<?= e(Csrf::token()) ?>">
     <title>Appearance · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
@@ -53,6 +52,7 @@
     </div>
 </main>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
+<script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 <script src="<?= e(asset('account/appearance.js')) ?>" defer></script>
 </body>
 </html>
