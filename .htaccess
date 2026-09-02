@@ -3,6 +3,11 @@
 # These rules make that arrangement behave like a moved document root: the
 # application is reached at the domain root, and everything that is not meant
 # to be served is refused.
+#
+# Everything here is mod_rewrite, guarded by IfModule, and nothing else.
+# Shared hosts routinely forbid Options and the authz directives in .htaccess,
+# and Apache answers a forbidden directive with 500 on every request rather
+# than ignoring it -- which takes the whole site down instead of one rule.
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
@@ -12,23 +17,15 @@
     # reset links.
     RewriteRule ^(app|config|database|docs|storage|tests|scripts|node_modules|vendor)(/|$) - [F,L,NC]
 
+    # Dotfiles, .env above all, and the files that carry configuration or
+    # history. Done as rewrites because <FilesMatch> needs an AllowOverride
+    # that a free plan may not grant.
+    RewriteRule (^|/)\. - [F,L]
+    RewriteRule \.(env|lock|md|sql|log|ini|sh|bak|dist)$ - [F,L,NC]
+
     # Serve every remaining request out of public/. The condition keeps the
     # rule from matching its own output, and matches a public/ segment
     # anywhere so the app still works from a subdirectory in development.
     RewriteCond %{REQUEST_URI} !(^|/)public/
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
-
-# Dotfiles, .env above all, are never served.
-<FilesMatch "^\.">
-    Require all denied
-</FilesMatch>
-
-# Nor are the files that carry configuration, dependencies, or history.
-<FilesMatch "\.(env|json|lock|md|sql|log|ini|sh|bak)$">
-    Require all denied
-</FilesMatch>
-
-# composer.json and package.json are matched above; index.php is not, and the
-# front controller in public/ is reached through the rewrite either way.
-Options -Indexes
