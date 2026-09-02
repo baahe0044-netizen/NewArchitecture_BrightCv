@@ -1,9 +1,34 @@
+# The whole repository sits inside the web root on hosting that will not let
+# the document root be moved to public/ -- InfinityFree and most free plans.
+# These rules make that arrangement behave like a moved document root: the
+# application is reached at the domain root, and everything that is not meant
+# to be served is refused.
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(app|config|database|docs|storage|tests|vendor|api|resume|Templates|account|HelpCenter)(/|$) - [F,L,NC]
-    RewriteRule ^$ public/ [L]
+
+    # Application internals, refused whatever the URL asks for. storage/ is
+    # first among these: it holds the mail log, and that log holds password
+    # reset links.
+    RewriteRule ^(app|config|database|docs|storage|tests|scripts|node_modules|vendor)(/|$) - [F,L,NC]
+
+    # Serve every remaining request out of public/. The condition keeps the
+    # rule from matching its own output, and matches a public/ segment
+    # anywhere so the app still works from a subdirectory in development.
+    RewriteCond %{REQUEST_URI} !(^|/)public/
+    RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 
+# Dotfiles, .env above all, are never served.
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>
+
+# Nor are the files that carry configuration, dependencies, or history.
+<FilesMatch "\.(env|json|lock|md|sql|log|ini|sh|bak)$">
+    Require all denied
+</FilesMatch>
+
+# composer.json and package.json are matched above; index.php is not, and the
+# front controller in public/ is reached through the rewrite either way.
+Options -Indexes
