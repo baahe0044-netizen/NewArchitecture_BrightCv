@@ -196,4 +196,19 @@ try {
     echo "  at " . $e->getFile() . ':' . $e->getLine() . "\n";
 }
 
+// --- Recent failures -------------------------------------------------------
+// The whole point of this section: a 500 on one page says nothing, and the
+// host's own error log is usually out of reach. Reproduce the failure, then
+// reload this page and read what it recorded.
+echo $rule . "\nRecent errors (storage/logs/error.log)\n" . $rule . "\n";
+$errorLog = $root . '/storage/logs/error.log';
+if (!is_file($errorLog)) {
+    echo "No error log yet. Trigger the failure, then reload this page.\n";
+} else {
+    $lines = file($errorLog, FILE_IGNORE_NEW_LINES);
+    $tail = array_slice($lines, -40);
+    echo "(last " . count($tail) . " of " . count($lines) . " lines)\n\n";
+    echo implode("\n", $tail) . "\n";
+}
+
 echo $rule . "\nDelete public/selftest.php when the site works.\n";

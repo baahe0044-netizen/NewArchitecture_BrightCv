@@ -145,15 +145,31 @@ if (!function_exists('e')) {
 Session::start();
 
 set_exception_handler(static function (Throwable $exception): void {
-    error_log(sprintf(
-        '[%s] %s in %s:%d%s%s',
+    $entry = sprintf(
+        '[%s] %s: %s in %s:%d%s%s',
         date(DATE_ATOM),
+        get_class($exception),
         $exception->getMessage(),
         $exception->getFile(),
         $exception->getLine(),
         PHP_EOL,
         $exception->getTraceAsString()
-    ));
+    );
+
+    error_log($entry);
+
+    // error_log() goes wherever the host decided, which on shared plans is
+    // often nowhere the person running the site can read. Keep a copy beside
+    // the application so a failure can be diagnosed without a shell, and
+    // without turning on debug output for every visitor.
+    $logDirectory = STORAGE_PATH . '/logs';
+    if (is_dir($logDirectory) && is_writable($logDirectory)) {
+        @file_put_contents(
+            $logDirectory . '/error.log',
+            $entry . PHP_EOL . PHP_EOL,
+            FILE_APPEND | LOCK_EX
+        );
+    }
 
     $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
     $isJson = str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')
