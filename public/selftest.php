@@ -72,6 +72,45 @@ foreach (array('cache', 'logs', 'pdfs', 'uploads') as $dir) {
 }
 echo $rule . "\n";
 
+// --- Inventory -------------------------------------------------------------
+// A part-finished upload is the common failure here, and it looks identical
+// to a broken app from the outside. Count what actually arrived.
+$countFiles = function ($dir) use (&$countFiles) {
+    if (!is_dir($dir)) {
+        return -1;
+    }
+    $total = 0;
+    foreach (scandir($dir) as $entry) {
+        if ($entry === '.' || $entry === '..') {
+            continue;
+        }
+        $path = $dir . '/' . $entry;
+        $total += is_dir($path) ? max(0, $countFiles($path)) : 1;
+    }
+    return $total;
+};
+
+echo "In htdocs          : " . implode(' ', array_values(array_diff(scandir($root), array('.', '..')))) . "\n\n";
+
+// Counted from the upload package itself, so a short count means files are
+// genuinely missing rather than my arithmetic being wrong.
+$expected = array(
+    'app' => 74, 'app/Controllers' => 9, 'app/Core' => 10, 'app/Helpers' => 3,
+    'app/Middleware' => 4, 'app/Repositories' => 7, 'app/Services' => 16,
+    'app/Views' => 24, 'config' => 3, 'database' => 2, 'public' => 30,
+    'public/assets' => 25, 'storage' => 5,
+);
+foreach ($expected as $rel => $want) {
+    $have = $countFiles($root . '/' . $rel);
+    if ($have === -1) {
+        echo str_pad($rel, 19) . ': DIRECTORY MISSING  (expected about ' . $want . " files)\n";
+    } else {
+        $flag = $have === 0 ? '  <-- empty' : ($have < $want * 0.7 ? '  <-- looks incomplete' : '');
+        echo str_pad($rel, 19) . ': ' . $have . ' files (expected about ' . $want . ')' . $flag . "\n";
+    }
+}
+echo $rule . "\n";
+
 // --- .env ------------------------------------------------------------------
 $envPath = $root . '/.env';
 if (!is_file($envPath)) {
