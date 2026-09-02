@@ -963,4 +963,18 @@ assertTrue(
 
 putenv('MAIL_DRIVER');
 
+
+// The schema creates tables and not the database holding them. Shared hosting
+// does not grant CREATE DATABASE, so a statement naming its own database fails
+// on the first line of a phpMyAdmin import and the whole deployment stops.
+$schemaSql = (string) file_get_contents(__DIR__ . '/../database/schema.sql');
+assertTrue(
+    !preg_match('/^\s*(CREATE\s+DATABASE|CREATE\s+SCHEMA|USE)\b/im', $schemaSql),
+    'The schema should not create or select a database; the host does that.'
+);
+assertTrue(
+    str_contains($schemaSql, 'CREATE TABLE IF NOT EXISTS users'),
+    'The schema should still create the tables it is responsible for.'
+);
+
 echo "PHP domain tests passed.\n";

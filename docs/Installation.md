@@ -26,7 +26,10 @@ optional command creates an optimized production class map:
 
 ## phpMyAdmin alternative
 
-Select Import, choose database/schema.sql, and execute it. Then confirm that the
+Create an empty database named brightcv_db with the utf8mb4 character set,
+select it, then Import database/schema.sql and execute it. The file creates
+tables only, never the database, so that it also imports on hosting where you
+cannot create one. Then confirm that the
 database name matches DB_DATABASE in .env.
 
 ## Common problems

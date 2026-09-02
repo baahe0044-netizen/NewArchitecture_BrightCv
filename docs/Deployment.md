@@ -90,7 +90,8 @@ PDF binary. Exporting a PDF uses the browser's own print engine.
 5. Give the web user write access to `storage/cache`, `storage/logs`,
    `storage/pdfs`, and `storage/uploads`. Everything else can be read-only.
 6. Create the schema. With shell access run `php database/migrate.php`;
-   without it, import `database/schema.sql` through phpMyAdmin.
+   without it, create the database in the panel and import
+   `database/schema.sql` into it through phpMyAdmin.
 7. Run `php scripts/doctor.php` if you have shell access. It checks the PHP
    version, the extensions, the upload limits, `APP_URL`, `APP_KEY`, the
    writable directories, and the database schema, and names anything missing.
@@ -131,9 +132,11 @@ Setting up mail:
 
 Two limits worth knowing before you commit:
 
-- **No shell access.** Import `database/schema.sql` through phpMyAdmin rather
-  than running the migration script, and skip `scripts/doctor.php` unless the
-  host offers a way to run a PHP file from the browser.
+- **No shell access.** Create the database in the control panel, then import
+  `database/schema.sql` into it through phpMyAdmin rather than running the
+  migration script. `scripts/doctor.php` cannot run either; upload
+  `public/health.php`, set `HEALTH_TOKEN` in `.env`, and open
+  `https://your-domain/health.php?token=...` for the same report.
 - **`.docx` import needs `zip`.** If the extension is missing, PDF, plain text,
   and pasted text import still work and the app says so.
 

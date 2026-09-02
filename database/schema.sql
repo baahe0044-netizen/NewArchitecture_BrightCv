@@ -1,8 +1,17 @@
-CREATE DATABASE IF NOT EXISTS brightcv_db
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-USE brightcv_db;
+-- Canonical schema for a fresh installation. Idempotent: safe to run again.
+--
+-- It creates tables only, and never the database that holds them. Shared and
+-- free hosting does not grant CREATE DATABASE -- the panel makes the database
+-- for you, under a name it chooses -- so a script that named its own would
+-- fail on the first statement. Create the database first, then run this
+-- against it:
+--
+--   locally    CREATE DATABASE brightcv_db
+--                CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+--   on a host  make it in the control panel, then import this in phpMyAdmin
+--              with that database selected.
+--
+-- database/migrate.php does the same thing where a shell is available.
 
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

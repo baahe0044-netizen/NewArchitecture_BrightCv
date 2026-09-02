@@ -73,7 +73,8 @@ loading but the application also has a safe fallback autoloader.
 
        C:\wamp64\bin\php\php8.2.0\php.exe database\migrate.php
 
-   You can instead import database/schema.sql through phpMyAdmin.
+   You can instead create an empty brightcv_db and import database/schema.sql
+   into it through phpMyAdmin.
 6. Verify the complete WAMP environment:
 
        C:\wamp64\bin\php\php8.2.0\php.exe scripts\doctor.php
