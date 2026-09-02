@@ -54,7 +54,14 @@ if (is_file($environmentFile)) {
             }
         }
 
-        putenv($key . '=' . $value);
+        // Shared hosting commonly disables putenv, and calling a disabled
+        // function is a fatal error, not a warning -- it would take down every
+        // request. The arrays below are what env() actually reads back, so
+        // putenv is a convenience for anything else on the box, not a
+        // requirement.
+        if (function_exists('putenv')) {
+            putenv($key . '=' . $value);
+        }
         $_ENV[$key] = $value;
         $_SERVER[$key] = $value;
     }
