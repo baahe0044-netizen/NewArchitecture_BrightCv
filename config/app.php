@@ -63,7 +63,15 @@ if (is_file($environmentFile)) {
 if (!function_exists('env')) {
     function env(string $key, mixed $default = null): mixed
     {
+        // getenv() first, so a real environment variable still outranks .env.
+        // Then the arrays the loader fills alongside it: shared hosting often
+        // disables putenv(), and reading getenv() alone there would leave the
+        // whole configuration invisible and every value silently defaulted --
+        // no APP_KEY, and a database host of 127.0.0.1 that cannot answer.
         $value = getenv($key);
+        if ($value === false) {
+            $value = $_ENV[$key] ?? $_SERVER[$key] ?? false;
+        }
         if ($value === false) {
             return $default;
         }
