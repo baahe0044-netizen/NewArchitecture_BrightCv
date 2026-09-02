@@ -24,13 +24,50 @@ if (!isset($_GET['token']) || !hash_equals($TOKEN, (string) $_GET['token'])) {
     exit;
 }
 
-header('Content-Type: text/plain; charset=utf-8');
+header('Content-Type: text/html; charset=utf-8');
 header('X-Robots-Tag: noindex, nofollow');
+header('Cache-Control: no-store');
 
 // Show what is going wrong instead of a blank 500.
 @ini_set('display_errors', '1');
 @ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
+
+// The report is written as plain text and wrapped at the end, so a section
+// that stops early with exit() still produces a readable page.
+ob_start();
+register_shutdown_function(function () use ($TOKEN) {
+    $report = ob_get_clean();
+    $safe = htmlspecialchars($report, ENT_QUOTES, 'UTF-8');
+    $action = htmlspecialchars(
+        strtok((string) $_SERVER['REQUEST_URI'], '?') . '?token=' . $TOKEN,
+        ENT_QUOTES,
+        'UTF-8'
+    );
+
+    echo '<!doctype html><meta charset="utf-8"><title>BrightCV self test</title>';
+    echo '<style>body{margin:0;padding:20px;background:#0d1117;color:#d6dde6;'
+        . 'font:13px/1.55 ui-monospace,Consolas,monospace}pre{white-space:pre-wrap;margin:0 0 22px}'
+        . 'form{padding:14px;background:#161d26;border:1px solid #2a3542;border-radius:8px;max-width:520px}'
+        . 'h2{margin:0 0 6px;font-size:14px}p{margin:0 0 10px;color:#93a1b2}'
+        . 'input{width:100%;padding:8px;margin-bottom:10px;font:inherit;color:#e6edf5;'
+        . 'background:#0d1117;border:1px solid #2a3542;border-radius:5px;box-sizing:border-box}'
+        . 'button{padding:8px 14px;font:inherit;color:#0d1117;background:#4fb3c2;border:0;'
+        . 'border-radius:5px;cursor:pointer}</style>';
+    echo '<pre>' . $safe . '</pre>';
+
+    // Trying a password here beats editing .env, uploading it and reloading
+    // for every guess. Nothing is written or logged; it is used for one
+    // connection attempt and discarded with the request.
+    echo '<form method="post" action="' . $action . '">'
+        . '<h2>Try a database password</h2>'
+        . '<p>Tests the connection with this password and the host, database and '
+        . 'username already in your .env. Nothing is saved. When one works, put it '
+        . 'in .env as DB_PASSWORD.</p>'
+        . '<input type="password" name="try_password" placeholder="Paste a password to test" autocomplete="off">'
+        . '<button type="submit">Test connection</button>'
+        . '</form>';
+});
 
 $rule = str_repeat('-', 56);
 echo "BrightCV self test\n" . $rule . "\n";
@@ -155,6 +192,17 @@ echo $rule . "\n";
 if (!extension_loaded('pdo_mysql')) {
     echo "database           : cannot test, pdo_mysql missing\n";
 } else {
+    // A password submitted through the form is tried instead of the stored
+    // one, so credentials can be checked without editing and re-uploading.
+    $tried = isset($_POST['try_password']) && $_POST['try_password'] !== '';
+    $password = $tried
+        ? (string) $_POST['try_password']
+        : (isset($values['DB_PASSWORD']) ? $values['DB_PASSWORD'] : '');
+
+    if ($tried) {
+        echo "testing            : the password you typed (" . strlen($password) . " chars), not the one in .env\n";
+    }
+
     $dsn = 'mysql:host=' . (isset($values['DB_HOST']) ? $values['DB_HOST'] : '')
         . ';port=' . (isset($values['DB_PORT']) ? $values['DB_PORT'] : '3306')
         . ';dbname=' . (isset($values['DB_DATABASE']) ? $values['DB_DATABASE'] : '')
@@ -163,14 +211,28 @@ if (!extension_loaded('pdo_mysql')) {
         $pdo = new PDO(
             $dsn,
             isset($values['DB_USERNAME']) ? $values['DB_USERNAME'] : '',
-            isset($values['DB_PASSWORD']) ? $values['DB_PASSWORD'] : '',
+            $password,
             array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_TIMEOUT => 8)
         );
         echo "database           : connected, MySQL " . $pdo->query('SELECT VERSION()')->fetchColumn() . "\n";
         $count = $pdo->query('SELECT COUNT(*) FROM resume_templates')->fetchColumn();
         echo "templates seeded   : " . $count . "\n";
+        if ($tried) {
+            echo "\n  That password works. Put it in .env as DB_PASSWORD.\n";
+        }
     } catch (Exception $e) {
         echo "database           : FAILED\n  " . $e->getMessage() . "\n";
+
+        // The characters matter more than the value when a password has been
+        // retyped or pasted through an editor that rewrites quotes.
+        if ($password !== '') {
+            $odd = preg_replace('/[A-Za-z0-9]/', '', $password);
+            echo "  password length  : " . strlen($password) . "\n";
+            echo "  non-alphanumeric : " . ($odd === '' ? 'none' : $odd) . "\n";
+            if (trim($password) !== $password) {
+                echo "  !! it has leading or trailing whitespace\n";
+            }
+        }
     }
 }
 echo $rule . "\n";
