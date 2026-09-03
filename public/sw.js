@@ -16,7 +16,7 @@
  *   builder's existing local draft recovery protects unsaved edits.
  */
 
-const VERSION = 'brightcv-v1';
+const VERSION = 'brightcv-v2';
 const ASSET_CACHE = VERSION + '-assets';
 const SHELL_CACHE = VERSION + '-shell';
 const SCOPE = new URL(self.registration.scope);
