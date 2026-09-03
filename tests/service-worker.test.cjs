@@ -115,15 +115,15 @@ test('install precaches the offline page and activates immediately', async () =>
 
 test('activate removes caches from previous versions only', async () => {
   const w = loadWorker();
-  w.caches.stores.set('brightcv-v0-assets', new Map());
   w.caches.stores.set('brightcv-v1-assets', new Map());
+  w.caches.stores.set('brightcv-v2-assets', new Map());
   w.caches.stores.set('unrelated-app-cache', new Map());
 
   await w.dispatch('activate');
 
   const remaining = [...w.caches.stores.keys()];
-  assert.ok(!remaining.includes('brightcv-v0-assets'), 'an older BrightCV cache should be dropped');
-  assert.ok(remaining.includes('brightcv-v1-assets'), 'the current cache should survive');
+  assert.ok(!remaining.includes('brightcv-v1-assets'), 'an older BrightCV cache should be dropped');
+  assert.ok(remaining.includes('brightcv-v2-assets'), 'the current cache should survive');
   assert.ok(remaining.includes('unrelated-app-cache'), 'another app on the origin should be left alone');
   assert.equal(w.calls.claim, 1);
 });

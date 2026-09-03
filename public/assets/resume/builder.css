@@ -2293,7 +2293,7 @@
   }
 }
 
-@media (max-width: 920px) {
+@media (max-width: 1100px) {
   .builder-topbar {
     grid-template-columns: minmax(0, 1fr) auto auto;
   }
@@ -2790,7 +2790,7 @@
    score -- so they step aside rather than forcing the topbar and preview
    toolbar to overflow on a phone.
    ========================================================================== */
-@media (max-width: 920px) {
+@media (max-width: 1100px) {
   .builder-xp-chip {
     display: none;
   }
@@ -2828,11 +2828,21 @@
    were visible at all. Below the same width where the panel goes off-canvas,
    the stages become one scrollable row instead, so the fields under it are
    the first thing in view.
+
+   editor-sticky itself (the level card, the CV-progress bar, and this row)
+   stays pinned above section-editor, so it is also trimmed down to close to
+   its content's minimum height here -- every px it gives up is a px
+   section-editor gains, and it is what a person actually came to this panel
+   to fill in.
    ========================================================================== */
-@media (max-width: 920px) {
+@media (max-width: 1100px) {
+  .editor-sticky {
+    padding-bottom: 4px;
+  }
+
   .section-steps {
     flex-direction: row;
-    padding: 6px 10px;
+    padding: 4px 10px;
     gap: 6px;
     overflow-x: auto;
     overflow-y: hidden;
@@ -2871,39 +2881,54 @@
     font-size: 12px;
   }
 
-  /* The level card and progress bar step aside too, so the row of stages
-     and the fields below it both fit in view together. */
+  /* The level card and progress bar step aside too, cut down to a single
+     compact line each instead of the desktop card's full padding and
+     multi-line copy. */
   .stage-rail-level {
-    margin: 10px 16px 0;
-    padding: 10px 12px;
+    margin: 6px 12px 0;
+    padding: 7px 10px;
   }
 
   .stage-rail-level-row {
-    gap: 9px;
+    gap: 8px;
   }
 
   .level-number-small {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
-  }
-
-  .stage-rail-level-name {
+    width: 28px;
+    height: 28px;
     font-size: 14px;
   }
 
-  .stage-rail-level-bar {
-    height: 9px;
-    margin-top: 8px;
+  .stage-rail-level-name {
+    font-size: 12px;
   }
 
+  .stage-rail-level-xp {
+    font-size: 10px;
+  }
+
+  .stage-rail-level-bar {
+    height: 6px;
+    margin-top: 6px;
+  }
+
+  /* "380 XP to Drafter" is the one line the card can lose outright -- the
+     bar it sits under already shows the same progress. */
   .stage-rail-level-next {
-    margin-top: 4px;
-    font-size: 11px;
+    display: none;
   }
 
   .completion-summary {
-    margin: 10px 16px;
-    padding: 10px 12px;
+    margin: 6px 12px;
+    padding: 7px 10px;
+  }
+
+  .completion-copy {
+    font-size: 11px;
+  }
+
+  .completion-bar {
+    height: 6px;
+    margin: 6px 0 0;
   }
 }
