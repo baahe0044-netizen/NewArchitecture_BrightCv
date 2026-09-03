@@ -322,6 +322,7 @@ $builderPayload = [
         </div>
     </aside>
 </main>
+<?php View::partial('components/bottom_nav', ['active' => 'builder']); ?>
 
 <nav class="builder-mobile-switch" aria-label="Builder view">
     <button type="button" data-toggle-panel="editor" aria-controls="editorPanel" aria-expanded="false">

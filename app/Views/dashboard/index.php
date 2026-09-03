@@ -175,6 +175,7 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
         </section>
     </div>
 </main>
+<?php View::partial('components/bottom_nav', ['active' => 'dashboard']); ?>
 
 <div class="modal" id="createResumeModal" role="dialog" aria-modal="true" aria-labelledby="createResumeTitle" aria-hidden="true">
     <div class="modal-dialog">

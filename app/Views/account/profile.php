@@ -59,6 +59,7 @@ $jobTitleErrors = $errors['job_title'] ?? [];
         </div>
     </div>
 </main>
+<?php View::partial('components/bottom_nav', ['active' => 'account']); ?>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 </body>

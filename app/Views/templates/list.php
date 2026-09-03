@@ -95,6 +95,7 @@
         </div>
     </div>
 </main>
+<?php View::partial('components/bottom_nav', ['active' => 'templates']); ?>
 
 <div class="modal template-modal" id="templatePreviewModal" role="dialog" aria-modal="true" aria-labelledby="previewTemplateTitle" aria-hidden="true">
     <div class="modal-dialog preview-dialog">

@@ -359,3 +359,40 @@
     font-size: 12px;
   }
 }
+
+/* ==========================================================================
+   Palette picker. Reuses the theme option layout; only the swatch differs.
+   ========================================================================== */
+.palette-options {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.palette-swatch {
+  display: block;
+  height: 46px;
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+/* Each swatch shows its own palette rather than the active one, so the choice
+   is legible before it is made. */
+.palette-swatch-azure {
+  background:
+    radial-gradient(120% 90% at 15% 0%, #D6E9F8 0%, transparent 60%),
+    linear-gradient(135deg, #F7FBFE 0%, #0F62A8 220%);
+}
+
+.palette-swatch-mono {
+  background:
+    radial-gradient(120% 90% at 15% 0%, #E4E4E7 0%, transparent 60%),
+    linear-gradient(135deg, #F8F8F9 0%, #1F1F23 220%);
+}
+
+.palette-swatch-ember {
+  background:
+    radial-gradient(120% 90% at 15% 0%, #F7E4D4 0%, transparent 60%),
+    linear-gradient(135deg, #FDF8F2 0%, #A93C26 220%);
+}

@@ -48,9 +48,41 @@
                     </label>
                 </div>
             </section>
+
+            <section class="card account-card">
+                <div class="account-card-heading"><div class="large-avatar">◑</div><div><h2>Colour</h2><p>Pick the palette BrightCV uses on this device. Each one works in light and dark, so this choice sits alongside the theme rather than replacing it.</p></div></div>
+
+                <div class="palette-options" role="radiogroup" aria-label="Colour palette">
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="azure">
+                        <span class="theme-option-card">
+                            <span class="palette-swatch palette-swatch-azure" aria-hidden="true"></span>
+                            <span class="theme-option-label"><b>Azure</b><span class="theme-option-check">✓</span></span>
+                            <p>Calm blue glass. The default.</p>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="mono">
+                        <span class="theme-option-card">
+                            <span class="palette-swatch palette-swatch-mono" aria-hidden="true"></span>
+                            <span class="theme-option-label"><b>Monochrome</b><span class="theme-option-check">✓</span></span>
+                            <p>Black and white glass, no colour at all.</p>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="ember">
+                        <span class="theme-option-card">
+                            <span class="palette-swatch palette-swatch-ember" aria-hidden="true"></span>
+                            <span class="theme-option-label"><b>Ember</b><span class="theme-option-check">✓</span></span>
+                            <p>Warm terracotta glass on paper.</p>
+                        </span>
+                    </label>
+                </div>
+            </section>
         </div>
     </div>
 </main>
+<?php View::partial('components/bottom_nav', ['active' => 'account']); ?>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 <script src="<?= e(asset('account/appearance.js')) ?>" defer></script>

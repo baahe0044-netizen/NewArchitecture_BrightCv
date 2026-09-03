@@ -17,59 +17,14 @@
 */
 
 :root {
-  color-scheme: light;
-
-  /* --- Accent family. Terracotta leads; the rest carry categories. ------- */
-  --brand: #A93C26;
-  --brand-dark: #8C2F1D;
-  --brand-soft: #FBEDE7;
-  --brand-border: #F0CFC2;
-  --on-brand: #FFFFFF;
-
-  --accent-ochre: #8A6410;
-  --accent-ochre-soft: #FBF1DC;
-  --accent-moss: #2C6B48;
-  --accent-moss-soft: #E4F2EA;
-  --accent-teal: #14646E;
-  --accent-teal-soft: #DFF0F2;
-  --accent-plum: #7D3260;
-  --accent-plum-soft: #F7E6F0;
-
-  /* --- Ink and ground. Warm near-black on warm paper, never #000 or #fff. */
-  --ink: #2A211B;
-  --ink-soft: #4C3B31;
-  --muted: #6E5A4C;
-  --subtle: #6E5A4C;
-  --line: #E8DCCC;
-  --line-strong: #9C8873;
-  --surface: #FFFDF9;
-  --surface-muted: #F5EEE4;
-  --canvas: #FAF5EE;
-
-  /* --- Semantic. Warmed to sit in the same family as the accents. -------- */
-  --success: #2C6B48;
-  --success-soft: #E4F2EA;
-  --warning: #8A6410;
-  --warning-soft: #FBF1DC;
-  --danger: #B0293C;
-  --danger-soft: #FCE9EC;
-
-  --focus: rgba(169, 60, 38, .28);
-  --overlay: rgba(42, 33, 27, .55);
-
-  /* --- Shadows tinted with the ink, never neutral grey. ------------------ */
-  --shadow-sm: 0 1px 2px rgba(42, 33, 27, .05), 0 4px 12px rgba(42, 33, 27, .05);
-  --shadow-md: 0 10px 28px rgba(42, 33, 27, .12);
-  --shadow-lg: 0 22px 48px rgba(42, 33, 27, .16);
-
-  /* --- Geometry. Slightly larger and less uniform than a stock scale. ---- */
+  /* Geometry, spacing, type and motion are shared by every palette; only the
+     colours change between them. */
   --radius-sm: 9px;
   --radius: 13px;
   --radius-lg: 18px;
   --radius-pill: 999px;
   --content: 1180px;
 
-  /* --- Spacing, 4px base. Use these instead of one-off pixel margins. ---- */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -80,7 +35,6 @@
   --space-8: 64px;
   --space-9: 96px;
 
-  /* --- Type. A display face for headings against a readable text face. --- */
   --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --font-text: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -99,24 +53,409 @@
   --leading-normal: 1.6;
   --measure: 68ch;
 
-  /* --- Motion. Nothing outside this system. ----------------------------- */
   --motion-fast: 120ms;
   --motion-base: 220ms;
   --motion-slow: 420ms;
   --ease-out: cubic-bezier(.22, .61, .36, 1);
   --ease-spring: cubic-bezier(.34, 1.26, .64, 1);
 
-  /* --- Paper grain. Near-invisible, and never on the CV or in print. ----- */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
 }
 
-/*
-  System dark: the operating system asks for dark and the app has been given no
-  explicit instruction. A warm dark -- brown-black rather than navy -- derived
-  from the same hues as the light theme rather than inverted from it.
-*/
+/* ==========================================================================
+   Glass palettes.
+
+   Three looks, chosen independently of light and dark: Azure (the default),
+   Monochrome, and Ember. The palette sits on data-palette and the light/dark
+   decision stays on data-theme, so a person picks a colour once and it still
+   follows their device between day and night.
+
+   Frosted panels are used for chrome -- the header, the bottom bar, decorative
+   cards. Anything carrying body text keeps a high-opacity surface underneath,
+   because contrast over a blurred, arbitrary backdrop cannot be guaranteed.
+   scripts/check-contrast.mjs measures every palette in both themes.
+   ========================================================================== */
+
+/* --- Glass mechanics, shared by every palette --------------------------- */
+:root {
+  --glass-blur: 18px;
+  --glass-saturate: 1.5;
+  --glass-bg: rgba(255, 255, 255, .62);
+  --glass-border: rgba(255, 255, 255, .55);
+  --glass-shadow: 0 8px 32px rgba(16, 30, 43, .10);
+  --glass-highlight: rgba(255, 255, 255, .75);
+
+  /* The soft gradient ground the frosted panels sit on. */
+  --page-glow-1: #DCEBF8;
+  --page-glow-2: #EAF3FA;
+  --page-glow-3: #F6FAFD;
+}
+
+/* ==========================================================================
+   AZURE — the default. A calm blue that suits a document tool.
+   ========================================================================== */
+:root,
+:root[data-palette="azure"] {
+  color-scheme: light;
+
+  --brand: #0F62A8;
+  --brand-dark: #0B4C82;
+  --brand-soft: #E4F0FA;
+  --brand-border: #BFDCF2;
+  --on-brand: #FFFFFF;
+
+  --accent-ochre: #8A5A0B;
+  --accent-ochre-soft: #FBF0DA;
+  --accent-moss: #1F6B4A;
+  --accent-moss-soft: #E1F1E9;
+  --accent-teal: #0E6473;
+  --accent-teal-soft: #DEF0F3;
+  --accent-plum: #6E3473;
+  --accent-plum-soft: #F2E6F4;
+
+  --ink: #101E2B;
+  --ink-soft: #33465A;
+  --muted: #5B6E82;
+  --subtle: #5B6E82;
+  --line: #DCE7F0;
+  --line-strong: #78899A;
+  --surface: #FBFDFF;
+  --surface-muted: #EFF5FB;
+  --canvas: #F3F8FC;
+
+  --success: #1F6B4A;
+  --success-soft: #E1F1E9;
+  --warning: #8A5A0B;
+  --warning-soft: #FBF0DA;
+  --danger: #B02436;
+  --danger-soft: #FBE8EB;
+
+  --focus: rgba(15, 98, 168, .3);
+  --overlay: rgba(16, 30, 43, .5);
+
+  --glass-bg: rgba(255, 255, 255, .62);
+  --glass-border: rgba(255, 255, 255, .6);
+  --glass-shadow: 0 8px 32px rgba(16, 30, 43, .1);
+  --glass-highlight: rgba(255, 255, 255, .8);
+
+  --page-glow-1: #D6E9F8;
+  --page-glow-2: #E9F3FB;
+  --page-glow-3: #F7FBFE;
+
+  --shadow-sm: 0 1px 2px rgba(16, 30, 43, .05), 0 4px 12px rgba(16, 30, 43, .05);
+  --shadow-md: 0 10px 28px rgba(16, 30, 43, .12);
+  --shadow-lg: 0 22px 48px rgba(16, 30, 43, .16);
+}
+
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+  :root:not([data-theme="light"]):not([data-palette="mono"]):not([data-palette="ember"]),
+  :root[data-palette="azure"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --brand: #79C2F2;
+    --brand-dark: #9DD4F7;
+    --brand-soft: rgba(121, 194, 242, .14);
+    --brand-border: rgba(121, 194, 242, .32);
+    --on-brand: #0B1620;
+
+    --accent-ochre: #E4B457;
+    --accent-ochre-soft: rgba(228, 180, 87, .14);
+    --accent-moss: #5FCB96;
+    --accent-moss-soft: rgba(95, 203, 150, .14);
+    --accent-teal: #57C6D6;
+    --accent-teal-soft: rgba(87, 198, 214, .14);
+    --accent-plum: #CE93DC;
+    --accent-plum-soft: rgba(206, 147, 220, .14);
+
+    --ink: #E8F1F8;
+    --ink-soft: #BACBDA;
+    --muted: #8FA3B5;
+    --subtle: #8FA3B5;
+    --line: #22394D;
+    --line-strong: #7C90A2;
+    --surface: #132433;
+    --surface-muted: #1A2F42;
+    --canvas: #0B1620;
+
+    --success: #5FCB96;
+    --success-soft: rgba(95, 203, 150, .14);
+    --warning: #E4B457;
+    --warning-soft: rgba(228, 180, 87, .14);
+    --danger: #F58295;
+    --danger-soft: rgba(245, 130, 149, .14);
+
+    --focus: rgba(121, 194, 242, .34);
+    --overlay: rgba(4, 10, 16, .66);
+
+    --glass-bg: rgba(30, 52, 72, .55);
+    --glass-border: rgba(150, 190, 220, .18);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, .42);
+    --glass-highlight: rgba(160, 200, 230, .16);
+
+    --page-glow-1: #10293D;
+    --page-glow-2: #0D1E2C;
+    --page-glow-3: #0A141D;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 4px 12px rgba(0, 0, 0, .28);
+    --shadow-md: 0 10px 28px rgba(0, 0, 0, .46);
+    --shadow-lg: 0 22px 48px rgba(0, 0, 0, .54);
+  }
+}
+
+:root[data-theme="dark"]:not([data-palette="mono"]):not([data-palette="ember"]) {
+  color-scheme: dark;
+
+  --brand: #79C2F2;
+  --brand-dark: #9DD4F7;
+  --brand-soft: rgba(121, 194, 242, .14);
+  --brand-border: rgba(121, 194, 242, .32);
+  --on-brand: #0B1620;
+
+  --accent-ochre: #E4B457;
+  --accent-ochre-soft: rgba(228, 180, 87, .14);
+  --accent-moss: #5FCB96;
+  --accent-moss-soft: rgba(95, 203, 150, .14);
+  --accent-teal: #57C6D6;
+  --accent-teal-soft: rgba(87, 198, 214, .14);
+  --accent-plum: #CE93DC;
+  --accent-plum-soft: rgba(206, 147, 220, .14);
+
+  --ink: #E8F1F8;
+  --ink-soft: #BACBDA;
+  --muted: #8FA3B5;
+  --subtle: #8FA3B5;
+  --line: #22394D;
+  --line-strong: #7C90A2;
+  --surface: #132433;
+  --surface-muted: #1A2F42;
+  --canvas: #0B1620;
+
+  --success: #5FCB96;
+  --success-soft: rgba(95, 203, 150, .14);
+  --warning: #E4B457;
+  --warning-soft: rgba(228, 180, 87, .14);
+  --danger: #F58295;
+  --danger-soft: rgba(245, 130, 149, .14);
+
+  --focus: rgba(121, 194, 242, .34);
+  --overlay: rgba(4, 10, 16, .66);
+
+  --glass-bg: rgba(30, 52, 72, .55);
+  --glass-border: rgba(150, 190, 220, .18);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, .42);
+  --glass-highlight: rgba(160, 200, 230, .16);
+
+  --page-glow-1: #10293D;
+  --page-glow-2: #0D1E2C;
+  --page-glow-3: #0A141D;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 4px 12px rgba(0, 0, 0, .28);
+  --shadow-md: 0 10px 28px rgba(0, 0, 0, .46);
+  --shadow-lg: 0 22px 48px rgba(0, 0, 0, .54);
+}
+
+/* ==========================================================================
+   MONOCHROME — glass with no hue at all. Ink on paper, frosted.
+   ========================================================================== */
+:root[data-palette="mono"] {
+  color-scheme: light;
+
+  --brand: #1F1F23;
+  --brand-dark: #000000;
+  --brand-soft: #EFEFF1;
+  --brand-border: #D5D5D9;
+  --on-brand: #FFFFFF;
+
+  --accent-ochre: #52525A;
+  --accent-ochre-soft: #EFEFF1;
+  --accent-moss: #3C3C43;
+  --accent-moss-soft: #EAEAEC;
+  --accent-teal: #45454D;
+  --accent-teal-soft: #ECECEE;
+  --accent-plum: #2E2E34;
+  --accent-plum-soft: #E7E7EA;
+
+  --ink: #141416;
+  --ink-soft: #3C3C40;
+  --muted: #5E5E64;
+  --subtle: #5E5E64;
+  --line: #E2E2E5;
+  --line-strong: #8A8A90;
+  --surface: #FFFFFF;
+  --surface-muted: #F4F4F6;
+  --canvas: #F0F0F2;
+
+  --success: #2E5C43;
+  --success-soft: #E8EFEB;
+  --warning: #6B5416;
+  --warning-soft: #F2EEE2;
+  --danger: #8C2230;
+  --danger-soft: #F5E7E9;
+
+  --focus: rgba(20, 20, 22, .28);
+  --overlay: rgba(20, 20, 22, .55);
+
+  --glass-bg: rgba(255, 255, 255, .66);
+  --glass-border: rgba(255, 255, 255, .7);
+  --glass-shadow: 0 8px 32px rgba(20, 20, 22, .1);
+  --glass-highlight: rgba(255, 255, 255, .85);
+
+  --page-glow-1: #E4E4E7;
+  --page-glow-2: #EFEFF1;
+  --page-glow-3: #F8F8F9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="mono"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --brand: #EDEDF0;
+    --brand-dark: #FFFFFF;
+    --brand-soft: rgba(237, 237, 240, .12);
+    --brand-border: rgba(237, 237, 240, .3);
+    --on-brand: #141416;
+
+    --accent-ochre: #C9C9D0;
+    --accent-ochre-soft: rgba(201, 201, 208, .12);
+    --accent-moss: #B6B6BD;
+    --accent-moss-soft: rgba(182, 182, 189, .12);
+    --accent-teal: #C0C0C7;
+    --accent-teal-soft: rgba(192, 192, 199, .12);
+    --accent-plum: #DADAE0;
+    --accent-plum-soft: rgba(218, 218, 224, .12);
+
+    --ink: #F2F2F4;
+    --ink-soft: #C9C9CE;
+    --muted: #9C9CA4;
+    --subtle: #9C9CA4;
+    --line: #2C2C31;
+    --line-strong: #85858C;
+    --surface: #1A1A1D;
+    --surface-muted: #232327;
+    --canvas: #0E0E10;
+
+    --success: #7FC7A2;
+    --success-soft: rgba(127, 199, 162, .14);
+    --warning: #D9BA75;
+    --warning-soft: rgba(217, 186, 117, .14);
+    --danger: #E88C99;
+    --danger-soft: rgba(232, 140, 153, .14);
+
+    --focus: rgba(237, 237, 240, .32);
+    --overlay: rgba(0, 0, 0, .68);
+
+    --glass-bg: rgba(46, 46, 52, .55);
+    --glass-border: rgba(255, 255, 255, .12);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+    --glass-highlight: rgba(255, 255, 255, .1);
+
+    --page-glow-1: #202024;
+    --page-glow-2: #161619;
+    --page-glow-3: #0D0D0F;
+  }
+}
+
+:root[data-palette="mono"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --brand: #EDEDF0;
+  --brand-dark: #FFFFFF;
+  --brand-soft: rgba(237, 237, 240, .12);
+  --brand-border: rgba(237, 237, 240, .3);
+  --on-brand: #141416;
+
+  --accent-ochre: #C9C9D0;
+  --accent-ochre-soft: rgba(201, 201, 208, .12);
+  --accent-moss: #B6B6BD;
+  --accent-moss-soft: rgba(182, 182, 189, .12);
+  --accent-teal: #C0C0C7;
+  --accent-teal-soft: rgba(192, 192, 199, .12);
+  --accent-plum: #DADAE0;
+  --accent-plum-soft: rgba(218, 218, 224, .12);
+
+  --ink: #F2F2F4;
+  --ink-soft: #C9C9CE;
+  --muted: #9C9CA4;
+  --subtle: #9C9CA4;
+  --line: #2C2C31;
+  --line-strong: #85858C;
+  --surface: #1A1A1D;
+  --surface-muted: #232327;
+  --canvas: #0E0E10;
+
+  --success: #7FC7A2;
+  --success-soft: rgba(127, 199, 162, .14);
+  --warning: #D9BA75;
+  --warning-soft: rgba(217, 186, 117, .14);
+  --danger: #E88C99;
+  --danger-soft: rgba(232, 140, 153, .14);
+
+  --focus: rgba(237, 237, 240, .32);
+  --overlay: rgba(0, 0, 0, .68);
+
+  --glass-bg: rgba(46, 46, 52, .55);
+  --glass-border: rgba(255, 255, 255, .12);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+  --glass-highlight: rgba(255, 255, 255, .1);
+
+  --page-glow-1: #202024;
+  --page-glow-2: #161619;
+  --page-glow-3: #0D0D0F;
+}
+
+/* ==========================================================================
+   EMBER — the warm option, kept from the earlier brief.
+   ========================================================================== */
+:root[data-palette="ember"] {
+  color-scheme: light;
+
+  --brand: #A93C26;
+  --brand-dark: #8C2F1D;
+  --brand-soft: #FBEDE7;
+  --brand-border: #F0CFC2;
+  --on-brand: #FFFFFF;
+
+  --accent-ochre: #8A6410;
+  --accent-ochre-soft: #FBF1DC;
+  --accent-moss: #2C6B48;
+  --accent-moss-soft: #E4F2EA;
+  --accent-teal: #14646E;
+  --accent-teal-soft: #DFF0F2;
+  --accent-plum: #7D3260;
+  --accent-plum-soft: #F7E6F0;
+
+  --ink: #2A211B;
+  --ink-soft: #4C3B31;
+  --muted: #6E5A4C;
+  --subtle: #6E5A4C;
+  --line: #E8DCCC;
+  --line-strong: #9C8873;
+  --surface: #FFFDF9;
+  --surface-muted: #F5EEE4;
+  --canvas: #FAF5EE;
+
+  --success: #2C6B48;
+  --success-soft: #E4F2EA;
+  --warning: #8A6410;
+  --warning-soft: #FBF1DC;
+  --danger: #B0293C;
+  --danger-soft: #FCE9EC;
+
+  --focus: rgba(169, 60, 38, .28);
+  --overlay: rgba(42, 33, 27, .55);
+
+  --glass-bg: rgba(255, 253, 249, .64);
+  --glass-border: rgba(255, 255, 255, .6);
+  --glass-shadow: 0 8px 32px rgba(42, 33, 27, .1);
+  --glass-highlight: rgba(255, 255, 255, .8);
+
+  --page-glow-1: #F7E4D4;
+  --page-glow-2: #FBEFE3;
+  --page-glow-3: #FDF8F2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="ember"]:not([data-theme="light"]) {
     color-scheme: dark;
 
     --brand: #EE9276;
@@ -154,14 +493,18 @@
     --focus: rgba(238, 146, 118, .34);
     --overlay: rgba(12, 9, 7, .68);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 4px 12px rgba(0, 0, 0, .28);
-    --shadow-md: 0 10px 28px rgba(0, 0, 0, .46);
-    --shadow-lg: 0 22px 48px rgba(0, 0, 0, .54);
+    --glass-bg: rgba(56, 42, 34, .55);
+    --glass-border: rgba(255, 220, 200, .14);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, .46);
+    --glass-highlight: rgba(255, 220, 200, .12);
+
+    --page-glow-1: #2B1F19;
+    --page-glow-2: #1D1613;
+    --page-glow-3: #14100E;
   }
 }
 
-/* Explicit dark: the in-app choice, which must win over a light system. */
-:root[data-theme="dark"] {
+:root[data-palette="ember"][data-theme="dark"] {
   color-scheme: dark;
 
   --brand: #EE9276;
@@ -199,9 +542,14 @@
   --focus: rgba(238, 146, 118, .34);
   --overlay: rgba(12, 9, 7, .68);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 4px 12px rgba(0, 0, 0, .28);
-  --shadow-md: 0 10px 28px rgba(0, 0, 0, .46);
-  --shadow-lg: 0 22px 48px rgba(0, 0, 0, .54);
+  --glass-bg: rgba(56, 42, 34, .55);
+  --glass-border: rgba(255, 220, 200, .14);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, .46);
+  --glass-highlight: rgba(255, 220, 200, .12);
+
+  --page-glow-1: #2B1F19;
+  --page-glow-2: #1D1613;
+  --page-glow-3: #14100E;
 }
 
 /*
@@ -1126,5 +1474,202 @@ button:disabled {
   .install-banner-close {
     width: 44px;
     height: 44px;
+  }
+}
+
+/* ==========================================================================
+   Glass surfaces and the bottom navigation.
+   ========================================================================== */
+
+/*
+  The soft gradient ground the frosted panels read against. Fixed so it does
+  not travel with the scroll, and painted under the existing paper grain.
+*/
+body {
+  background-color: var(--canvas);
+  background-image:
+    radial-gradient(120% 80% at 12% 0%, var(--page-glow-1) 0%, transparent 60%),
+    radial-gradient(100% 70% at 92% 8%, var(--page-glow-2) 0%, transparent 62%),
+    linear-gradient(180deg, var(--page-glow-3) 0%, var(--canvas) 46%),
+    var(--grain);
+  background-attachment: fixed;
+}
+
+/*
+  A frosted panel. backdrop-filter is progressive: where it is unsupported the
+  panel is simply a more opaque solid, which is why --glass-bg carries real
+  colour rather than near-transparency.
+*/
+.glass,
+.card,
+.modal-dialog,
+.app-header {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .card,
+  .modal-dialog,
+  .app-header {
+    background: var(--surface);
+  }
+}
+
+/* The top light edge that makes a frosted panel read as glass. */
+.card,
+.modal-dialog {
+  position: relative;
+  border-radius: var(--radius-lg);
+}
+
+.card::before,
+.modal-dialog::before {
+  position: absolute;
+  top: 0;
+  right: 1px;
+  left: 1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/*
+  Anything holding a form or long prose sits on a solid surface. Text over a
+  blurred, arbitrary backdrop has no guaranteed contrast, and the CV builder is
+  read for long stretches.
+*/
+.card.is-solid,
+.auth-card,
+.account-card,
+.builder-layout .card {
+  background: var(--surface);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* ==========================================================================
+   Bottom navigation. Mobile and tablet only; the header keeps the desktop.
+   ========================================================================== */
+.bottom-nav {
+  position: fixed;
+  z-index: 90;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  padding: var(--space-2) var(--space-3);
+  padding-bottom: calc(var(--space-2) + env(safe-area-inset-bottom));
+  justify-content: center;
+}
+
+.bottom-nav-inner {
+  display: flex;
+  width: min(100%, 460px);
+  padding: 6px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--glass-shadow);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bottom-nav-inner {
+    background: var(--surface);
+  }
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex: 1;
+  min-height: 46px;
+  padding: 0 var(--space-2);
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  transition:
+    color var(--motion-base) var(--ease-out),
+    background-color var(--motion-base) var(--ease-out),
+    flex-grow var(--motion-slow) var(--ease-spring);
+}
+
+.bottom-nav-item svg {
+  width: 21px;
+  height: 21px;
+  flex: none;
+}
+
+/* The label only exists on the active item, the way the reference does it. */
+.bottom-nav-label {
+  overflow: hidden;
+  max-width: 0;
+  font-size: var(--text-sm);
+  font-weight: 650;
+  white-space: nowrap;
+  opacity: 0;
+  transition:
+    max-width var(--motion-slow) var(--ease-spring),
+    opacity var(--motion-base) var(--ease-out);
+}
+
+.bottom-nav-item[aria-current="page"] {
+  flex-grow: 1.9;
+  color: var(--on-brand);
+  background: var(--brand);
+}
+
+.bottom-nav-item[aria-current="page"] .bottom-nav-label {
+  max-width: 120px;
+  opacity: 1;
+}
+
+.bottom-nav-item:hover:not([aria-current="page"]) {
+  color: var(--ink);
+  background: var(--brand-soft);
+}
+
+.bottom-nav-item:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.bottom-nav-item:active {
+  transform: scale(.97);
+}
+
+@media (max-width: 900px) {
+  .bottom-nav {
+    display: flex;
+  }
+
+  /* Room so the bar never covers the last row of content. */
+  body:has(.bottom-nav) .page-shell {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Printing a CV must never carry app chrome onto the page. */
+@media print {
+  .bottom-nav {
+    display: none !important;
   }
 }

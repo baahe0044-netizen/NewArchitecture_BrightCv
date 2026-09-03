@@ -100,10 +100,15 @@ const PAIRS = [
   ['--accent-plum', '--surface', 4.5, 'plum accent text'],
 ];
 
+// Three palettes, each in light and dark. A palette is only useful if it is
+// readable in both, so every combination is measured rather than the default.
 const THEMES = [
-  ['light (:root)', /^:root\s*\{/m],
-  ['system dark', /:root:not\(\[data-theme="light"\]\):not\(\[data-theme="dark"\]\)\s*\{/],
-  ['explicit dark', /:root\[data-theme="dark"\]\s*\{/],
+  ['azure light', /:root\[data-palette="azure"\]\s*\{/],
+  ['azure dark', /:root\[data-theme="dark"\]:not\(\[data-palette="mono"\]\):not\(\[data-palette="ember"\]\)\s*\{/],
+  ['mono light', /:root\[data-palette="mono"\]\s*\{/],
+  ['mono dark', /:root\[data-palette="mono"\]\[data-theme="dark"\]\s*\{/],
+  ['ember light', /:root\[data-palette="ember"\]\s*\{/],
+  ['ember dark', /:root\[data-palette="ember"\]\[data-theme="dark"\]\s*\{/],
 ];
 
 let failures = 0;
@@ -122,7 +127,7 @@ for (const [name, pattern] of THEMES) {
 
   for (const [fg, bg, minimum, role] of PAIRS) {
     // A theme may legitimately not redefine every token; fall back to light.
-    const light = tokensFrom(/^:root\s*\{/m);
+    const light = tokensFrom(/:root\[data-palette="azure"\]\s*\{/);
     const fgValue = tokens[fg] ?? light[fg];
     const bgValue = tokens[bg] ?? light[bg];
     if (!fgValue || !bgValue) continue;
