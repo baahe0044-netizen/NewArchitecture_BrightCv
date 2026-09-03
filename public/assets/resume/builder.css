@@ -200,7 +200,7 @@
   display: grid;
   height: calc(100vh - 72px);
   height: calc(100dvh - 72px);
-  grid-template-columns: 400px minmax(560px, 1fr) 340px;
+  grid-template-columns: 480px minmax(560px, 1fr) 340px;
   /* A grid item's automatic minimum size is its own content, so a CV taller
      than the window stretched this row past the fixed height and the excess
      was clipped by the overflow below instead of scrolling inside the
@@ -2223,7 +2223,7 @@
 
 @media (max-width: 1500px) {
   .builder-layout {
-    grid-template-columns: 370px minmax(540px, 1fr) 320px;
+    grid-template-columns: 400px minmax(540px, 1fr) 320px;
   }
 
   .builder-topbar {
@@ -2238,7 +2238,7 @@
 
 @media (max-width: 1280px) {
   .builder-layout {
-    grid-template-columns: 390px minmax(0, 1fr);
+    grid-template-columns: 480px minmax(0, 1fr);
   }
 
   .assistant-panel {
