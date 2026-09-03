@@ -1,0 +1,356 @@
+/* ==========================================================================
+   Rewards — ported from Rewards.dc.html.
+   ========================================================================== */
+
+.rewards-container {
+  width: min(calc(100% - 40px), var(--content));
+}
+
+.rewards-heading {
+  display: flex;
+  margin-bottom: 18px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.rewards-heading h1 {
+  font-size: 40px;
+  letter-spacing: -.01em;
+}
+
+.rewards-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.chip-large {
+  height: 42px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+/* --- Level ladder --------------------------------------------------------- */
+.level-ladder {
+  display: flex;
+  margin-bottom: 18px;
+  align-items: flex-start;
+  padding: 18px 24px;
+  background: var(--choco);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.ladder-node {
+  display: flex;
+  width: 140px;
+  flex-direction: column;
+  align-items: center;
+  flex: none;
+}
+
+.ladder-number {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  color: var(--choco-ink);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius-pill);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ladder-number svg {
+  width: 18px;
+  height: 18px;
+}
+
+.is-past .ladder-number {
+  background: var(--moss);
+}
+
+.is-current .ladder-node {
+  margin-top: -5px;
+}
+
+.is-current .ladder-number {
+  width: 50px;
+  height: 50px;
+  border-width: 3px;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 22px;
+}
+
+.is-future .ladder-number {
+  color: var(--choco-line-soft);
+  border-color: var(--choco-line-soft);
+}
+
+.ladder-name {
+  margin-top: 7px;
+  color: var(--choco-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.is-current .ladder-name {
+  color: var(--gold);
+  font-size: 16px;
+}
+
+.is-future .ladder-name {
+  color: var(--choco-muted);
+  font-weight: 400;
+}
+
+.ladder-xp {
+  margin-top: 2px;
+  color: var(--choco-muted);
+  font-size: 12px;
+}
+
+.is-future .ladder-xp {
+  color: var(--choco-line-soft);
+}
+
+.ladder-connector {
+  flex: 1;
+  height: 4px;
+  margin-top: 18px;
+  background: var(--choco-line);
+}
+
+.ladder-connector.is-crossed {
+  background: var(--moss);
+}
+
+/* --- Grid ------------------------------------------------------------------ */
+.rewards-grid {
+  display: grid;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) 396px;
+  gap: 18px;
+}
+
+.badges-full-panel {
+  padding: 20px;
+}
+
+.badges-full-panel .section-title-row {
+  margin-bottom: 0;
+}
+
+.rewards-hint {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.badge-full-grid {
+  display: grid;
+  margin-top: 18px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 18px 14px;
+}
+
+.closest-badge-callout {
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 16px;
+  background: var(--gold-soft);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius);
+}
+
+.closest-badge-icon {
+  display: flex;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius);
+}
+
+.closest-badge-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.closest-badge-callout p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.rewards-side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.templates-panel {
+  padding: 20px;
+}
+
+.templates-panel h2 {
+  font-size: 24px;
+}
+
+.template-unlock-list {
+  display: flex;
+  margin-top: 16px;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.template-unlock-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px;
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius);
+}
+
+.template-unlock-row.is-unlocked {
+  background: var(--card);
+}
+
+.template-unlock-row.is-locked {
+  background: var(--card-2);
+  border-style: dashed;
+  border-color: #BCA88A;
+}
+
+.template-unlock-thumb {
+  display: flex;
+  width: 44px;
+  height: 58px;
+  flex: none;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 5px;
+  background: #FFFFFF;
+  border: var(--edge) solid var(--ink);
+  border-radius: 5px;
+}
+
+.is-locked .template-unlock-thumb {
+  color: #BCA88A;
+  background: var(--card);
+  border-style: dashed;
+  border-color: #BCA88A;
+}
+
+.template-unlock-thumb svg {
+  width: 20px;
+  height: 20px;
+}
+
+.template-unlock-thumb .doc-bar {
+  display: block;
+  align-self: stretch;
+  height: 3px;
+}
+
+.template-unlock-thumb .doc-line {
+  display: block;
+  align-self: stretch;
+  height: 3px;
+  background: #D9C9AC;
+  border-radius: 2px;
+}
+
+.template-unlock-thumb .doc-line.short {
+  align-self: flex-start;
+  width: 70%;
+}
+
+.template-unlock-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.template-unlock-body h3 {
+  font-size: 17px;
+}
+
+.is-locked .template-unlock-body h3 {
+  color: var(--muted);
+}
+
+.template-unlock-body p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.chip-locked-xp {
+  flex: none;
+  background: var(--gold-soft);
+}
+
+.transparency-panel {
+  padding: 16px 18px;
+  background: var(--berry-soft);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.transparency-panel h2 {
+  font-size: 19px;
+}
+
+.transparency-panel p {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.transparency-panel a {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+@media (max-width: 1100px) {
+  .rewards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .level-ladder {
+    flex-wrap: wrap;
+    gap: 10px 0;
+  }
+
+  .ladder-connector {
+    display: none;
+  }
+
+  .ladder-node {
+    width: auto;
+    flex: 1 1 30%;
+  }
+}
+
+@media (max-width: 660px) {
+  .rewards-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .badge-full-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

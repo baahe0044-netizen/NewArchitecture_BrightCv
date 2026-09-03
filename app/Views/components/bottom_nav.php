@@ -2,14 +2,16 @@
 /**
  * Floating bottom navigation, shown on phones and tablets.
  *
- * The header keeps the desktop; below 900px it collapses to a menu, which
- * puts the app's main destinations two taps away on exactly the devices where
- * reach matters most. This bar links only to routes that already exist -- it
+ * The header keeps the desktop; below 900px it collapses to this bar, which
+ * puts the app's main destinations two taps away on exactly the devices
+ * where reach matters most. It links only to routes that already exist -- it
  * adds no surface, and the active item is marked with aria-current so the
  * state is announced rather than only drawn.
  *
- * @var string $active One of: dashboard, templates, builder, account.
+ * @var string $active One of: dashboard, templates, rewards, account.
  */
+$gamificationOn = Auth::id() && GamificationService::isEnabled();
+
 $items = [
     'dashboard' => [
         'href' => '/dashboard',
@@ -18,19 +20,26 @@ $items = [
     ],
     'templates' => [
         'href' => '/templates',
-        'label' => 'Designs',
+        'label' => 'Templates',
         'icon' => '<rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/>',
     ],
-    'builder' => [
-        'href' => '/resume/builder',
-        'label' => 'Build',
-        'icon' => '<path d="M5 19.5 8 19l10-10a2.1 2.1 0 0 0-3-3L5 16Z"/><path d="M14.5 7.5 16.5 9.5"/>',
-    ],
-    'account' => [
-        'href' => '/account/profile',
-        'label' => 'Account',
-        'icon' => '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6"/>',
-    ],
+];
+
+// The centre FAB already goes to the builder, so the fourth slot is
+// Rewards where the game layer is on, and falls back to Account -- the
+// tab it would otherwise be redundant with -- where it is off.
+if ($gamificationOn) {
+    $items['rewards'] = [
+        'href' => '/rewards',
+        'label' => 'Rewards',
+        'icon' => '<path d="M6 3h12v6a6 6 0 0 1-12 0z"/><path d="M6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3"/><path d="M9 21h6M12 15v6"/>',
+    ];
+}
+
+$items['account'] = [
+    'href' => '/account/profile',
+    'label' => 'Account',
+    'icon' => '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6"/>',
 ];
 
 $active = $active ?? '';

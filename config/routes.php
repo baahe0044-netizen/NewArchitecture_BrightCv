@@ -21,12 +21,14 @@ return static function (Router $router): void {
     $router->get('/resume/builder', 'ResumeController@builder', ['auth']);
     $router->get('/resume/builder/{id}', 'ResumeController@builder', ['auth']);
     $router->get('/resume/{id}/print', 'PdfController@preview', ['auth']);
+    $router->get('/rewards', 'RewardsController@index', ['auth']);
 
     $router->get('/account/profile', 'AccountController@profile', ['auth']);
     $router->post('/account/profile', 'AccountController@updateProfile', ['auth', 'csrf']);
     $router->get('/account/security', 'AccountController@security', ['auth']);
     $router->post('/account/password', 'AccountController@updatePassword', ['auth', 'csrf']);
     $router->get('/account/appearance', 'AccountController@appearance', ['auth']);
+    $router->post('/account/gamification', 'AccountController@updateGamification', ['auth', 'csrf']);
 
     $router->get('/api/dashboard', 'DashboardController@data', ['auth']);
     $router->get('/api/resumes', 'ResumeController@indexApi', ['auth']);

@@ -3,6 +3,8 @@ $stats = $dashboard['stats'] ?? [];
 $resumes = $dashboard['resumes'] ?? [];
 $activity = $dashboard['activity'] ?? [];
 $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'there';
+$top = $resumes[0] ?? null;
+$journey = $gamification['journey'] ?? [];
 ?>
 <!doctype html>
 <html lang="en">
@@ -16,7 +18,7 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
     <link rel="stylesheet" href="<?= e(asset('dashboard/dashboard.css')) ?>">
 </head>
 <body>
-<?php View::partial('components/app_header', compact('user')); ?>
+<?php View::partial('components/app_header', compact('user', 'gamification')); ?>
 
 <main class="page-shell dashboard-page">
     <div class="container dashboard-container">
@@ -33,6 +35,42 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
                 Create new CV
             </button>
         </section>
+
+        <?php if ($gamification !== null): ?>
+            <?php $level = $gamification['level']; ?>
+            <section class="level-banner">
+                <div class="level-banner-badge">
+                    <span class="level-number"><?= (int) $level['level'] ?></span>
+                    <div>
+                        <p class="level-title">Level <?= (int) $level['level'] ?> &mdash; <?= e($level['name']) ?></p>
+                        <p class="level-subtitle"><?= e($level['level'] >= 3 ? 'Your CV holds up to a first read.' : 'Keep building — every section adds up.') ?></p>
+                    </div>
+                </div>
+
+                <div class="level-banner-progress">
+                    <div class="level-banner-progress-row">
+                        <span class="xp-label"><?= number_format((int) $gamification['xp']) ?> XP</span>
+                        <span class="xp-label muted"><?= number_format((int) $level['xp_to_next']) ?> XP to Level <?= (int) $level['level'] + 1 ?> &mdash; <?= e($level['next_name']) ?></span>
+                    </div>
+                    <div class="level-banner-bar">
+                        <div class="level-banner-fill" style="width:<?= (int) $level['progress_percent'] ?>%"></div>
+                    </div>
+                    <?php if ((int) $gamification['xp_today'] > 0): ?>
+                        <p class="xp-today"><span>+<?= (int) $gamification['xp_today'] ?> XP</span> earned today</p>
+                    <?php endif; ?>
+                </div>
+
+                <?php $nextTemplate = null; foreach ($gamification['templates'] as $t) { if (!$t['unlocked']) { $nextTemplate = $t; break; } } ?>
+                <?php if ($nextTemplate): ?>
+                    <div class="level-banner-unlock">
+                        <span class="unlock-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v6a6 6 0 0 1-12 0z"/><path d="M6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3"/><path d="M9 21h6M12 15v6"/></svg>
+                        </span>
+                        <div><p class="unlock-title">Next unlock</p><p class="unlock-name">The <?= e($nextTemplate['name']) ?> template</p></div>
+                    </div>
+                <?php endif; ?>
+            </section>
+        <?php endif; ?>
 
         <section class="stats-grid card" aria-label="CV overview">
             <article class="stat-card">
@@ -56,6 +94,66 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
                 <small>Print, PDF, and backup files</small>
             </article>
         </section>
+
+        <?php if ($gamification !== null && $top): ?>
+            <section class="card continue-panel">
+                <div class="continue-panel-body">
+                    <div class="continue-thumb template-preview-<?= e($top['template_key']) ?>" style="--resume-accent:<?= e($top['accent_color']) ?>" aria-hidden="true">
+                        <div class="preview-sheet">
+                            <b><?= e(mb_strtoupper(mb_substr($top['name'], 0, 24))) ?></b>
+                            <span>PROFESSIONAL CV</span><hr><i></i><i></i><em>EXPERIENCE</em><i></i><i></i><em>SKILLS</em><i></i>
+                        </div>
+                    </div>
+
+                    <div class="continue-main">
+                        <div class="continue-heading">
+                            <div>
+                                <p class="eyebrow">Carry on with</p>
+                                <h2><?= e($top['name']) ?></h2>
+                                <p class="continue-meta">Edited <?= e(human_time_ago($top['updated_at'])) ?> &middot; <?= e($topTemplateName) ?></p>
+                            </div>
+                            <div class="progress-ring" style="--ring-percent:<?= (int) $top['completion'] ?>" role="img" aria-label="<?= (int) $top['completion'] ?> percent done">
+                                <svg viewBox="0 0 76 76" width="76" height="76" aria-hidden="true">
+                                    <circle cx="38" cy="38" r="32" fill="none" stroke="var(--card-2)" stroke-width="9"/>
+                                    <circle class="progress-ring-fill" cx="38" cy="38" r="32" fill="none" stroke-width="9" stroke-linecap="round" transform="rotate(-90 38 38)"/>
+                                </svg>
+                                <span class="progress-ring-label"><b><?= (int) $top['completion'] ?>%</b><small>done</small></span>
+                            </div>
+                        </div>
+
+                        <ol class="journey-stepper">
+                            <?php foreach ($journey as $index => $node): ?>
+                                <li class="<?= $node['done'] ? 'is-done' : '' ?> <?= $node['current'] ? 'is-current' : '' ?>">
+                                    <span class="journey-node">
+                                        <?php if ($node['done'] && !$node['current']): ?>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>
+                                        <?php elseif ($node['current']): ?>
+                                            <b><?= (int) $node['number'] ?></b>
+                                        <?php endif; ?>
+                                    </span>
+                                    <span class="journey-label"><?= e($node['label']) ?></span>
+                                </li>
+                                <?php if ($index < count($journey) - 1):
+                                    $nextIsCurrent = $journey[$index + 1]['current'] ?? false;
+                                    $connectorClass = $nextIsCurrent ? 'is-leading' : ($node['done'] ? 'is-done' : '');
+                                ?><li class="journey-connector <?= $connectorClass ?>" aria-hidden="true"></li><?php endif; ?>
+                            <?php endforeach; ?>
+                        </ol>
+
+                        <div class="continue-actions">
+                            <a class="btn btn-primary" href="<?= e(base_url('/resume/builder/' . $top['id'])) ?>">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+                                Carry on writing
+                            </a>
+                            <a class="btn" href="<?= e(base_url('/resume/' . $top['id'] . '/print')) ?>" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
+                                Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
 
         <section class="dashboard-grid">
             <div class="dashboard-main">
@@ -82,7 +180,7 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
                                                 <h3><?= e($resume['name']) ?></h3>
                                                 <p>Updated <?= e(date('M j, Y', strtotime($resume['updated_at']))) ?></p>
                                             </div>
-                                            <span class="resume-status <?= $resume['status'] === 'completed' ? 'ready' : '' ?>"><?= e(ucfirst($resume['status'])) ?></span>
+                                            <span class="resume-status <?= $resume['status'] === 'completed' ? 'ready' : '' ?>"><?= $resume['status'] === 'completed' ? 'Done' : e(ucfirst($resume['status'])) ?></span>
                                         </div>
                                         <div class="resume-progress" aria-label="<?= (int) $resume['completion'] ?> percent complete"><i style="width:<?= (int) $resume['completion'] ?>%"></i></div>
                                         <div class="resume-meta"><span><?= (int) $resume['completion'] ?>% complete</span><span>ATS <?= (int) $resume['ats_score'] ?>%</span></div>
@@ -114,8 +212,8 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
                             <?php endforeach; ?>
                             <button class="new-resume-card" type="button" data-create-resume>
                                 <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span>
-                                <b>Create another CV</b>
-                                <small>Start with a clean, guided draft.</small>
+                                <b>Start a new run</b>
+                                <small><?= $gamification !== null ? 'Tailor a copy for another role. +50 XP' : 'Start with a clean, guided draft.' ?></small>
                             </button>
                         </div>
                     <?php else: ?>
@@ -132,6 +230,54 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
             </div>
 
             <aside class="dashboard-side" aria-label="Dashboard guidance">
+                <?php if ($gamification !== null): ?>
+                    <?php $doneCount = count(array_filter($gamification['quests'], static fn ($q) => $q['done'])); ?>
+                    <section class="quest-panel">
+                        <div class="section-title-row compact">
+                            <div><h2>Today's three</h2></div>
+                            <span class="chip chip-small"><?= $doneCount ?> of <?= count($gamification['quests']) ?></span>
+                        </div>
+                        <p class="quest-panel-hint">Small jobs that measurably improve the CV.</p>
+
+                        <div class="quest-list">
+                            <?php foreach ($gamification['quests'] as $quest): ?>
+                                <div class="quest-row <?= $quest['done'] ? 'is-done' : '' ?>">
+                                    <span class="quest-check" aria-hidden="true">
+                                        <?php if ($quest['done']): ?>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"/></svg>
+                                        <?php endif; ?>
+                                    </span>
+                                    <span class="quest-label"><?= e($quest['label']) ?></span>
+                                    <span class="quest-xp">+<?= (int) $quest['xp'] ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </section>
+
+                    <section class="card badges-panel">
+                        <div class="section-title-row compact">
+                            <div><h2>Badges</h2></div>
+                            <a href="<?= e(base_url('/rewards')) ?>">All <?= (int) $gamification['badges']['total'] ?> &rarr;</a>
+                        </div>
+                        <p class="quest-panel-hint"><?= (int) $gamification['badges']['earned_count'] ?> of <?= (int) $gamification['badges']['total'] ?> earned.</p>
+
+                        <div class="badge-grid">
+                            <?php $shown = 0; foreach ($gamification['badges']['list'] as $badge): if (!$badge['earned'] || $shown >= 4) continue; $shown++; ?>
+                                <div class="badge">
+                                    <span class="badge-tile badge-<?= e($badge['colour']) ?>"><?= badge_icon($badge['key']) ?></span>
+                                    <span class="badge-name"><?= e($badge['name']) ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                            <?php foreach ($gamification['badges']['list'] as $badge): if ($badge['earned'] || $shown >= 4) continue; $shown++; ?>
+                                <div class="badge">
+                                    <span class="badge-locked" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+                                    <span class="badge-name muted"><?= e($badge['name']) ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </section>
+                <?php endif; ?>
+
                 <section class="card next-step-card">
                     <div class="side-card-heading">
                         <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2V5M22 12h-3M12 22v-3M2 12h3"/></svg></span>
@@ -167,9 +313,9 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
                     <?php endif; ?>
                 </section>
 
-                <section class="dashboard-tip">
-                    <span>Writing tip</span>
-                    <p>A strong experience bullet explains what you did and what changed because of it.</p>
+                <section class="support-callout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <p>Stuck on the wording? <a href="mailto:<?= e(SUPPORT_EMAIL) ?>?subject=<?= e(rawurlencode('Help with my CV')) ?>">Ask a real person</a></p>
                 </section>
             </aside>
         </section>

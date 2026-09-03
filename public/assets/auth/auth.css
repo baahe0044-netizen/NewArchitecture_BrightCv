@@ -1,6 +1,7 @@
 .auth-page {
   min-height: 100vh;
-  background: var(--surface);
+  background-color: var(--sand);
+  background-image: var(--grain);
 }
 
 .auth-shell {
@@ -13,17 +14,12 @@
   display: flex;
   padding: 38px clamp(36px, 5vw, 72px) 48px;
   flex-direction: column;
-  color: #FFF6EE;
-  background: #3A2A22;
+  color: var(--choco-ink);
+  background: var(--choco);
 }
 
 .auth-brand .brand {
-  color: #FFF6EE;
-}
-
-.auth-brand .brand-mark {
-  color: #3A2A22;
-  background: #FFF6EE;
+  color: var(--choco-ink);
 }
 
 .auth-visual-copy {
@@ -33,7 +29,7 @@
 
 .auth-kicker {
   margin: 0 0 12px;
-  color: #F0C3AE;
+  color: var(--gold);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .09em;
@@ -50,7 +46,7 @@
 .auth-visual-copy > p:last-child {
   max-width: 520px;
   margin: 18px 0 0;
-  color: #D9C6B6;
+  color: var(--choco-muted);
   font-size: 15px;
   line-height: 1.7;
 }
@@ -60,10 +56,10 @@
   margin-top: 40px;
   overflow: hidden;
   color: var(--ink);
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, .22);
-  border-radius: 12px;
-  box-shadow: 0 14px 30px rgba(8, 15, 28, .2);
+  background: var(--card);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .auth-workspace-head,
@@ -78,7 +74,7 @@
   padding: 12px 16px;
   justify-content: space-between;
   gap: 16px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--card-2);
 }
 
 .auth-workspace-head span,
@@ -150,8 +146,8 @@
   min-height: 48px;
   padding: 0 16px;
   gap: 10px;
-  background: var(--surface-muted);
-  border-top: 1px solid var(--line);
+  background: var(--card-2);
+  border-top: 2px solid var(--ink);
   font-size: 9px;
 }
 
@@ -179,15 +175,11 @@
 }
 
 .register-visual {
-  background: #2E4438;
-}
-
-.register-visual .auth-brand .brand-mark {
-  color: #2E4438;
+  background: var(--choco);
 }
 
 .register-visual .auth-kicker {
-  color: #F0C3AE;
+  color: var(--gold);
 }
 
 .auth-benefits {
@@ -210,7 +202,7 @@
   height: 23px;
   flex: 0 0 23px;
   padding: 4px;
-  color: #FFF6EE;
+  color: var(--choco-ink);
   background: rgba(255, 255, 255, .09);
   border: 1px solid rgba(255, 255, 255, .16);
   border-radius: 6px;
@@ -227,7 +219,7 @@
 
 .auth-benefits span {
   margin-top: 3px;
-  color: #D9C6B6;
+  color: var(--choco-muted);
   font-size: 12px;
 }
 
@@ -366,8 +358,8 @@
 .simple-auth .auth-card {
   width: min(100%, 460px);
   padding: 32px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--card);
+  border: var(--edge) solid var(--ink);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -401,10 +393,10 @@
   height: 46px;
   margin-bottom: 18px;
   place-items: center;
-  color: var(--brand-dark);
-  background: var(--brand-soft);
-  border: 1px solid var(--brand-border);
-  border-radius: 10px;
+  color: var(--rust-deep);
+  background: var(--gold-soft);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-sm);
 }
 
 .reset-icon svg {

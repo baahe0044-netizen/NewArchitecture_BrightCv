@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 /**
- * Measures WCAG contrast for the design tokens in every theme state.
+ * Measures WCAG contrast for the Quest design tokens.
  *
- * The palette is defined once per theme in public/assets/common/app.css, and a
- * ratio that fails is invisible until someone with low vision cannot read the
- * page. This reads the tokens straight out of the stylesheet so the numbers
- * always describe what actually ships, and fails the run if any pair drops
- * below the level its role requires.
+ * The palette is defined once, in the top-level :root block of
+ * public/assets/common/app.css (Quest ships as the app's one identity,
+ * light only), and a ratio that fails is invisible until someone with low
+ * vision cannot read the page. This reads the tokens straight out of the
+ * stylesheet so the numbers always describe what actually ships, and fails
+ * the run if any pair drops below the level its role requires.
+ *
+ * Flat, saturated colour blocks -- exactly what this palette is built from
+ * -- are precisely where contrast most often goes wrong, which is why every
+ * pair here is measured rather than assumed.
  *
  * Usage: node scripts/check-contrast.mjs
  */
@@ -19,12 +24,11 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const cssPath = join(root, 'public/assets/common/app.css');
 const css = readFileSync(cssPath, 'utf8');
 
-/** Pull one theme's token block out of the stylesheet. */
-function tokensFrom(selectorPattern) {
-  const start = css.search(selectorPattern);
+/** Pull the first top-level :root { ... } block out of the stylesheet. */
+function tokensFrom() {
+  const start = css.indexOf(':root {');
   if (start === -1) return null;
 
-  // Walk braces from the selector so a nested media query does not truncate it.
   let depth = 0;
   let index = css.indexOf('{', start);
   const from = index;
@@ -42,6 +46,15 @@ function tokensFrom(selectorPattern) {
     tokens[match[1]] = match[2].trim();
   }
   return tokens;
+}
+
+function resolve(tokens, value, depth = 0) {
+  if (depth > 5) return value;
+  const ref = value.match(/^var\((--[a-z0-9-]+)\)$/i);
+  if (ref && tokens[ref[1]]) {
+    return resolve(tokens, tokens[ref[1]], depth + 1);
+  }
+  return value;
 }
 
 function toRgb(value) {
@@ -80,74 +93,73 @@ function ratio(foreground, background) {
 }
 
 // Each pair names the level its role requires: 4.5 for body text, 3 for large
-// text, icons, and the borders that carry meaning.
+// text, icons, and the borders that carry meaning. Includes the literal §3
+// pairings this palette is built from -- rust/gold/moss/berry text and the
+// choco header's own text colours -- not just the generic ink/muted set.
 const PAIRS = [
-  ['--ink', '--canvas', 4.5, 'body text on the page'],
-  ['--ink', '--surface', 4.5, 'body text on a card'],
-  ['--ink-soft', '--surface', 4.5, 'secondary text on a card'],
-  ['--muted', '--surface', 4.5, 'muted text on a card'],
-  ['--muted', '--canvas', 4.5, 'muted text on the page'],
-  ['--brand', '--surface', 4.5, 'accent text and links on a card'],
-  ['--brand', '--canvas', 4.5, 'accent text on the page'],
-  ['--on-brand', '--brand', 4.5, 'label on a primary button'],
-  ['--success', '--surface', 4.5, 'success text'],
-  ['--warning', '--surface', 4.5, 'warning text'],
-  ['--danger', '--surface', 4.5, 'error text'],
-  ['--line-strong', '--surface', 3, 'a border that carries meaning'],
-  ['--accent-ochre', '--surface', 4.5, 'ochre accent text'],
-  ['--accent-moss', '--surface', 4.5, 'moss accent text'],
-  ['--accent-teal', '--surface', 4.5, 'teal accent text'],
-  ['--accent-plum', '--surface', 4.5, 'plum accent text'],
+  ['--ink', '--sand', 4.5, 'body text on the page'],
+  ['--ink', '--card', 4.5, 'body text on a card'],
+  ['--ink', '--card-2', 4.5, 'body text on a secondary surface'],
+  ['--muted', '--card', 4.5, 'muted text on a card'],
+  ['--muted', '--sand', 4.5, 'muted text on the page'],
+  ['--rust-deep', '--card', 4.5, 'rust link/eyebrow text on a card'],
+  ['--rust-deep', '--sand', 4.5, 'rust link text on the page'],
+  ['--card', '--rust', 4.5, 'label on a rust (primary) button'],
+  ['--card', '--moss', 4.5, 'label on a moss (next-stage) button'],
+  ['--moss-deep', '--moss-soft', 4.5, 'moss XP text on a completed row'],
+  ['--rust-deep', '--card', 4.5, 'rust XP text on a card'],
+  ['--moss-deep', '--card', 4.5, 'moss done-state text on a card'],
+  ['--ink', '--gold', 4.5, 'text on a gold chip or stage marker'],
+  ['--ink', '--gold-soft', 4.5, 'text on the gold-soft quest panel'],
+  ['--ink', '--moss-soft', 4.5, 'text on a completed quest row'],
+  ['--ink', '--berry-soft', 4.5, 'text on a berry-soft support callout'],
+  ['--danger', '--card', 4.5, 'error text'],
+  ['--warning', '--card', 4.5, 'warning text'],
+  ['--success', '--card', 4.5, 'success text'],
+  ['--line-strong', '--card', 3, 'a border that carries meaning'],
+  // The choco header, level banner, and stage rail card carry their own text
+  // colours rather than the page palette.
+  ['--choco-ink', '--choco', 4.5, 'primary text on the choco header/banner'],
+  ['--choco-muted', '--choco', 4.5, 'muted text on the choco header/banner'],
+  ['--choco-ink', '--choco-well', 4.5, 'text on the sunken XP-bar well'],
 ];
 
-// Three palettes, each in light and dark. A palette is only useful if it is
-// readable in both, so every combination is measured rather than the default.
-const THEMES = [
-  ['parchment light', /:root\[data-palette="parchment"\]\s*\{/],
-  ['parchment dark', /:root\[data-palette="parchment"\]\[data-theme="dark"\]\s*\{/],
-  ['azure light', /:root\[data-palette="azure"\]\s*\{/],
-  ['azure dark', /:root\[data-theme="dark"\]:not\(\[data-palette="mono"\]\):not\(\[data-palette="ember"\]\):not\(\[data-palette="parchment"\]\)\s*\{/],
-  ['mono light', /:root\[data-palette="mono"\]\s*\{/],
-  ['mono dark', /:root\[data-palette="mono"\]\[data-theme="dark"\]\s*\{/],
-  ['ember light', /:root\[data-palette="ember"\]\s*\{/],
-  ['ember dark', /:root\[data-palette="ember"\]\[data-theme="dark"\]\s*\{/],
-];
+const tokens = tokensFrom();
+if (!tokens) {
+  console.log('No :root token block found.');
+  process.exit(1);
+}
 
 let failures = 0;
 let checked = 0;
 
-for (const [name, pattern] of THEMES) {
-  const tokens = tokensFrom(pattern);
-  if (!tokens) {
-    console.log(`\n${name}: token block not found`);
-    failures++;
+console.log('Quest palette');
+console.log('-'.repeat(74));
+
+for (const [fg, bg, minimum, role] of PAIRS) {
+  const fgValue = tokens[fg];
+  const bgValue = tokens[bg];
+  if (!fgValue || !bgValue) {
+    console.log(`SKIP  (missing token)  ${role}  [${fg} / ${bg}]`);
     continue;
   }
 
-  console.log(`\n${name}`);
-  console.log('-'.repeat(74));
-
-  for (const [fg, bg, minimum, role] of PAIRS) {
-    // A theme may legitimately not redefine every token; fall back to light.
-    const light = tokensFrom(/:root\[data-palette="azure"\]\s*\{/);
-    const fgValue = tokens[fg] ?? light[fg];
-    const bgValue = tokens[bg] ?? light[bg];
-    if (!fgValue || !bgValue) continue;
-
-    const a = toRgb(fgValue);
-    const b = toRgb(bgValue);
-    if (!a || !b) continue;
-
-    checked++;
-    const value = ratio(a, b);
-    const passed = value >= minimum;
-    if (!passed) failures++;
-
-    console.log(
-      `${passed ? 'PASS' : 'FAIL'}  ${value.toFixed(2).padStart(5)} : 1  ` +
-      `(needs ${minimum})  ${role}`
-    );
+  const a = toRgb(resolve(tokens, fgValue));
+  const b = toRgb(resolve(tokens, bgValue));
+  if (!a || !b) {
+    console.log(`SKIP  (unresolved colour)  ${role}  [${fg}=${fgValue} / ${bg}=${bgValue}]`);
+    continue;
   }
+
+  checked++;
+  const value = ratio(a, b);
+  const passed = value >= minimum;
+  if (!passed) failures++;
+
+  console.log(
+    `${passed ? 'PASS' : 'FAIL'}  ${value.toFixed(2).padStart(5)} : 1  ` +
+    `(needs ${minimum})  ${role}`
+  );
 }
 
 console.log(`\n${'='.repeat(74)}`);

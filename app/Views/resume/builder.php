@@ -45,7 +45,9 @@ $builderPayload = [
     </div>
 
     <div class="builder-actions">
-        <?php View::partial('components/theme_toggle'); ?>
+        <?php if ($gamification !== null && (int) $gamification['xp_today'] > 0): ?>
+            <span class="chip chip-gold builder-xp-chip">+<?= (int) $gamification['xp_today'] ?> XP today</span>
+        <?php endif; ?>
         <!--
             These four sit inline in the topbar on a wide screen and collapse
             into the "More actions" menu on a phone. They stay one set of
@@ -101,6 +103,20 @@ $builderPayload = [
                 which pushed every field ~400px down the panel.
             -->
             <div class="editor-sticky">
+                <?php if ($gamification !== null): $level = $gamification['level']; ?>
+                    <div class="stage-rail-level">
+                        <div class="stage-rail-level-row">
+                            <span class="level-number level-number-small"><?= (int) $level['level'] ?></span>
+                            <div>
+                                <p class="stage-rail-level-name"><?= e($level['name']) ?></p>
+                                <p class="stage-rail-level-xp"><?= number_format((int) $gamification['xp']) ?> XP</p>
+                            </div>
+                        </div>
+                        <div class="stage-rail-level-bar"><div style="width:<?= (int) $level['progress_percent'] ?>%"></div></div>
+                        <p class="stage-rail-level-next"><?= number_format((int) $level['xp_to_next']) ?> XP to <?= e($level['next_name']) ?></p>
+                    </div>
+                <?php endif; ?>
+
                 <div class="completion-summary">
                     <div class="completion-copy"><span>CV progress</span><b id="completionPercent"><?= (int) $resume['completion'] ?>%</b></div>
                     <div class="completion-bar"><i id="completionBar" style="width:<?= (int) $resume['completion'] ?>%"></i></div>
@@ -108,13 +124,26 @@ $builderPayload = [
                 </div>
 
                 <nav class="section-steps" id="sectionNav" aria-label="CV sections">
-                    <button class="active" type="button" data-section="personal"><i data-section-check="personal">○</i><b>Personal</b></button>
-                    <button type="button" data-section="summary"><i data-section-check="summary">○</i><b>Summary</b></button>
-                    <button type="button" data-section="experience"><i data-section-check="experience">○</i><b>Experience</b></button>
-                    <button type="button" data-section="education"><i data-section-check="education">○</i><b>Education</b></button>
-                    <button type="button" data-section="skills"><i data-section-check="skills">○</i><b>Skills</b></button>
-                    <button type="button" data-section="projects"><i data-section-check="projects">○</i><b>Projects</b></button>
-                    <button type="button" data-section="extras"><i data-section-check="extras">○</i><b>More</b></button>
+                    <?php
+                    // The same weights ResumeService::completion() already scores a
+                    // CV against, shown up front rather than invented for display --
+                    // filling this section is worth exactly this much of the total.
+                    $sectionWeights = [
+                        'personal' => 20, 'summary' => 15, 'experience' => 25,
+                        'education' => 15, 'skills' => 15, 'projects' => 10, 'extras' => null,
+                    ];
+                    $sectionLabels = [
+                        'personal' => 'Personal', 'summary' => 'Summary', 'experience' => 'Experience',
+                        'education' => 'Education', 'skills' => 'Skills', 'projects' => 'Projects', 'extras' => 'More',
+                    ];
+                    ?>
+                    <?php foreach ($sectionLabels as $key => $label): ?>
+                        <button class="<?= $key === 'personal' ? 'active' : '' ?>" type="button" data-section="<?= e($key) ?>">
+                            <i data-section-check="<?= e($key) ?>">○</i>
+                            <b><?= e($label) ?></b>
+                            <?php if ($sectionWeights[$key] !== null): ?><span class="section-xp">+<?= (int) $sectionWeights[$key] ?></span><?php endif; ?>
+                        </button>
+                    <?php endforeach; ?>
                 </nav>
             </div>
 
@@ -211,6 +240,11 @@ $builderPayload = [
     <section class="preview-workspace">
         <div class="preview-toolbar">
             <div><span class="live-dot"></span><b>Live preview</b><small>A4 · changes update instantly</small></div>
+            <div class="robot-score-meter" title="How an applicant tracking system is likely to read this CV">
+                <span>Robot score</span>
+                <span class="robot-score-track"><span id="toolbarAtsMeter" style="width:<?= (int) $resume['ats_score'] ?>%"></span></span>
+                <b id="toolbarAtsScore"><?= (int) $resume['ats_score'] ?></b>
+            </div>
             <div class="preview-controls">
                 <button class="icon-btn" id="zoomOutButton" type="button" aria-label="Zoom out">−</button>
                 <span id="zoomLabel">82%</span>

@@ -19,7 +19,6 @@
             <a href="#templates">Templates</a>
         </nav>
         <div class="landing-actions">
-            <?php View::partial('components/theme_toggle'); ?>
             <?php if (!empty($user)): ?>
                 <a class="btn btn-primary" href="<?= e(base_url('/dashboard')) ?>">Open dashboard</a>
             <?php else: ?>

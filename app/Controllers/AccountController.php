@@ -45,7 +45,27 @@ final class AccountController extends Controller
         return $this->view('account/appearance', [
             'title' => 'Appearance',
             'user' => Auth::user(),
+            'gamificationEnabled' => GamificationService::isEnabled(),
+            'message' => Session::pullFlash('message'),
         ]);
+    }
+
+    /**
+     * The Rewards page's own transparency panel says this switch exists, so
+     * it has to actually work. Phase 1 stores the choice for this session
+     * only (see GamificationService) -- a setting that survives logout needs
+     * a users column, which is Phase 2.
+     */
+    public function updateGamification(Request $request): Response
+    {
+        GamificationService::setEnabled($request->boolean('enabled'));
+        Session::flash(
+            'message',
+            GamificationService::isEnabled()
+                ? 'Levels, streaks, and badges are on for this session.'
+                : 'Levels, streaks, and badges are off for this session. Your CVs are unaffected.'
+        );
+        return Response::redirect(base_url('/account/appearance'));
     }
 
     public function updatePassword(Request $request): Response

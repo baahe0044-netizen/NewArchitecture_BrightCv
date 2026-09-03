@@ -9,13 +9,13 @@
   position: relative;
   z-index: 80;
   display: grid;
-  height: 72px;
-  padding: 0 16px;
+  height: 74px;
+  padding: 0 22px;
   grid-template-columns: minmax(360px, 1fr) auto minmax(360px, 1fr);
   align-items: center;
   gap: 16px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  background: var(--choco);
+  border-bottom: 3px solid var(--ink);
 }
 
 .builder-brand-group,
@@ -27,35 +27,23 @@
 }
 
 .builder-brand-group .brand {
-  flex: 0 0 auto;
-  font-size: 16px;
-}
-
-.builder-brand-group .brand-mark {
-  width: 30px;
-  height: 30px;
-  flex-basis: 30px;
-  border-radius: 8px;
-}
-
-.builder-brand-group .brand-mark svg {
-  width: 17px;
-  height: 17px;
+  display: none;
 }
 
 .builder-back {
   display: grid;
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
   place-items: center;
-  color: var(--muted);
-  border-radius: 8px;
+  color: var(--choco-ink);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius);
 }
 
 .builder-back:hover {
-  color: var(--ink);
-  background: var(--surface-muted);
+  color: var(--gold);
+  background: transparent;
 }
 
 .builder-back svg {
@@ -64,10 +52,7 @@
 }
 
 .topbar-divider {
-  width: 1px;
-  height: 28px;
-  margin-inline: 3px;
-  background: var(--line);
+  display: none;
 }
 
 .resume-title-field {
@@ -76,31 +61,30 @@
   min-width: 0;
   max-width: 320px;
   align-items: center;
+  height: 42px;
+  padding: 0 14px;
+  border: var(--edge) solid var(--choco-line);
+  border-radius: var(--radius);
 }
 
 .resume-title-field input {
   width: 100%;
   min-height: 40px;
-  padding: 8px 32px 8px 10px;
+  padding: 8px 24px 8px 0;
   overflow: hidden;
+  color: var(--choco-ink);
   background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
+  border: 0;
   outline: 0;
-  font-size: 13px;
-  font-weight: 750;
+  font-size: 19px;
+  font-weight: 700;
   text-overflow: ellipsis;
 }
 
-.resume-title-field input:hover {
-  background: var(--surface-muted);
-  border-color: var(--line);
-}
-
+.resume-title-field input:hover,
 .resume-title-field input:focus {
-  background: var(--surface);
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px var(--focus);
+  background: transparent;
+  box-shadow: none;
 }
 
 .resume-title-field svg {
@@ -108,52 +92,52 @@
   right: 9px;
   width: 15px;
   height: 15px;
-  color: var(--subtle);
+  color: var(--choco-muted);
   pointer-events: none;
 }
 
 .save-indicator {
   display: flex;
-  min-height: 34px;
-  padding: 6px 10px;
+  height: 32px;
+  padding: 0 12px;
   align-items: center;
   justify-content: center;
   gap: 7px;
-  color: var(--muted);
-  background: var(--surface-muted);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font-size: 11px;
+  color: var(--choco-ink);
+  background: var(--moss);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .save-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--success);
+  width: 8px;
+  height: 8px;
+  background: var(--choco-ink);
   border-radius: 50%;
 }
 
 .save-indicator[data-state="saving"] {
-  color: var(--warning);
-  background: var(--warning-soft);
-  border-color: #ecd8ac;
+  color: var(--ink);
+  background: var(--gold);
+  border-color: var(--choco-ink);
 }
 
 .save-indicator[data-state="saving"] .save-dot {
-  background: var(--warning);
+  background: var(--ink);
   animation: save-pulse .8s ease infinite alternate;
 }
 
 .save-indicator[data-state="error"] {
-  color: var(--danger);
-  background: var(--danger-soft);
-  border-color: #f0c4cc;
+  color: var(--choco-ink);
+  background: var(--danger);
+  border-color: var(--choco-ink);
 }
 
 .save-indicator[data-state="error"] .save-dot {
-  background: var(--danger);
+  background: var(--choco-ink);
 }
 
 @keyframes save-pulse {
@@ -165,19 +149,46 @@
 }
 
 .builder-actions .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
+  color: var(--choco-ink);
+  background: transparent;
+  border-color: var(--choco-line);
+}
+
+.builder-actions .icon-btn:hover {
+  color: var(--gold);
+  background: transparent;
+}
+
+.builder-actions .icon-btn:disabled {
+  color: var(--choco-line-soft);
 }
 
 .builder-actions .btn {
-  min-height: 40px;
-  padding: 8px 12px;
-  font-size: 12px;
+  min-height: 42px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.builder-actions .btn-secondary {
+  color: var(--choco-ink);
+  background: transparent;
+  border-color: var(--choco-line);
+  box-shadow: none;
+}
+
+.builder-actions .btn-secondary:hover {
+  background: var(--choco-line);
 }
 
 .builder-actions .btn svg {
   width: 16px;
   height: 16px;
+}
+
+.builder-xp-chip {
+  flex: none;
 }
 
 .builder-mobile-panel,
@@ -212,13 +223,15 @@
 }
 
 .editor-panel {
-  border-right: 1px solid var(--line);
+  background: var(--card);
+  border-right: 3px solid var(--ink);
 }
 
 .assistant-panel {
   display: flex;
   flex-direction: column;
-  border-left: 1px solid var(--line);
+  background: var(--card);
+  border-left: 3px solid var(--ink);
 }
 
 .panel-mobile-header {
@@ -231,8 +244,8 @@
   padding: 8px 12px;
   grid-template-columns: 1fr 1fr;
   gap: 4px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  background: var(--card);
+  border-bottom: 2px solid var(--card-2);
 }
 
 .editor-mode-tabs button,
@@ -256,9 +269,9 @@
 
 .editor-mode-tabs button.active,
 .assistant-tabs button.active {
-  color: var(--brand-dark);
-  background: var(--brand-soft);
-  border-color: var(--brand-border);
+  color: var(--ink);
+  background: var(--gold-soft);
+  border: var(--edge) solid var(--ink);
 }
 
 .editor-content-mode,
@@ -270,41 +283,98 @@
   scrollbar-color: #c7ccd3 transparent;
 }
 
+/* The level card the stage rail opens with -- Builder.dc.html's own choco
+   card, not a generic completion meter. */
+.stage-rail-level {
+  margin: 14px 16px 0;
+  padding: 14px;
+  background: var(--choco);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-btn);
+}
+
+.stage-rail-level-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.level-number-small {
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+}
+
+.stage-rail-level-name {
+  margin: 0;
+  color: var(--choco-ink);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stage-rail-level-xp {
+  margin: 0;
+  color: var(--choco-muted);
+  font-size: 13px;
+}
+
+.stage-rail-level-bar {
+  height: 12px;
+  margin-top: 11px;
+  overflow: hidden;
+  background: var(--choco-well);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius-pill);
+}
+
+.stage-rail-level-bar div {
+  height: 100%;
+  background: var(--gold);
+}
+
+.stage-rail-level-next {
+  margin: 6px 0 0;
+  color: var(--choco-muted);
+  font-size: 12px;
+}
+
 .completion-summary {
   margin: 14px 16px;
   padding: 14px;
-  background: var(--surface-muted);
-  border: 1px solid var(--line);
-  border-radius: 9px;
+  background: var(--card-2);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-sm);
 }
 
 .completion-copy {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--ink-soft);
+  color: var(--ink);
   font-size: 12px;
   font-weight: 700;
 }
 
 .completion-copy b {
-  color: var(--brand-dark);
+  color: var(--rust-deep);
   font-size: 14px;
 }
 
 .completion-bar {
-  height: 7px;
+  height: 10px;
   margin: 9px 0 7px;
   overflow: hidden;
-  background: var(--line-strong);
-  border-radius: 4px;
+  background: var(--card);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-pill);
 }
 
 .completion-bar i {
   display: block;
   max-width: 100%;
   height: 100%;
-  background: var(--brand);
+  background: var(--gold);
   transition: width .2s ease;
 }
 
@@ -894,44 +964,75 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  background: #e9edf1;
+  background-color: var(--sand);
+  background-image: var(--grain);
 }
 
 .preview-toolbar {
   position: relative;
   z-index: 10;
   display: flex;
-  height: 52px;
-  padding: 0 14px;
-  flex: 0 0 52px;
+  height: 62px;
+  padding: 0 20px;
+  flex: 0 0 62px;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  background: var(--surface-muted);
-  border-bottom: 1px solid var(--line);
+  gap: 14px;
+  background: var(--card-2);
+  border-bottom: var(--edge) solid var(--ink);
 }
 
 .preview-toolbar > div:first-child {
   display: flex;
   align-items: center;
-  gap: 7px;
-  color: var(--ink-soft);
+  gap: 9px;
+  color: var(--ink);
 }
 
 .preview-toolbar b {
-  font-size: 11px;
+  font-size: 16px;
 }
 
 .preview-toolbar small {
-  color: var(--subtle);
-  font-size: 9px;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .live-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--success);
+  width: 9px;
+  height: 9px;
+  background: var(--moss);
   border-radius: 50%;
+}
+
+/* The "Robot score" meter, ported from Builder.dc.html's preview toolbar. */
+.robot-score-meter {
+  display: flex;
+  height: 34px;
+  padding: 0 12px;
+  align-items: center;
+  gap: 9px;
+  background: var(--card);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.robot-score-track {
+  display: block;
+  width: 78px;
+  height: 11px;
+  overflow: hidden;
+  background: var(--card-2);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-pill);
+}
+
+.robot-score-track span {
+  display: block;
+  height: 100%;
+  background: var(--moss);
 }
 
 .preview-controls {
@@ -941,8 +1042,8 @@
 }
 
 .preview-controls .icon-btn {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   font-size: 15px;
 }
 
@@ -952,9 +1053,9 @@
 
 .preview-controls > span {
   min-width: 42px;
-  color: var(--muted);
+  color: var(--ink);
   text-align: center;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -984,8 +1085,12 @@
   transition: transform .16s ease;
 }
 
+/* The CV sheet's own colours are untouched (preview.css stays print-safe);
+   this is only the chrome around it -- the mockup's literal hard border and
+   offset shadow on the page, not a soft drop shadow. */
 #resumePreview .cv-document {
-  box-shadow: 0 12px 30px rgba(16, 24, 40, .15);
+  border: 3px solid var(--ink);
+  box-shadow: 7px 7px 0 var(--ink);
 }
 
 
@@ -1623,45 +1728,42 @@
   overflow-y: visible;
 }
 
+/* Ported as the mockup's own vertical "Stages" list, one row per section
+   rather than a horizontal-scrolling pill row. */
 .section-steps {
   display: flex;
-  padding: 0 16px 2px;
-  overflow-x: auto;
-  gap: 4px;
-  scrollbar-width: none;
-}
-
-.section-steps::-webkit-scrollbar {
-  display: none;
+  padding: 4px 10px 2px;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .section-steps button {
-  display: inline-flex;
-  min-height: 34px;
-  padding: 7px 12px;
-  flex: 0 0 auto;
+  display: flex;
+  min-height: 48px;
+  padding: 0 12px;
   align-items: center;
-  gap: 6px;
+  gap: 11px;
   color: var(--muted);
-  background: var(--surface-muted);
-  border: 1px solid transparent;
-  border-radius: 999px;
+  background: transparent;
+  border: var(--edge) solid transparent;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
+  font-size: 16px;
+  text-align: left;
   transition: color .15s ease, background-color .15s ease, border-color .15s ease;
 }
 
 .section-steps button:hover {
   color: var(--ink);
-  border-color: var(--line-strong);
+  background: var(--card-2);
 }
 
 .section-steps button.active {
-  color: var(--on-brand);
-  background: var(--brand);
-  border-color: var(--brand);
+  color: var(--ink);
+  background: var(--gold-soft);
+  border-color: var(--ink);
+  box-shadow: var(--shadow-btn);
+  font-weight: 700;
 }
 
 .section-steps button:focus-visible {
@@ -1670,17 +1772,39 @@
 }
 
 .section-steps button > i {
-  font-size: 10px;
+  display: flex;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  background: var(--card-2);
+  border: var(--edge) solid #BCA88A;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
   font-style: normal;
+}
+
+.section-steps button > b {
+  flex: 1;
+  min-width: 0;
+  font-weight: inherit;
+}
+
+.section-xp {
+  flex: none;
+  color: var(--rust-deep);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
 }
 
 /* Completion reads as done through the glyph as well as colour. */
 .section-steps button > i.complete {
-  color: var(--success);
-}
-
-.section-steps button.active > i.complete {
-  color: var(--on-brand);
+  color: var(--card);
+  background: var(--moss);
+  border-color: var(--ink);
 }
 
 .step-footer {
@@ -1690,7 +1814,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  border-top: 1px solid var(--line);
+  border-top: 2px solid var(--card-2);
 }
 
 .step-footer .btn {
@@ -2640,5 +2764,57 @@
 @media (max-width: 820px) {
   .import-skipped {
     font-size: 12px;
+  }
+}
+
+/* ==========================================================================
+   The builder's own step-footer (Back / Next stage) is the mobile action
+   bar in this view; the floating bottom navigation would double up with it
+   and can overlap the Next-stage button, so it stays off this page.
+   ========================================================================== */
+@media (max-width: 900px) {
+  .builder-page .bottom-nav {
+    display: none !important;
+  }
+
+  .builder-page .page-shell {
+    padding-bottom: 0;
+  }
+}
+
+/* ==========================================================================
+   Quest additions on a narrow screen.
+
+   The XP chip and the Robot score meter are supplementary -- the same
+   numbers are already on the level banner and in the review panel's own ATS
+   score -- so they step aside rather than forcing the topbar and preview
+   toolbar to overflow on a phone.
+   ========================================================================== */
+@media (max-width: 920px) {
+  .builder-xp-chip {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .robot-score-meter {
+    display: none;
+  }
+
+  .preview-toolbar {
+    height: auto;
+    min-height: 62px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
+  .preview-toolbar b {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 460px) {
+  .preview-toolbar small {
+    display: none;
   }
 }

@@ -405,3 +405,74 @@
   border-width: 2px;
   box-shadow: 3px 3px 0 #3A2A1B;
 }
+
+/* ==========================================================================
+   Gamification off-switch — Account → Appearance.
+   ========================================================================== */
+.gamification-toggle-form {
+  margin-top: 6px;
+}
+
+.gamification-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.gamification-toggle-state {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.gamification-toggle-hint {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 52ch;
+}
+
+.toggle-switch {
+  flex: none;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.toggle-switch-track {
+  display: block;
+  width: 52px;
+  height: 30px;
+  padding: 3px;
+  background: var(--card-2);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--motion-base) var(--ease-out);
+}
+
+.toggle-switch[aria-checked="true"] .toggle-switch-track {
+  background: var(--moss);
+}
+
+.toggle-switch-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: var(--card);
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-pill);
+  transition: transform var(--motion-base) var(--ease-spring);
+}
+
+.toggle-switch[aria-checked="true"] .toggle-switch-thumb {
+  transform: translateX(22px);
+}
+
+.toggle-switch:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: var(--radius-pill);
+}

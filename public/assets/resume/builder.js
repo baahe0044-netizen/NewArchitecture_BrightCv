@@ -1544,6 +1544,12 @@
   function renderAtsReport(report) {
     document.getElementById('atsScore').textContent = report.score;
     document.getElementById('atsRing').style.setProperty('--score', report.score);
+    // The toolbar's own "Robot score" meter mirrors the same number, so a
+    // fresh scan is visible without opening the review panel to see it.
+    const toolbarScore = document.getElementById('toolbarAtsScore');
+    const toolbarMeter = document.getElementById('toolbarAtsMeter');
+    if (toolbarScore) toolbarScore.textContent = report.score;
+    if (toolbarMeter) toolbarMeter.style.width = report.score + '%';
     document.getElementById('atsGrade').textContent = report.grade;
     document.getElementById('atsScoreMessage').textContent = report.score >= 85
       ? 'A strong CV—finish with role-specific tailoring.'
