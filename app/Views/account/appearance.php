@@ -21,6 +21,37 @@
             <?php View::partial('components/account_nav', ['active' => 'appearance']); ?>
 
             <section class="card account-card">
+                <div class="account-card-heading"><div class="large-avatar">◐</div><div><h2>Theme</h2><p>System follows your device automatically; Light and Dark stay fixed regardless of your device setting.</p></div></div>
+
+                <div class="theme-options" role="radiogroup" aria-label="Theme">
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="system">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-system"><span></span><span></span></span>
+                            <span class="theme-option-label"><b>System</b><span class="theme-option-check">✓</span></span>
+                            <p>Matches your device setting automatically.</p>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="light">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-light"><span></span><span></span></span>
+                            <span class="theme-option-label"><b>Light</b><span class="theme-option-check">✓</span></span>
+                            <p>Always light, regardless of device setting.</p>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="dark">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-dark"><span></span><span></span></span>
+                            <span class="theme-option-label"><b>Dark</b><span class="theme-option-check">✓</span></span>
+                            <p>Always dark, regardless of device setting.</p>
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="card account-card">
                 <div class="account-card-heading"><div class="large-avatar">◑</div><div><h2>Levels, streaks, and badges</h2><p>The game layer across the dashboard, the builder, and Rewards.</p></div></div>
 
                 <form method="post" action="<?= e(base_url('/account/gamification')) ?>" class="gamification-toggle-form">
@@ -54,5 +85,6 @@
 <?php View::partial('components/bottom_nav', ['active' => 'account']); ?>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
+<script src="<?= e(asset('account/appearance.js')) ?>" defer></script>
 </body>
 </html>

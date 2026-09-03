@@ -45,6 +45,7 @@ $builderPayload = [
     </div>
 
     <div class="builder-actions">
+        <?php View::partial('components/theme_toggle'); ?>
         <?php if ($gamification !== null && (int) $gamification['xp_today'] > 0): ?>
             <span class="chip chip-gold builder-xp-chip">+<?= (int) $gamification['xp_today'] ?> XP today</span>
         <?php endif; ?>

@@ -242,8 +242,8 @@
   display: grid;
   padding: 14px;
   gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: var(--card);
+  border: var(--edge) solid var(--ink);
   border-radius: var(--radius);
   transition: border-color .15s ease, box-shadow .15s ease;
 }
@@ -254,16 +254,15 @@
 }
 
 .theme-option input:checked + .theme-option-card {
-  border-color: var(--brand);
-  box-shadow: 0 0 0 3px var(--focus);
+  box-shadow: var(--shadow-btn);
 }
 
 /* Swatches show the actual light/dark surfaces, so they stay fixed rather
-   than following the current theme. */
+   than following the current theme -- literal Quest hex values, not tokens. */
 .theme-swatch {
   height: 54px;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: var(--edge) solid var(--ink);
   border-radius: var(--radius-sm);
 }
 
@@ -272,21 +271,21 @@
   height: 100%;
 }
 
-.theme-swatch-light { background: #f4f6f8; }
-.theme-swatch-light > span:first-child { height: 30%; background: #ffffff; border-bottom: 1px solid #dfe3e8; }
-.theme-swatch-light > span:last-child { height: 70%; background: #ffffff; }
+.theme-swatch-light { background: #EBD9BB; }
+.theme-swatch-light > span:first-child { height: 34%; background: #3A2A1E; }
+.theme-swatch-light > span:last-child { height: 66%; background: #FBF3E3; }
 
-.theme-swatch-dark { background: #121826; }
-.theme-swatch-dark > span:first-child { height: 30%; background: #1a2130; border-bottom: 1px solid #2c3444; }
-.theme-swatch-dark > span:last-child { height: 70%; background: #1a2130; }
+.theme-swatch-dark { background: #1B1410; }
+.theme-swatch-dark > span:first-child { height: 34%; background: #0D0906; }
+.theme-swatch-dark > span:last-child { height: 66%; background: #241C16; }
 
 .theme-swatch-system {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
-.theme-swatch-system > span:first-child { background: #ffffff; border-right: 1px solid #dfe3e8; }
-.theme-swatch-system > span:last-child { background: #1a2130; }
+.theme-swatch-system > span:first-child { background: #FBF3E3; border-right: var(--edge) solid var(--ink); }
+.theme-swatch-system > span:last-child { background: #241C16; }
 
 .theme-option-label {
   display: flex;

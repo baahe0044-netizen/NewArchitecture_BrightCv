@@ -120,7 +120,7 @@
 }
 
 .save-indicator[data-state="saving"] {
-  color: var(--ink);
+  color: var(--on-gold);
   background: var(--gold);
   border-color: var(--choco-ink);
 }
@@ -2816,5 +2816,94 @@
 @media (max-width: 460px) {
   .preview-toolbar small {
     display: none;
+  }
+}
+
+/* ==========================================================================
+   Stage rail on a phone: horizontal instead of vertical.
+
+   The vertical list (Builder.dc.html's own desktop layout) reads well in a
+   282px sidebar, but inside the narrower off-canvas mobile panel it pushed
+   the actual form fields hundreds of pixels down the screen before they
+   were visible at all. Below the same width where the panel goes off-canvas,
+   the stages become one scrollable row instead, so the fields under it are
+   the first thing in view.
+   ========================================================================== */
+@media (max-width: 920px) {
+  .section-steps {
+    flex-direction: row;
+    padding: 6px 10px;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .section-steps::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-steps button {
+    min-height: 40px;
+    padding: 0 12px;
+    flex: 0 0 auto;
+    gap: 8px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  /* The active pill still gets the mockup's own emphasis -- gold fill, ink
+     border, hard shadow -- it just no longer needs the row's full width to
+     show it. */
+  .section-steps button.active {
+    box-shadow: var(--shadow-badge);
+  }
+
+  .section-steps button > i {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+
+  .section-xp {
+    font-size: 12px;
+  }
+
+  /* The level card and progress bar step aside too, so the row of stages
+     and the fields below it both fit in view together. */
+  .stage-rail-level {
+    margin: 10px 16px 0;
+    padding: 10px 12px;
+  }
+
+  .stage-rail-level-row {
+    gap: 9px;
+  }
+
+  .level-number-small {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .stage-rail-level-name {
+    font-size: 14px;
+  }
+
+  .stage-rail-level-bar {
+    height: 9px;
+    margin-top: 8px;
+  }
+
+  .stage-rail-level-next {
+    margin-top: 4px;
+    font-size: 11px;
+  }
+
+  .completion-summary {
+    margin: 10px 16px;
+    padding: 10px 12px;
   }
 }

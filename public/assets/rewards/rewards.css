@@ -82,7 +82,7 @@
   height: 50px;
   border-width: 3px;
   background: var(--gold);
-  color: var(--ink);
+  color: var(--on-gold);
   font-size: 22px;
 }
 

@@ -1,21 +1,25 @@
 /*
   BrightCV design tokens — "Quest".
 
-  Ported literally from design/quest/*.dc.html, the executable reference for
-  this look. One warm palette, one serif face (Tinos) everywhere, heavy 2px
-  ink borders, and hard offset shadows with no blur — a halftone-dot ground
-  instead of a photograph or a gradient.
+  Ported literally from design/quest/*.dc.html for light mode: one warm
+  palette, one serif face (Tinos) everywhere, heavy 2px ink borders, and hard
+  offset shadows with no blur — a halftone-dot ground instead of a
+  photograph or a gradient. Dark mode is not in the reference mockups; it is
+  re-derived from the same hues (warm near-black ground, the same rust/gold/
+  moss/berry family lifted to stay legible) rather than a mechanical invert,
+  the same way the rest of this app's dark themes have been built.
 
-  This replaces the earlier multi-palette / light-dark system. Quest ships as
-  the app's one identity, light only: the reference mockups define a single
-  look, and inventing a dark variant would be extrapolation beyond them
-  rather than porting them. Re-adding a dark mode later is a real, separate
-  decision — it would need its own set of dark tokens and a place to choose
-  one, neither of which exists here on purpose.
+  Three states, same as before: the bare :root block below is light. System
+  dark answers prefers-color-scheme and is guarded so an explicit "light"
+  choice on a dark system still wins. :root[data-theme="dark"] is the
+  explicit choice, and wins over both. The choice itself is made with the
+  header's theme toggle (cycles System -> Light -> Dark) or in Account ->
+  Appearance, via window.BrightTheme in app.js and public/assets/common/
+  theme-init.js applying it before first paint.
 
   The rendered CV is excluded on purpose. resume/preview.css and print.css
   keep their own print-safe colours so an exported CV stays white with black
-  text regardless of what the app chrome is wearing.
+  text in every theme.
 */
 
 :root {
@@ -82,6 +86,12 @@
 
   --focus: rgba(42, 29, 20, .32);
   --overlay: rgba(36, 26, 17, .6);
+
+  /* Text set directly on a full-strength gold fill (a current-step marker, an
+     earned badge, an active pill). Gold stays a bright, saturated colour in
+     both themes by design, so this reads correctly against it without
+     flipping the way --ink does for body text. */
+  --on-gold: #241A10;
 
   /* --- Shape language: 2px borders, hard offsets, no blur ----------------
      Read scripts/check-contrast.mjs and the mockups' literal .panel/.btn/
@@ -150,6 +160,156 @@
   --motion-slow: 420ms;
   --ease-out: cubic-bezier(.22, .61, .36, 1);
   --ease-spring: cubic-bezier(.34, 1.26, .64, 1);
+}
+
+
+/*
+  Dark — re-derived from the same hues, not inverted. A warm near-black
+  ground (never pure black), the same rust/gold/moss/berry family lifted to
+  stay saturated and legible, and choco pushed a shade darker than the page
+  so the header and level banner still read as the bolder, darker anchor
+  they are in light mode.
+*/
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --sand: #1B1410;
+    --card: #241C16;
+    --card-2: #2E241C;
+    --ink: #F2E6D8;
+    --muted: #B8A691;
+    --rust: #E8734F;
+    --rust-deep: #F0906F;
+    --gold: #F0B84A;
+    --gold-soft: #3A2E17;
+    --moss: #7FBE6A;
+    --moss-deep: #9BD48A;
+    --moss-soft: #1E2E1C;
+    --berry: #E27BA9;
+    --berry-soft: #33202A;
+    --choco: #0D0906;
+
+    --choco-ink: #F2E6D8;
+    --choco-muted: #9C8A76;
+    --choco-line: #2E2318;
+    --choco-line-soft: #46372A;
+    --choco-well: #060402;
+
+    --brand: var(--rust);
+    --brand-dark: var(--rust-deep);
+    --brand-soft: var(--gold-soft);
+    --brand-border: var(--ink);
+    --on-brand: var(--card);
+    --on-gold: #241A10;
+
+    --accent-ochre: #E0B25A;
+    --accent-ochre-soft: var(--gold-soft);
+    --accent-moss: var(--moss);
+    --accent-moss-soft: var(--moss-soft);
+    --accent-teal: #5FC2C9;
+    --accent-teal-soft: #17332F;
+    --accent-plum: var(--berry);
+    --accent-plum-soft: var(--berry-soft);
+
+    --ink-soft: #DCCBB8;
+    --subtle: var(--muted);
+    --line: #362A1E;
+    --line-strong: #8A7460;
+    --surface: var(--card);
+    --surface-muted: var(--card-2);
+    --canvas: var(--sand);
+
+    --success: var(--moss);
+    --success-soft: var(--moss-soft);
+    --warning: #E0B25A;
+    --warning-soft: var(--gold-soft);
+    --danger: #F0876F;
+    --danger-soft: #3A2018;
+
+    --focus: rgba(242, 230, 216, .34);
+    --overlay: rgba(4, 2, 1, .72);
+
+    /* The halftone dot itself is drawn in ink, so it needs to be light on a
+       dark ground rather than the light theme's dark-on-light dot. */
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17'%3E%3Ccircle cx='1.2' cy='1.2' r='1.2' fill='%23F2E6D8' opacity='.055'/%3E%3C/svg%3E");
+ 
+    /* Shadows stay a fixed near-black rather than following --ink (which is
+       now cream): an offset shadow this bright would read as a glow, not a
+       drop behind the card. */
+    --shadow-sm: 4px 4px 0 #050302;
+    --shadow-md: 4px 4px 0 #050302;
+    --shadow-lg: 6px 6px 0 #050302;
+    --shadow-btn: 3px 3px 0 #050302;
+    --shadow-badge: 2px 2px 0 #050302;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --sand: #1B1410;
+  --card: #241C16;
+  --card-2: #2E241C;
+  --ink: #F2E6D8;
+  --muted: #B8A691;
+  --rust: #E8734F;
+  --rust-deep: #F0906F;
+  --gold: #F0B84A;
+  --gold-soft: #3A2E17;
+  --moss: #7FBE6A;
+  --moss-deep: #9BD48A;
+  --moss-soft: #1E2E1C;
+  --berry: #E27BA9;
+  --berry-soft: #33202A;
+  --choco: #0D0906;
+
+  --choco-ink: #F2E6D8;
+  --choco-muted: #9C8A76;
+  --choco-line: #2E2318;
+  --choco-line-soft: #46372A;
+  --choco-well: #060402;
+
+  --brand: var(--rust);
+  --brand-dark: var(--rust-deep);
+  --brand-soft: var(--gold-soft);
+  --brand-border: var(--ink);
+  --on-brand: var(--card);
+  --on-gold: #241A10;
+
+  --accent-ochre: #E0B25A;
+  --accent-ochre-soft: var(--gold-soft);
+  --accent-moss: var(--moss);
+  --accent-moss-soft: var(--moss-soft);
+  --accent-teal: #5FC2C9;
+  --accent-teal-soft: #17332F;
+  --accent-plum: var(--berry);
+  --accent-plum-soft: var(--berry-soft);
+
+  --ink-soft: #DCCBB8;
+  --subtle: var(--muted);
+  --line: #362A1E;
+  --line-strong: #8A7460;
+  --surface: var(--card);
+  --surface-muted: var(--card-2);
+  --canvas: var(--sand);
+
+  --success: var(--moss);
+  --success-soft: var(--moss-soft);
+  --warning: #E0B25A;
+  --warning-soft: var(--gold-soft);
+  --danger: #F0876F;
+  --danger-soft: #3A2018;
+
+  --focus: rgba(242, 230, 216, .34);
+  --overlay: rgba(4, 2, 1, .72);
+
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17'%3E%3Ccircle cx='1.2' cy='1.2' r='1.2' fill='%23F2E6D8' opacity='.055'/%3E%3C/svg%3E");
+  --shadow-sm: 4px 4px 0 #050302;
+  --shadow-md: 4px 4px 0 #050302;
+  --shadow-lg: 6px 6px 0 #050302;
+  --shadow-btn: 3px 3px 0 #050302;
+  --shadow-badge: 2px 2px 0 #050302;
 }
 
 /*
@@ -520,6 +680,18 @@ button:disabled {
 
 .mobile-menu-button {
   display: none;
+}
+
+/* Header theme control: CSS picks the icon from data-theme-mode so it is
+   correct on first paint, before the deferred script runs. */
+.theme-toggle svg {
+  display: none;
+}
+
+:root:not([data-theme-mode="light"]):not([data-theme-mode="dark"]) .theme-toggle [data-theme-icon="system"],
+:root[data-theme-mode="light"] .theme-toggle [data-theme-icon="light"],
+:root[data-theme-mode="dark"] .theme-toggle [data-theme-icon="dark"] {
+  display: block;
 }
 
 .card {
@@ -1178,7 +1350,7 @@ body {
 }
 
 .bottom-nav-item[aria-current="page"] {
-  color: var(--ink);
+  color: var(--on-gold);
   background: var(--gold);
 }
 

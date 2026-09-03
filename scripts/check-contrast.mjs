@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
- * Measures WCAG contrast for the Quest design tokens.
+ * Measures WCAG contrast for the Quest design tokens, light and dark.
  *
- * The palette is defined once, in the top-level :root block of
- * public/assets/common/app.css (Quest ships as the app's one identity,
- * light only), and a ratio that fails is invisible until someone with low
- * vision cannot read the page. This reads the tokens straight out of the
- * stylesheet so the numbers always describe what actually ships, and fails
- * the run if any pair drops below the level its role requires.
+ * The palette is defined in public/assets/common/app.css: a bare :root block
+ * for light, a media-guarded block for system dark, and an explicit
+ * [data-theme="dark"] block for the in-app choice. A ratio that fails is
+ * invisible until someone with low vision cannot read the page. This reads
+ * the tokens straight out of the stylesheet so the numbers always describe
+ * what actually ships, and fails the run if any pair drops below the level
+ * its role requires.
  *
  * Flat, saturated colour blocks -- exactly what this palette is built from
  * -- are precisely where contrast most often goes wrong, which is why every
@@ -24,9 +25,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const cssPath = join(root, 'public/assets/common/app.css');
 const css = readFileSync(cssPath, 'utf8');
 
-/** Pull the first top-level :root { ... } block out of the stylesheet. */
-function tokensFrom() {
-  const start = css.indexOf(':root {');
+/** Pull the first token block matching a selector pattern out of the stylesheet. */
+function tokensFrom(selectorPattern) {
+  const start = css.search(selectorPattern);
   if (start === -1) return null;
 
   let depth = 0;
@@ -109,7 +110,7 @@ const PAIRS = [
   ['--moss-deep', '--moss-soft', 4.5, 'moss XP text on a completed row'],
   ['--rust-deep', '--card', 4.5, 'rust XP text on a card'],
   ['--moss-deep', '--card', 4.5, 'moss done-state text on a card'],
-  ['--ink', '--gold', 4.5, 'text on a gold chip or stage marker'],
+  ['--on-gold', '--gold', 4.5, 'text on a full-strength gold fill'],
   ['--ink', '--gold-soft', 4.5, 'text on the gold-soft quest panel'],
   ['--ink', '--moss-soft', 4.5, 'text on a completed quest row'],
   ['--ink', '--berry-soft', 4.5, 'text on a berry-soft support callout'],
@@ -124,42 +125,49 @@ const PAIRS = [
   ['--choco-ink', '--choco-well', 4.5, 'text on the sunken XP-bar well'],
 ];
 
-const tokens = tokensFrom();
-if (!tokens) {
-  console.log('No :root token block found.');
-  process.exit(1);
-}
+// Light, system dark, and the explicit in-app dark choice -- the same three
+// states the rest of the app's theme handling distinguishes.
+const THEMES = [
+  ['light (:root)', /^:root\s*\{/m],
+  ['system dark', /:root:not\(\[data-theme="light"\]\)\s*\{/],
+  ['explicit dark', /:root\[data-theme="dark"\]\s*\{/],
+];
 
 let failures = 0;
 let checked = 0;
 
-console.log('Quest palette');
-console.log('-'.repeat(74));
-
-for (const [fg, bg, minimum, role] of PAIRS) {
-  const fgValue = tokens[fg];
-  const bgValue = tokens[bg];
-  if (!fgValue || !bgValue) {
-    console.log(`SKIP  (missing token)  ${role}  [${fg} / ${bg}]`);
+for (const [name, pattern] of THEMES) {
+  const tokens = tokensFrom(pattern);
+  if (!tokens) {
+    console.log(`\n${name}: token block not found`);
+    failures++;
     continue;
   }
 
-  const a = toRgb(resolve(tokens, fgValue));
-  const b = toRgb(resolve(tokens, bgValue));
-  if (!a || !b) {
-    console.log(`SKIP  (unresolved colour)  ${role}  [${fg}=${fgValue} / ${bg}=${bgValue}]`);
-    continue;
+  console.log(`\n${name}`);
+  console.log('-'.repeat(74));
+
+  for (const [fg, bg, minimum, role] of PAIRS) {
+    // A theme may legitimately not redefine every token; fall back to light.
+    const light = tokensFrom(/^:root\s*\{/m);
+    const fgValue = tokens[fg] ?? light[fg];
+    const bgValue = tokens[bg] ?? light[bg];
+    if (!fgValue || !bgValue) continue;
+
+    const a = toRgb(resolve(tokens, fgValue));
+    const b = toRgb(resolve(tokens, bgValue));
+    if (!a || !b) continue;
+
+    checked++;
+    const value = ratio(a, b);
+    const passed = value >= minimum;
+    if (!passed) failures++;
+
+    console.log(
+      `${passed ? 'PASS' : 'FAIL'}  ${value.toFixed(2).padStart(5)} : 1  ` +
+      `(needs ${minimum})  ${role}`
+    );
   }
-
-  checked++;
-  const value = ratio(a, b);
-  const passed = value >= minimum;
-  if (!passed) failures++;
-
-  console.log(
-    `${passed ? 'PASS' : 'FAIL'}  ${value.toFixed(2).padStart(5)} : 1  ` +
-    `(needs ${minimum})  ${role}`
-  );
 }
 
 console.log(`\n${'='.repeat(74)}`);

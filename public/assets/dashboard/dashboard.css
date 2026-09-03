@@ -993,7 +993,7 @@
   width: 34px;
   height: 34px;
   margin-top: -2px;
-  color: var(--ink);
+  color: var(--on-gold);
   background: var(--gold);
   border: 3px solid var(--ink);
   box-shadow: 2px 2px 0 var(--ink);
@@ -1175,7 +1175,7 @@ li:not(.is-done):not(.is-current) .journey-label {
 .badge-rust { background: var(--rust); }
 .badge-berry { background: var(--berry); }
 .badge-moss { background: var(--moss); }
-.badge-gold { background: var(--gold); color: var(--ink); }
+.badge-gold { background: var(--gold); color: var(--on-gold); }
 .badge-choco { background: var(--choco); }
 .badge-rust-deep { background: var(--rust-deep); }
 
