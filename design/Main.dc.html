@@ -1,0 +1,274 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap">
+  <style>
+    body { margin: 0; font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #101E2B; -webkit-font-smoothing: antialiased; }
+    a { color: #0B4C82; text-decoration: none; }
+    a:hover { color: #0F62A8; }
+    h1, h2, h3 { margin: 0; font-family: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+    p { margin: 0; }
+    .ground {
+      background-color: #F3F8FC;
+      background-image:
+        radial-gradient(120% 80% at 12% 0%, #D6E9F8 0%, transparent 60%),
+        radial-gradient(100% 70% at 92% 8%, #E9F3FB 0%, transparent 62%),
+        linear-gradient(180deg, #F7FBFE 0%, #F3F8FC 46%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+    }
+    .glass {
+      background: rgba(255, 255, 255, .62);
+      border: 1px solid rgba(255, 255, 255, .6);
+      box-shadow: 0 8px 32px rgba(16, 30, 43, .1);
+      -webkit-backdrop-filter: blur(18px) saturate(1.5);
+      backdrop-filter: blur(18px) saturate(1.5);
+    }
+    .sheet-line { display: block; height: 3px; border-radius: 2px; background: #DCE7F0; }
+  </style>
+</helmet>
+
+<div class="ground" style="width: 1440px; height: 900px; overflow: hidden; position: relative;">
+
+  <!-- ============ Glass header, 68px, sticky in the real app ============ -->
+  <header class="glass" style="height: 68px; border-left: 0; border-right: 0; border-top: 0; border-radius: 0; display: flex; align-items: center;">
+    <div style="width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px;">
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 30px; height: 30px; border-radius: 9px; background: #0F62A8; display: flex; align-items: center; justify-content: center;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+        </div>
+        <span style="font-family: 'Fraunces', Georgia, serif; font-size: 20px; font-weight: 700; letter-spacing: -0.01em;">BrightCV</span>
+      </div>
+
+      <nav style="display: flex; align-items: center; gap: 4px;">
+        <a href="#" style="display: flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; background: #E4F0FA; color: #0B4C82; font-size: 14px; font-weight: 650;">Dashboard</a>
+        <a href="#" style="display: flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; color: #33465A; font-size: 14px; font-weight: 550;">Templates</a>
+        <a href="#" style="display: flex; align-items: center; height: 40px; padding: 0 14px; border-radius: 999px; color: #33465A; font-size: 14px; font-weight: 550;">Account</a>
+      </nav>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.7); border-radius: 999px; background: rgba(255,255,255,.5); cursor: pointer; color: #33465A;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+        <div style="display: flex; align-items: center; gap: 9px; height: 40px; padding: 0 14px 0 5px; border: 1px solid rgba(255,255,255,.7); border-radius: 999px; background: rgba(255,255,255,.5);">
+          <span style="width: 30px; height: 30px; border-radius: 999px; background: #0E6473; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">A</span>
+          <span style="font-size: 14px; font-weight: 600; color: #101E2B;">Ama Mensah</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============ Page ============ -->
+  <div style="width: 1180px; margin: 0 auto; padding-top: 32px; display: flex; flex-direction: column; gap: 26px;">
+
+    <!-- Greeting row -->
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;">
+      <div>
+        <p style="margin-bottom: 8px; color: #0B4C82; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;">Dashboard</p>
+        <h1 style="font-size: 41px; line-height: 1.2; font-weight: 600; letter-spacing: -0.015em;">Welcome back, Ama.</h1>
+        <p style="margin-top: 8px; color: #33465A; font-size: 17px; line-height: 1.6;">One CV is nearly ready to send. Pick up where you stopped, or start a fresh one.</p>
+      </div>
+      <button style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border: 1px solid #0F62A8; border-radius: 9px; background: #0F62A8; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 650; cursor: pointer; box-shadow: 0 10px 28px rgba(15,98,168,.24);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Start a new CV
+      </button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; align-items: start;">
+
+      <!-- ---------- Main column ---------- -->
+      <div style="display: flex; flex-direction: column; gap: 26px;">
+
+        <!-- Continue card: the one thing the dashboard is for -->
+        <section class="glass" style="border-radius: 18px; padding: 22px; display: flex; gap: 22px; align-items: stretch;">
+          <div style="width: 132px; height: 178px; border-radius: 10px; background: #FFFFFF; border: 1px solid #DCE7F0; box-shadow: 0 6px 18px rgba(16,30,43,.10); padding: 14px 13px; display: flex; flex-direction: column; gap: 7px; flex-shrink: 0;">
+            <div style="height: 4px; width: 62%; border-radius: 2px; background: #0F62A8;"></div>
+            <div style="height: 3px; width: 44%; border-radius: 2px; background: #78899A;"></div>
+            <div style="height: 1px; background: #DCE7F0; margin: 5px 0;"></div>
+            <span class="sheet-line" style="width: 100%;"></span>
+            <span class="sheet-line" style="width: 88%;"></span>
+            <div style="height: 3px; width: 40%; border-radius: 2px; background: #0F62A8; margin-top: 6px;"></div>
+            <span class="sheet-line" style="width: 96%;"></span>
+            <span class="sheet-line" style="width: 78%;"></span>
+            <span class="sheet-line" style="width: 90%;"></span>
+            <div style="height: 3px; width: 34%; border-radius: 2px; background: #0F62A8; margin-top: 6px;"></div>
+            <span class="sheet-line" style="width: 70%;"></span>
+          </div>
+
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 14px; min-width: 0;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;">
+              <div>
+                <p style="color: #5B6E82; font-size: 13px; font-weight: 600;">Continue where you left off</p>
+                <h2 style="margin-top: 5px; font-size: 25px; font-weight: 600; letter-spacing: -0.01em;">Product Design CV</h2>
+                <p style="margin-top: 5px; color: #5B6E82; font-size: 13px;">Edited 2 hours ago &middot; Modern Focus template</p>
+              </div>
+              <span style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: #FBF0DA; color: #8A5A0B; font-size: 12px; font-weight: 700;">Draft</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <div style="display: flex; align-items: baseline; justify-content: space-between;">
+                <span style="font-size: 13px; font-weight: 600; color: #33465A;">72% complete</span>
+                <span style="font-size: 13px; color: #5B6E82;">ATS readiness 68%</span>
+              </div>
+              <div style="height: 8px; border-radius: 999px; background: #E4F0FA; overflow: hidden;">
+                <div style="width: 72%; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #0F62A8, #0E6473);"></div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: 13px; background: #FBF0DA; border: 1px solid #F0E0BE;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A5A0B" stroke-width="1.9" stroke-linecap="round" style="flex-shrink: 0; margin-top: 1px;"><path d="M12 3a6 6 0 0 0-3.5 10.9V17h7v-3.1A6 6 0 0 0 12 3z"/><path d="M10 20h4"/></svg>
+              <p style="font-size: 14px; line-height: 1.5; color: #5A3B08;"><b style="font-weight: 700;">Next:</b> add two achievements to your Kwesi Studios role. Numbers land best &mdash; what changed because you were there?</p>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 2px;">
+              <button style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border: 1px solid #0F62A8; border-radius: 9px; background: #0F62A8; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 650; cursor: pointer;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+                Keep writing
+              </button>
+              <button style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border: 1px solid #BFDCF2; border-radius: 9px; background: rgba(255,255,255,.72); color: #0B4C82; font-family: inherit; font-size: 14px; font-weight: 650; cursor: pointer;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- CV library -->
+        <section style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: baseline; justify-content: space-between;">
+            <div>
+              <h2 style="font-size: 20px; font-weight: 600;">Your CVs</h2>
+              <p style="margin-top: 3px; color: #5B6E82; font-size: 13px;">Three saved. Copy one to tailor it for another role.</p>
+            </div>
+            <a href="#" style="font-size: 14px; font-weight: 600;">Browse templates &rarr;</a>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;">
+
+            <article class="glass" style="border-radius: 18px; overflow: hidden;">
+              <div style="height: 104px; background: linear-gradient(160deg, #E4F0FA, #F7FBFE); display: flex; align-items: flex-end; justify-content: center; padding: 0 20px; position: relative;">
+                <div style="width: 100%; height: 78px; background: #FFFFFF; border: 1px solid #DCE7F0; border-bottom: 0; border-radius: 8px 8px 0 0; padding: 11px 12px; display: flex; flex-direction: column; gap: 5px;">
+                  <div style="height: 4px; width: 52%; border-radius: 2px; background: #0F62A8;"></div>
+                  <span class="sheet-line" style="width: 84%;"></span>
+                  <span class="sheet-line" style="width: 96%;"></span>
+                  <span class="sheet-line" style="width: 72%;"></span>
+                </div>
+                <span style="position: absolute; top: 10px; right: 12px; display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 999px; background: rgba(255,255,255,.86); color: #0B4C82; font-size: 11px; font-weight: 700;">72%</span>
+              </div>
+              <div style="padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 600; font-family: 'Inter', sans-serif;">Product Design CV</h3>
+                  <p style="margin-top: 3px; color: #5B6E82; font-size: 12px;">Edited 2 hours ago</p>
+                </div>
+                <div style="height: 6px; border-radius: 999px; background: #E4F0FA;"><div style="width: 72%; height: 100%; border-radius: 999px; background: #0F62A8;"></div></div>
+                <div style="display: flex; gap: 8px;">
+                  <button style="flex: 1; min-height: 40px; border: 1px solid #BFDCF2; border-radius: 9px; background: rgba(255,255,255,.7); color: #0B4C82; font-family: inherit; font-size: 13px; font-weight: 650; cursor: pointer;">Open</button>
+                  <button style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #DCE7F0; border-radius: 9px; background: rgba(255,255,255,.7); color: #5B6E82; cursor: pointer;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article class="glass" style="border-radius: 18px; overflow: hidden;">
+              <div style="height: 104px; background: linear-gradient(160deg, #E1F1E9, #F7FBFE); display: flex; align-items: flex-end; justify-content: center; padding: 0 20px; position: relative;">
+                <div style="width: 100%; height: 78px; background: #FFFFFF; border: 1px solid #DCE7F0; border-bottom: 0; border-radius: 8px 8px 0 0; padding: 11px 12px; display: flex; flex-direction: column; gap: 5px;">
+                  <div style="height: 4px; width: 46%; border-radius: 2px; background: #1F6B4A;"></div>
+                  <span class="sheet-line" style="width: 92%;"></span>
+                  <span class="sheet-line" style="width: 68%;"></span>
+                  <span class="sheet-line" style="width: 88%;"></span>
+                </div>
+                <span style="position: absolute; top: 10px; right: 12px; display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 999px; background: rgba(255,255,255,.86); color: #1F6B4A; font-size: 11px; font-weight: 700;">100%</span>
+              </div>
+              <div style="padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+                <div>
+                  <h3 style="font-size: 16px; font-weight: 600; font-family: 'Inter', sans-serif;">Graduate Application</h3>
+                  <p style="margin-top: 3px; color: #5B6E82; font-size: 12px;">Edited 6 Aug &middot; Ready to send</p>
+                </div>
+                <div style="height: 6px; border-radius: 999px; background: #E1F1E9;"><div style="width: 100%; height: 100%; border-radius: 999px; background: #1F6B4A;"></div></div>
+                <div style="display: flex; gap: 8px;">
+                  <button style="flex: 1; min-height: 40px; border: 1px solid #BFDCF2; border-radius: 9px; background: rgba(255,255,255,.7); color: #0B4C82; font-family: inherit; font-size: 13px; font-weight: 650; cursor: pointer;">Open</button>
+                  <button style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #DCE7F0; border-radius: 9px; background: rgba(255,255,255,.7); color: #5B6E82; cursor: pointer;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+                  </button>
+                </div>
+              </div>
+            </article>
+
+            <article style="border-radius: 18px; border: 1.5px dashed #BFDCF2; background: rgba(255,255,255,.34); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; text-align: center;">
+              <div style="width: 44px; height: 44px; border-radius: 999px; background: #E4F0FA; display: flex; align-items: center; justify-content: center; color: #0F62A8;">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              </div>
+              <div>
+                <h3 style="font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif;">Tailor one for a role</h3>
+                <p style="margin-top: 4px; color: #5B6E82; font-size: 12px; line-height: 1.5;">Copy a CV and reshape it<br>for the job you are chasing.</p>
+              </div>
+            </article>
+
+          </div>
+        </section>
+      </div>
+
+      <!-- ---------- Right rail ---------- -->
+      <aside style="display: flex; flex-direction: column; gap: 16px;">
+
+        <section class="glass" style="border-radius: 18px; padding: 18px;">
+          <h2 style="font-size: 17px; font-weight: 600; font-family: 'Inter', sans-serif;">Finish this CV</h2>
+          <p style="margin-top: 4px; color: #5B6E82; font-size: 13px; line-height: 1.5;">Three things left on Product Design CV.</p>
+
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 14px;">
+            <div style="display: flex; align-items: center; gap: 11px; min-height: 46px; padding: 8px 12px; border-radius: 11px; background: rgba(225,241,233,.6);">
+              <span style="width: 22px; height: 22px; border-radius: 999px; background: #1F6B4A; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"/></svg>
+              </span>
+              <span style="font-size: 13px; color: #5B6E82; text-decoration: line-through;">Contact details added</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 11px; min-height: 46px; padding: 8px 12px; border-radius: 11px; background: rgba(255,255,255,.6); border: 1px solid #DCE7F0;">
+              <span style="width: 22px; height: 22px; border-radius: 999px; border: 2px solid #0F62A8; flex-shrink: 0;"></span>
+              <span style="font-size: 13px; font-weight: 550; color: #101E2B;">Add two achievements</span>
+              <span style="margin-left: auto; font-size: 12px; font-weight: 650; color: #0B4C82;">Fix</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 11px; min-height: 46px; padding: 8px 12px; border-radius: 11px; background: rgba(255,255,255,.6); border: 1px solid #DCE7F0;">
+              <span style="width: 22px; height: 22px; border-radius: 999px; border: 2px solid #78899A; flex-shrink: 0;"></span>
+              <span style="font-size: 13px; font-weight: 550; color: #101E2B;">Shorten the summary</span>
+              <span style="margin-left: auto; font-size: 12px; font-weight: 650; color: #0B4C82;">Fix</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 11px; min-height: 46px; padding: 8px 12px; border-radius: 11px; background: rgba(255,255,255,.6); border: 1px solid #DCE7F0;">
+              <span style="width: 22px; height: 22px; border-radius: 999px; border: 2px solid #78899A; flex-shrink: 0;"></span>
+              <span style="font-size: 13px; font-weight: 550; color: #101E2B;">Name three tools</span>
+              <span style="margin-left: auto; font-size: 12px; font-weight: 650; color: #0B4C82;">Fix</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass" style="border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 11px;">
+          <h2 style="font-size: 17px; font-weight: 600; font-family: 'Inter', sans-serif;">At a glance</h2>
+          <div style="display: flex; align-items: baseline; justify-content: space-between;"><span style="font-size: 13px; color: #5B6E82;">CVs saved</span><b style="font-size: 15px; font-weight: 700;">3</b></div>
+          <div style="height: 1px; background: #DCE7F0;"></div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between;"><span style="font-size: 13px; color: #5B6E82;">Average ATS score</span><b style="font-size: 15px; font-weight: 700;">74%</b></div>
+          <div style="height: 1px; background: #DCE7F0;"></div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between;"><span style="font-size: 13px; color: #5B6E82;">Downloads</span><b style="font-size: 15px; font-weight: 700;">12</b></div>
+        </section>
+
+        <section style="display: flex; align-items: center; gap: 11px; padding: 14px 16px; border-radius: 18px; background: rgba(222,240,243,.55); border: 1px solid rgba(255,255,255,.6);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0E6473" stroke-width="1.9" stroke-linecap="round" style="flex-shrink: 0;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <p style="font-size: 13px; line-height: 1.5; color: #0E4A55;">Stuck on wording? <a href="#" style="font-weight: 650; text-decoration: underline;">Talk to a real person</a></p>
+        </section>
+
+      </aside>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

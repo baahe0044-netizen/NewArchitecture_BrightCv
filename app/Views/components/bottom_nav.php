@@ -37,7 +37,17 @@ $active = $active ?? '';
 ?>
 <nav class="bottom-nav" aria-label="Main">
     <div class="bottom-nav-inner">
+        <?php $half = (int) ceil(count($items) / 2); $index = 0; ?>
         <?php foreach ($items as $key => $item): ?>
+            <?php if ($index === $half): ?>
+                <?php /* Raised centre action. It goes to the builder, which
+                         already exists: this is a shorter route to the screen
+                         people use most, not a new destination. */ ?>
+                <a class="bottom-nav-fab" href="<?= e(base_url('/resume/builder')) ?>" aria-label="Start writing a CV">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                </a>
+            <?php endif; ?>
+            <?php $index++; ?>
             <?php $isActive = $key === $active; ?>
             <a
                 class="bottom-nav-item"

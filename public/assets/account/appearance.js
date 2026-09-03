@@ -30,15 +30,15 @@
   // A separate axis from light and dark: the palette picks the colour family,
   // the theme still decides day or night. Stored under its own namespaced key
   // and read back by theme-init.js before first paint.
-  const PALETTES = ['azure', 'mono', 'ember'];
+  const PALETTES = ['parchment', 'azure', 'mono', 'ember'];
   const paletteInputs = document.querySelectorAll('input[name="palette"]');
 
   const readPalette = () => {
     try {
       const stored = localStorage.getItem('brightcv:palette');
-      return PALETTES.includes(stored) ? stored : 'azure';
+      return PALETTES.includes(stored) ? stored : 'parchment';
     } catch (error) {
-      return 'azure';
+      return 'parchment';
     }
   };
 

@@ -1,0 +1,46 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Aubergine & Gold — Dashboard", "x": 0, "y": 0, "w": 1440, "h": 900 },
+    { "file": "MainBuilder.dc.html", "title": "Aubergine & Gold — Builder", "x": 1560, "y": 0, "w": 1440, "h": 900 },
+    { "file": "MainMobile.dc.html", "title": "Aubergine & Gold — Phone", "x": 3120, "y": 0, "w": 390, "h": 844 },
+
+    { "file": "Forest.dc.html", "title": "Forest & Butter — Dashboard", "x": 0, "y": 1120, "w": 1440, "h": 900 },
+    { "file": "ForestBuilder.dc.html", "title": "Forest & Butter — Builder", "x": 1560, "y": 1120, "w": 1440, "h": 900 },
+    { "file": "ForestMobile.dc.html", "title": "Forest & Butter — Phone", "x": 3120, "y": 1120, "w": 390, "h": 844 },
+
+    { "file": "Navy.dc.html", "title": "Navy & Sunset — Dashboard", "x": 0, "y": 2240, "w": 1440, "h": 900 },
+    { "file": "NavyBuilder.dc.html", "title": "Navy & Sunset — Builder", "x": 1560, "y": 2240, "w": 1440, "h": 900 },
+    { "file": "NavyMobile.dc.html", "title": "Navy & Sunset — Phone", "x": 3120, "y": 2240, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    {
+      "id": "brief",
+      "x": 0,
+      "y": -330,
+      "w": 1020,
+      "text": "THREE COMPLETE PALETTES — one interface.\n\nThe layout is settled and identical across all three rows: dashboard, CV builder, and phone. Only colour, type and shape change, so what you are judging is the palette, not a different design underneath.\n\nEach row is a full set. Pick a row."
+    },
+    {
+      "id": "p1",
+      "x": 0,
+      "y": -160,
+      "w": 1020,
+      "text": "AUBERGINE & GOLD — DM Serif Display + Outfit · 18px radii\nDeep plum #6B2D5C on a blush-white page #FAF5F7, antique gold #8F6212 for hints and badges, pine green for anything finished. Reads considered and slightly premium — a CV as something you'd be proud to hand over. Warmest of the three; the least 'software'."
+    },
+    {
+      "id": "p2",
+      "x": 0,
+      "y": 950,
+      "w": 1020,
+      "text": "FOREST & BUTTER — Newsreader + Public Sans · 14px radii\nDeep forest #1E4D33 on warm oat #F5F3EA, butter-amber #A2700B for guidance. Calm, grown-up and quietly natural, and the easiest of the three on the eye for long writing sessions. Green doubles as the 'done' colour, so progress feels continuous rather than colour-coded."
+    },
+    {
+      "id": "p3",
+      "x": 0,
+      "y": 2070,
+      "w": 1020,
+      "text": "NAVY & SUNSET — Archivo + Manrope · 12px radii\nDeep navy #16264F on cool paper #F3F6FB with a burnt sunset #C24328 doing all the pointing. Tightest radii and the boldest type of the three — the most confident and modern, closest to what a hiring-tech product looks like, at the cost of some of the warmth in the other two."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

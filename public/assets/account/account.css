@@ -396,3 +396,12 @@
     radial-gradient(120% 90% at 15% 0%, #F7E4D4 0%, transparent 60%),
     linear-gradient(135deg, #FDF8F2 0%, #A93C26 220%);
 }
+
+.palette-swatch-parchment {
+  background:
+    radial-gradient(circle at 2px 2px, rgba(58, 42, 27, .18) 1px, transparent 1px) 0 0 / 9px 9px,
+    linear-gradient(135deg, #F7F0E0 0%, #E7DAC0 55%, #A6331D 220%);
+  border-color: #3A2A1B;
+  border-width: 2px;
+  box-shadow: 3px 3px 0 #3A2A1B;
+}

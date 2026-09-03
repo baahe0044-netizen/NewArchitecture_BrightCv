@@ -1,0 +1,38 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Ink & Marigold", "x": 0, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Studio.dc.html", "title": "Midnight Studio", "x": 1560, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Clay.dc.html", "title": "Clay & Sage", "x": 3120, "y": 0, "w": 1440, "h": 900 }
+  ],
+  "annotations": [
+    {
+      "id": "brief",
+      "x": 0,
+      "y": -300,
+      "w": 700,
+      "text": "THREE DIRECTIONS — same dashboard, same content, three different ideas about what BrightCV should feel like.\n\nEach differs in palette AND in interface: navigation model, density, and how the CV list is presented. Pick one and I'll build the CV builder and the phone screens in it."
+    },
+    {
+      "id": "dir-ink",
+      "x": 0,
+      "y": -150,
+      "w": 660,
+      "text": "INK & MARIGOLD — editorial\nWarm paper (#FAF6EF), near-black ink, marigold (#C9741A) and a deep forest green. Instrument Serif + IBM Plex Sans. Flat: hairline rules instead of shadows, a masthead, and the CV list set as a proper table.\n\nWhy: a CV is a document, so the app reads like good print.\nTradeoff: the flat, rule-based style leans formal — less obviously friendly than C, and the table needs care on a phone."
+    },
+    {
+      "id": "dir-studio",
+      "x": 1560,
+      "y": -150,
+      "w": 660,
+      "text": "MIDNIGHT STUDIO — dark tool\nDeep indigo (#0F1220 / #181C2E) with an electric lime (#C6F050) and coral for attention. Space Grotesk + IBM Plex Sans. Left rail navigation, compact panels, data forward.\n\nWhy: reads as a serious, modern working tool; the lime makes one action unmistakable on every screen.\nTradeoff: dark-first is a big shift for a document app, and the white CV preview will always sit hard against the dark chrome."
+    },
+    {
+      "id": "dir-clay",
+      "x": 3120,
+      "y": -150,
+      "w": 660,
+      "text": "CLAY & SAGE — warm and human\nSand (#F4EBE0), clay (#B4553A), sage (#63775C), honey. Bricolage Grotesque + Karla. Floating pill nav, 26px radii, one centred column, lots of room.\n\nWhy: closest to the calm, forgiving tone you wrote into the brief — the least intimidating for someone job-hunting.\nTradeoff: the generous spacing costs screen real estate, which the dense CV builder will feel most."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -148,7 +148,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-palette="mono"]):not([data-palette="ember"]),
+  :root:not([data-theme="light"]):not([data-palette="mono"]):not([data-palette="ember"]):not([data-palette="parchment"]),
   :root[data-palette="azure"]:not([data-theme="light"]) {
     color-scheme: dark;
 
@@ -202,7 +202,7 @@
   }
 }
 
-:root[data-theme="dark"]:not([data-palette="mono"]):not([data-palette="ember"]) {
+:root[data-theme="dark"]:not([data-palette="mono"]):not([data-palette="ember"]):not([data-palette="parchment"]) {
   color-scheme: dark;
 
   --brand: #79C2F2;
@@ -252,6 +252,312 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 4px 12px rgba(0, 0, 0, .28);
   --shadow-md: 0 10px 28px rgba(0, 0, 0, .46);
   --shadow-lg: 0 22px 48px rgba(0, 0, 0, .54);
+}
+
+/* ==========================================================================
+   PARCHMENT — the default. Warm paper, heavy ink borders, hard offset
+   shadows, and a dark bar across the top. Nothing is frosted here: the
+   surfaces are opaque and the depth comes from the offset, which is why this
+   palette reads the same on a cheap screen as on a good one.
+   ========================================================================== */
+:root[data-palette="parchment"] {
+  color-scheme: light;
+
+  --brand: #A6331D;
+  --brand-dark: #8A2917;
+  --brand-soft: #F6E3DA;
+  --brand-border: #E2B7A6;
+  --on-brand: #FFFDF7;
+
+  --accent-ochre: #7D5A0D;
+  --accent-ochre-soft: #F7E9C6;
+  --accent-moss: #3A6330;
+  --accent-moss-soft: #DFEBD5;
+  --accent-teal: #1F5F62;
+  --accent-teal-soft: #D9EAEA;
+  --accent-plum: #9B2E63;
+  --accent-plum-soft: #F6DEEA;
+
+  --ink: #3A2A1B;
+  --ink-soft: #5C4630;
+  --muted: #6E5638;
+  --subtle: #6E5638;
+  --line: #C9B896;
+  --line-strong: #3A2A1B;
+  --surface: #F7F0E0;
+  --surface-muted: #EFE4CC;
+  --canvas: #E7DAC0;
+
+  --success: #3A6330;
+  --success-soft: #DFEBD5;
+  --warning: #7D5A0D;
+  --warning-soft: #F7E9C6;
+  --danger: #A82818;
+  --danger-soft: #F7DFDA;
+
+  --focus: rgba(58, 42, 27, .32);
+  --overlay: rgba(36, 26, 17, .6);
+
+  /* The bar across the top, and the dark strips inside the page. */
+  --bar: #3A2A1B;
+  --bar-ink: #F7F0E0;
+  --bar-muted: #BFAA88;
+
+  /* Depth is a hard offset in the ink colour, not a blur. */
+  --edge: 2px;
+  --offset: 4px;
+  --shadow-sm: var(--offset) var(--offset) 0 var(--ink);
+  --shadow-md: var(--offset) var(--offset) 0 var(--ink);
+  --shadow-lg: 6px 6px 0 var(--ink);
+
+  /* Glass is switched off rather than tinted, so the treatment is honest. */
+  --glass-bg: var(--surface);
+  --glass-border: var(--ink);
+  --glass-shadow: var(--shadow-sm);
+  --glass-highlight: transparent;
+  --glass-blur: 0px;
+  --glass-saturate: 1;
+
+  --page-glow-1: transparent;
+  --page-glow-2: transparent;
+  --page-glow-3: transparent;
+
+  /* A dotted weave instead of the noise grain. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18'%3E%3Ccircle cx='2' cy='2' r='1' fill='%233A2A1B' opacity='.14'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-palette="parchment"]:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --brand: #E8734F;
+    --brand-dark: #F0906F;
+    --brand-soft: rgba(232, 115, 79, .16);
+    --brand-border: rgba(232, 115, 79, .38);
+    --on-brand: #241A11;
+
+    --accent-ochre: #E3B052;
+    --accent-ochre-soft: rgba(227, 176, 82, .16);
+    --accent-moss: #7DBE6A;
+    --accent-moss-soft: rgba(125, 190, 106, .16);
+    --accent-teal: #5FC0C4;
+    --accent-teal-soft: rgba(95, 192, 196, .16);
+    --accent-plum: #E27BA9;
+    --accent-plum-soft: rgba(226, 123, 169, .16);
+
+    --ink: #F2E6CE;
+    --ink-soft: #D5C4A5;
+    --muted: #AC9877;
+    --subtle: #AC9877;
+    --line: #4C3B28;
+    --line-strong: #8A7758;
+    --surface: #33261A;
+    --surface-muted: #3E2F20;
+    --canvas: #241A11;
+
+    --success: #7DBE6A;
+    --success-soft: rgba(125, 190, 106, .16);
+    --warning: #E3B052;
+    --warning-soft: rgba(227, 176, 82, .16);
+    --danger: #F08268;
+    --danger-soft: rgba(240, 130, 104, .16);
+
+    --focus: rgba(242, 230, 206, .34);
+    --overlay: rgba(12, 8, 5, .7);
+
+    --bar: #1B130C;
+    --bar-ink: #F2E6CE;
+    --bar-muted: #9A876A;
+
+    /* In the dark the offset is cast in near-black, since an ink-coloured
+       shadow would be lighter than the ground and read as a glow. */
+    --shadow-sm: var(--offset) var(--offset) 0 #100B06;
+    --shadow-md: var(--offset) var(--offset) 0 #100B06;
+    --shadow-lg: 6px 6px 0 #100B06;
+
+    --glass-bg: var(--surface);
+    --glass-border: #5E4A32;
+    --glass-shadow: var(--shadow-sm);
+    --glass-highlight: transparent;
+
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F2E6CE' opacity='.09'/%3E%3C/svg%3E");
+  }
+}
+
+:root[data-palette="parchment"][data-theme="dark"] {
+  color-scheme: dark;
+
+  --brand: #E8734F;
+  --brand-dark: #F0906F;
+  --brand-soft: rgba(232, 115, 79, .16);
+  --brand-border: rgba(232, 115, 79, .38);
+  --on-brand: #241A11;
+
+  --accent-ochre: #E3B052;
+  --accent-ochre-soft: rgba(227, 176, 82, .16);
+  --accent-moss: #7DBE6A;
+  --accent-moss-soft: rgba(125, 190, 106, .16);
+  --accent-teal: #5FC0C4;
+  --accent-teal-soft: rgba(95, 192, 196, .16);
+  --accent-plum: #E27BA9;
+  --accent-plum-soft: rgba(226, 123, 169, .16);
+
+  --ink: #F2E6CE;
+  --ink-soft: #D5C4A5;
+  --muted: #AC9877;
+  --subtle: #AC9877;
+  --line: #4C3B28;
+  --line-strong: #8A7758;
+  --surface: #33261A;
+  --surface-muted: #3E2F20;
+  --canvas: #241A11;
+
+  --success: #7DBE6A;
+  --success-soft: rgba(125, 190, 106, .16);
+  --warning: #E3B052;
+  --warning-soft: rgba(227, 176, 82, .16);
+  --danger: #F08268;
+  --danger-soft: rgba(240, 130, 104, .16);
+
+  --focus: rgba(242, 230, 206, .34);
+  --overlay: rgba(12, 8, 5, .7);
+
+  --bar: #1B130C;
+  --bar-ink: #F2E6CE;
+  --bar-muted: #9A876A;
+
+  --shadow-sm: var(--offset) var(--offset) 0 #100B06;
+  --shadow-md: var(--offset) var(--offset) 0 #100B06;
+  --shadow-lg: 6px 6px 0 #100B06;
+
+  --glass-bg: var(--surface);
+  --glass-border: #5E4A32;
+  --glass-shadow: var(--shadow-sm);
+  --glass-highlight: transparent;
+
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23F2E6CE' opacity='.09'/%3E%3C/svg%3E");
+}
+
+/* ==========================================================================
+   Parchment surface treatment: heavy edges and a hard offset, replacing the
+   frosting. Scoped to the palette so the glass palettes keep their own look.
+   ========================================================================== */
+:root[data-palette="parchment"] body {
+  background-color: var(--canvas);
+  background-image: var(--grain);
+  background-attachment: fixed;
+}
+
+:root[data-palette="parchment"] .card,
+:root[data-palette="parchment"] .modal-dialog,
+:root[data-palette="parchment"] .bottom-nav-inner {
+  background: var(--surface);
+  border: var(--edge) solid var(--ink);
+  box-shadow: var(--shadow-sm);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* The glass highlight belongs to the frosted palettes only. */
+:root[data-palette="parchment"] .card::before,
+:root[data-palette="parchment"] .modal-dialog::before {
+  display: none;
+}
+
+/* Hovering presses the card toward the page rather than lifting it, which is
+   what an offset shadow makes sense doing. */
+:root[data-palette="parchment"] .card:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+:root[data-palette="parchment"][data-theme="dark"] .card:hover {
+  box-shadow: 2px 2px 0 #100B06;
+}
+
+:root[data-palette="parchment"] .btn {
+  border: var(--edge) solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+:root[data-palette="parchment"][data-theme="dark"] .btn {
+  box-shadow: 3px 3px 0 #100B06;
+}
+
+:root[data-palette="parchment"] .btn:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* The dark bar across the top of every page. */
+:root[data-palette="parchment"] .app-header {
+  color: var(--bar-ink);
+  background: var(--bar);
+  border: 0;
+  border-bottom: var(--edge) solid var(--ink);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-palette="parchment"] .app-header a,
+:root[data-palette="parchment"] .app-header .icon-btn {
+  color: var(--bar-ink);
+}
+
+:root[data-palette="parchment"] .app-header a:hover {
+  color: var(--accent-ochre);
+}
+
+/* ==========================================================================
+   The raised centre action on the bottom bar.
+
+   It is a link to the builder, which already exists -- the bar adds no new
+   destination, only a more reachable way to the one people use most.
+   ========================================================================== */
+.bottom-nav-fab {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  margin: -18px var(--space-1) 0;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-brand);
+  background: var(--brand);
+  border: var(--edge, 2px) solid var(--ink);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+
+.bottom-nav-fab svg {
+  width: 26px;
+  height: 26px;
+}
+
+.bottom-nav-fab:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+.bottom-nav-fab:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* On the glass palettes the bar has no heavy edge, so neither does this. */
+:root:not([data-palette="parchment"]) .bottom-nav-fab {
+  border: 0;
+  box-shadow: var(--shadow-md);
+}
+
+/* The bar needs room for the button that rises out of it. */
+.bottom-nav-inner:has(.bottom-nav-fab) {
+  overflow: visible;
 }
 
 /* ==========================================================================

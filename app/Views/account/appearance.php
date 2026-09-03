@@ -54,6 +54,14 @@
 
                 <div class="palette-options" role="radiogroup" aria-label="Colour palette">
                     <label class="theme-option">
+                        <input type="radio" name="palette" value="parchment">
+                        <span class="theme-option-card">
+                            <span class="palette-swatch palette-swatch-parchment" aria-hidden="true"></span>
+                            <span class="theme-option-label"><b>Parchment</b><span class="theme-option-check">✓</span></span>
+                            <p>Warm paper with heavy ink edges. The default.</p>
+                        </span>
+                    </label>
+                    <label class="theme-option">
                         <input type="radio" name="palette" value="azure">
                         <span class="theme-option-card">
                             <span class="palette-swatch palette-swatch-azure" aria-hidden="true"></span>

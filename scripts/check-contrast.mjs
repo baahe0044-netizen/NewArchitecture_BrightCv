@@ -103,8 +103,10 @@ const PAIRS = [
 // Three palettes, each in light and dark. A palette is only useful if it is
 // readable in both, so every combination is measured rather than the default.
 const THEMES = [
+  ['parchment light', /:root\[data-palette="parchment"\]\s*\{/],
+  ['parchment dark', /:root\[data-palette="parchment"\]\[data-theme="dark"\]\s*\{/],
   ['azure light', /:root\[data-palette="azure"\]\s*\{/],
-  ['azure dark', /:root\[data-theme="dark"\]:not\(\[data-palette="mono"\]\):not\(\[data-palette="ember"\]\)\s*\{/],
+  ['azure dark', /:root\[data-theme="dark"\]:not\(\[data-palette="mono"\]\):not\(\[data-palette="ember"\]\):not\(\[data-palette="parchment"\]\)\s*\{/],
   ['mono light', /:root\[data-palette="mono"\]\s*\{/],
   ['mono dark', /:root\[data-palette="mono"\]\[data-theme="dark"\]\s*\{/],
   ['ember light', /:root\[data-palette="ember"\]\s*\{/],
