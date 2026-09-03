@@ -2932,3 +2932,94 @@
     margin: 6px 0 0;
   }
 }
+
+/* ==========================================================================
+   Stages docked on their own side, fields on the other -- Builder.dc.html's
+   own desktop layout, which stacked the two in a single scrolling column
+   instead. Above the width where the panel is docked (not off-canvas),
+   editor-content-mode becomes two independent panes: the stage list stays
+   fully visible on the left the whole time, and the field-entry form gets
+   its own scroll on the right, so picking a different stage never means
+   losing your place in the one you were filling in.
+   ========================================================================== */
+@media (min-width: 1101px) {
+  .editor-content-mode {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: calc(100% - 57px);
+    overflow: hidden;
+  }
+
+  .editor-sticky {
+    position: static;
+    grid-column: 1;
+    grid-row: 1 / 3;
+    height: 100%;
+    padding-bottom: 12px;
+    overflow-y: auto;
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
+  }
+
+  .stage-rail-level {
+    margin: 12px 12px 0;
+    padding: 10px;
+  }
+
+  .level-number-small {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .stage-rail-level-name {
+    font-size: 13px;
+  }
+
+  .stage-rail-level-xp {
+    font-size: 11px;
+  }
+
+  .stage-rail-level-next {
+    display: none;
+  }
+
+  .completion-summary {
+    margin: 8px 12px;
+    padding: 8px 10px;
+  }
+
+  .completion-copy {
+    font-size: 11px;
+  }
+
+  .section-steps button {
+    padding: 0 10px;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .section-steps button > b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .section-xp {
+    font-size: 11px;
+  }
+
+  .section-editor {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #c7ccd3 transparent;
+  }
+
+  .step-footer {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
