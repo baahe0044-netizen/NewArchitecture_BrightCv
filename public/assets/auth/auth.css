@@ -13,17 +13,17 @@
   display: flex;
   padding: 38px clamp(36px, 5vw, 72px) 48px;
   flex-direction: column;
-  color: #fff;
-  background: #263247;
+  color: #FFF6EE;
+  background: #3A2A22;
 }
 
 .auth-brand .brand {
-  color: #fff;
+  color: #FFF6EE;
 }
 
 .auth-brand .brand-mark {
-  color: #263247;
-  background: #fff;
+  color: #3A2A22;
+  background: #FFF6EE;
 }
 
 .auth-visual-copy {
@@ -33,7 +33,7 @@
 
 .auth-kicker {
   margin: 0 0 12px;
-  color: #bfc8ff;
+  color: #F0C3AE;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .09em;
@@ -50,7 +50,7 @@
 .auth-visual-copy > p:last-child {
   max-width: 520px;
   margin: 18px 0 0;
-  color: #cbd2dc;
+  color: #D9C6B6;
   font-size: 15px;
   line-height: 1.7;
 }
@@ -163,7 +163,7 @@
   height: 6px;
   flex: 1;
   overflow: hidden;
-  background: #e2e5e9;
+  background: var(--line);
   border-radius: 4px;
 }
 
@@ -179,15 +179,15 @@
 }
 
 .register-visual {
-  background: #233b3a;
+  background: #2E4438;
 }
 
 .register-visual .auth-brand .brand-mark {
-  color: #233b3a;
+  color: #2E4438;
 }
 
 .register-visual .auth-kicker {
-  color: #aee3d3;
+  color: #F0C3AE;
 }
 
 .auth-benefits {
@@ -210,7 +210,7 @@
   height: 23px;
   flex: 0 0 23px;
   padding: 4px;
-  color: #d8f5ea;
+  color: #FFF6EE;
   background: rgba(255, 255, 255, .09);
   border: 1px solid rgba(255, 255, 255, .16);
   border-radius: 6px;
@@ -227,7 +227,7 @@
 
 .auth-benefits span {
   margin-top: 3px;
-  color: #bfd1cf;
+  color: #D9C6B6;
   font-size: 12px;
 }
 

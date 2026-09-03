@@ -49,11 +49,44 @@
         document.body.appendChild(region);
       }
       const toast = document.createElement('div');
-      toast.className = 'toast ' + (type === 'error' ? 'error' : '');
+      toast.className = 'toast ' + (type === 'error' ? 'error' : type === 'success' ? 'success' : '');
       toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
       toast.textContent = message;
       region.appendChild(toast);
-      setTimeout(() => toast.remove(), 3600);
+
+      const stillMoving = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const LIFETIME = 4200;
+      let timer = null;
+
+      const dismiss = () => {
+        if (!toast.isConnected) return;
+        // Reduced motion still removes the toast, it just does not animate it
+        // away: the feedback is the same, only the movement is gone.
+        if (!stillMoving) {
+          toast.remove();
+          return;
+        }
+        toast.classList.add('is-leaving');
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+        // A missed animationend must not leave the toast on screen forever.
+        setTimeout(() => toast.remove(), 600);
+      };
+
+      const start = () => {
+        clearTimeout(timer);
+        timer = setTimeout(dismiss, LIFETIME);
+      };
+      const hold = () => clearTimeout(timer);
+
+      // Someone reading or tabbing through a message should not have it taken
+      // away mid-sentence.
+      toast.addEventListener('mouseenter', hold);
+      toast.addEventListener('mouseleave', start);
+      toast.addEventListener('focusin', hold);
+      toast.addEventListener('focusout', start);
+
+      start();
+      return toast;
     },
     openModal(id) {
       const modal = document.getElementById(id);

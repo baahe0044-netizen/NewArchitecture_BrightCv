@@ -12,8 +12,8 @@ $description = $pageDescription
 <meta name="app-url" content="<?= e(BASE_URL) ?>">
 <meta name="description" content="<?= e($description) ?>">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#4052b5" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#121826" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FAF5EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171210" media="(prefers-color-scheme: dark)">
 <meta name="format-detection" content="telephone=no">
 
 <link rel="manifest" href="<?= e(base_url('/manifest.webmanifest')) ?>">

@@ -1,100 +1,222 @@
+/*
+  BrightCV design tokens.
+
+  The palette is warm rather than corporate-cool: a paper canvas, a warm ink
+  that is not blue-black, and a family of saturated accents that carry colour
+  through the app without any one of them shouting. Terracotta leads; ochre,
+  moss, teal and plum give sections and categories their own identity.
+
+  Every colour is defined in all three theme states -- light, system dark, and
+  explicit dark -- so nothing is left undefined when the operating system and
+  the in-app choice disagree. Contrast is measured by scripts/check-contrast.mjs
+  rather than judged by eye.
+
+  The rendered CV is excluded on purpose. resume/preview.css and print.css keep
+  their own print-safe colours so an exported CV is white with black text in
+  every theme.
+*/
+
 :root {
-  --brand: #4052b5;
-  --brand-dark: #334394;
-  --brand-soft: #eef0ff;
-  --brand-border: #cfd5ff;
-  --ink: #17202e;
-  --ink-soft: #344054;
-  --muted: #667085;
-  --subtle: #677183;
-  --line: #dfe3e8;
-  --line-strong: #cbd2da;
-  --surface: #ffffff;
-  --surface-muted: #f8f9fb;
-  --canvas: #f4f6f8;
-  --success: #187a56;
-  --success-soft: #eaf6f0;
-  --warning: #996515;
-  --warning-soft: #fff7e8;
-  --danger: #b42336;
-  --danger-soft: #fff0f2;
-  --focus: rgba(64, 82, 181, .2);
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, .04), 0 4px 12px rgba(16, 24, 40, .04);
-  --shadow-md: 0 12px 30px rgba(16, 24, 40, .12);
-  --radius-sm: 8px;
-  --radius: 10px;
-  --radius-lg: 14px;
+  color-scheme: light;
+
+  /* --- Accent family. Terracotta leads; the rest carry categories. ------- */
+  --brand: #A93C26;
+  --brand-dark: #8C2F1D;
+  --brand-soft: #FBEDE7;
+  --brand-border: #F0CFC2;
+  --on-brand: #FFFFFF;
+
+  --accent-ochre: #8A6410;
+  --accent-ochre-soft: #FBF1DC;
+  --accent-moss: #2C6B48;
+  --accent-moss-soft: #E4F2EA;
+  --accent-teal: #14646E;
+  --accent-teal-soft: #DFF0F2;
+  --accent-plum: #7D3260;
+  --accent-plum-soft: #F7E6F0;
+
+  /* --- Ink and ground. Warm near-black on warm paper, never #000 or #fff. */
+  --ink: #2A211B;
+  --ink-soft: #4C3B31;
+  --muted: #6E5A4C;
+  --subtle: #6E5A4C;
+  --line: #E8DCCC;
+  --line-strong: #9C8873;
+  --surface: #FFFDF9;
+  --surface-muted: #F5EEE4;
+  --canvas: #FAF5EE;
+
+  /* --- Semantic. Warmed to sit in the same family as the accents. -------- */
+  --success: #2C6B48;
+  --success-soft: #E4F2EA;
+  --warning: #8A6410;
+  --warning-soft: #FBF1DC;
+  --danger: #B0293C;
+  --danger-soft: #FCE9EC;
+
+  --focus: rgba(169, 60, 38, .28);
+  --overlay: rgba(42, 33, 27, .55);
+
+  /* --- Shadows tinted with the ink, never neutral grey. ------------------ */
+  --shadow-sm: 0 1px 2px rgba(42, 33, 27, .05), 0 4px 12px rgba(42, 33, 27, .05);
+  --shadow-md: 0 10px 28px rgba(42, 33, 27, .12);
+  --shadow-lg: 0 22px 48px rgba(42, 33, 27, .16);
+
+  /* --- Geometry. Slightly larger and less uniform than a stock scale. ---- */
+  --radius-sm: 9px;
+  --radius: 13px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
   --content: 1180px;
-  --on-brand: #ffffff;
-  --overlay: rgba(16, 24, 40, .58);
+
+  /* --- Spacing, 4px base. Use these instead of one-off pixel margins. ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* --- Type. A display face for headings against a readable text face. --- */
+  --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-text: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 16px;
+  --text-md: 17px;
+  --text-lg: 20px;
+  --text-xl: 25px;
+  --text-2xl: 32px;
+  --text-3xl: 41px;
+  --text-4xl: 52px;
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+  --measure: 68ch;
+
+  /* --- Motion. Nothing outside this system. ----------------------------- */
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-slow: 420ms;
+  --ease-out: cubic-bezier(.22, .61, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.26, .64, 1);
+
+  /* --- Paper grain. Near-invisible, and never on the CV or in print. ----- */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
 }
 
 /*
-  Dark palette, expressed over the same tokens as the light theme so every
-  screen inherits it without per-page overrides.
-
-  CV documents are deliberately excluded: resume/preview.css keeps its own
-  print-safe colours, so a CV stays white in the editor and on export no
-  matter which theme the application is using.
+  System dark: the operating system asks for dark and the app has been given no
+  explicit instruction. A warm dark -- brown-black rather than navy -- derived
+  from the same hues as the light theme rather than inverted from it.
 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
     color-scheme: dark;
 
-    --brand: #8f9dff;
-    --brand-dark: #b3bcff;
-    --brand-soft: rgba(143, 157, 255, .14);
-    --brand-border: rgba(143, 157, 255, .34);
-    --ink: #eef1f6;
-    --ink-soft: #c6ccd8;
-    --muted: #99a2b2;
-    --subtle: #8a93a3;
-    --line: #2c3444;
-    --line-strong: #3d4657;
-    --surface: #1a2130;
-    --surface-muted: #222b3b;
-    --canvas: #121826;
-    --success: #46d19b;
-    --success-soft: rgba(70, 209, 155, .14);
-    --warning: #f0b34d;
-    --warning-soft: rgba(240, 179, 77, .14);
-    --danger: #ff6b7f;
-    --danger-soft: rgba(255, 107, 127, .14);
-    --focus: rgba(143, 157, 255, .32);
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 12px rgba(0, 0, 0, .22);
-    --shadow-md: 0 12px 30px rgba(0, 0, 0, .45);
-    --on-brand: #141a26;
-    --overlay: rgba(6, 9, 16, .7);
+    --brand: #EE9276;
+    --brand-dark: #F5AC95;
+    --brand-soft: rgba(238, 146, 118, .14);
+    --brand-border: rgba(238, 146, 118, .34);
+    --on-brand: #2A211B;
+
+    --accent-ochre: #E0AE4A;
+    --accent-ochre-soft: rgba(224, 174, 74, .14);
+    --accent-moss: #62C58E;
+    --accent-moss-soft: rgba(98, 197, 142, .14);
+    --accent-teal: #4FC0CE;
+    --accent-teal-soft: rgba(79, 192, 206, .14);
+    --accent-plum: #DE8DBB;
+    --accent-plum-soft: rgba(222, 141, 187, .14);
+
+    --ink: #F3E9DF;
+    --ink-soft: #D6C6B8;
+    --muted: #AD9A8B;
+    --subtle: #AD9A8B;
+    --line: #362B24;
+    --line-strong: #8E7B68;
+    --surface: #211A16;
+    --surface-muted: #2B221C;
+    --canvas: #171210;
+
+    --success: #62C58E;
+    --success-soft: rgba(98, 197, 142, .14);
+    --warning: #E0AE4A;
+    --warning-soft: rgba(224, 174, 74, .14);
+    --danger: #F5808F;
+    --danger-soft: rgba(245, 128, 143, .14);
+
+    --focus: rgba(238, 146, 118, .34);
+    --overlay: rgba(12, 9, 7, .68);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 4px 12px rgba(0, 0, 0, .28);
+    --shadow-md: 0 10px 28px rgba(0, 0, 0, .46);
+    --shadow-lg: 0 22px 48px rgba(0, 0, 0, .54);
   }
 }
 
+/* Explicit dark: the in-app choice, which must win over a light system. */
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --brand: #8f9dff;
-  --brand-dark: #b3bcff;
-  --brand-soft: rgba(143, 157, 255, .14);
-  --brand-border: rgba(143, 157, 255, .34);
-  --ink: #eef1f6;
-  --ink-soft: #c6ccd8;
-  --muted: #99a2b2;
-  --subtle: #8a93a3;
-  --line: #2c3444;
-  --line-strong: #3d4657;
-  --surface: #1a2130;
-  --surface-muted: #222b3b;
-  --canvas: #121826;
-  --success: #46d19b;
-  --success-soft: rgba(70, 209, 155, .14);
-  --warning: #f0b34d;
-  --warning-soft: rgba(240, 179, 77, .14);
-  --danger: #ff6b7f;
-  --danger-soft: rgba(255, 107, 127, .14);
-  --focus: rgba(143, 157, 255, .32);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 4px 12px rgba(0, 0, 0, .22);
-  --shadow-md: 0 12px 30px rgba(0, 0, 0, .45);
-  --on-brand: #141a26;
-  --overlay: rgba(6, 9, 16, .7);
+  --brand: #EE9276;
+  --brand-dark: #F5AC95;
+  --brand-soft: rgba(238, 146, 118, .14);
+  --brand-border: rgba(238, 146, 118, .34);
+  --on-brand: #2A211B;
+
+  --accent-ochre: #E0AE4A;
+  --accent-ochre-soft: rgba(224, 174, 74, .14);
+  --accent-moss: #62C58E;
+  --accent-moss-soft: rgba(98, 197, 142, .14);
+  --accent-teal: #4FC0CE;
+  --accent-teal-soft: rgba(79, 192, 206, .14);
+  --accent-plum: #DE8DBB;
+  --accent-plum-soft: rgba(222, 141, 187, .14);
+
+  --ink: #F3E9DF;
+  --ink-soft: #D6C6B8;
+  --muted: #AD9A8B;
+  --subtle: #AD9A8B;
+  --line: #362B24;
+  --line-strong: #8E7B68;
+  --surface: #211A16;
+  --surface-muted: #2B221C;
+  --canvas: #171210;
+
+  --success: #62C58E;
+  --success-soft: rgba(98, 197, 142, .14);
+  --warning: #E0AE4A;
+  --warning-soft: rgba(224, 174, 74, .14);
+  --danger: #F5808F;
+  --danger-soft: rgba(245, 128, 143, .14);
+
+  --focus: rgba(238, 146, 118, .34);
+  --overlay: rgba(12, 9, 7, .68);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .34), 0 4px 12px rgba(0, 0, 0, .28);
+  --shadow-md: 0 10px 28px rgba(0, 0, 0, .46);
+  --shadow-lg: 0 22px 48px rgba(0, 0, 0, .54);
+}
+
+/*
+  Reduced motion, handled once for the whole application. The state still
+  changes and no feedback is lost -- only the movement is removed.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Header theme control: CSS picks the icon from data-theme-mode so it is
@@ -129,12 +251,32 @@ html {
 body {
   margin: 0;
   color: var(--ink);
-  background: var(--canvas);
-  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 15px;
-  line-height: 1.55;
+  /* The grain sits over the canvas colour, not instead of it, so the page
+     still paints correctly if the data URI is ever unavailable. */
+  background-color: var(--canvas);
+  background-image: var(--grain);
+  background-attachment: fixed;
+  font-family: var(--font-text);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Headings carry the display face; body copy stays on the text face. */
+h1, h2, h3, h4,
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -.015em;
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+/* Running prose stays inside a comfortable measure. */
+.prose,
+.prose p {
+  max-width: var(--measure);
 }
 
 body.modal-open {
@@ -318,10 +460,21 @@ svg {
   border: 1px solid transparent;
   border-radius: 9px;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: var(--text-sm);
+  font-weight: 650;
   line-height: 1.2;
-  transition: background-color .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+/* A press should feel like a press. Transform only, so nothing reflows. */
+.btn:active:not(:disabled),
+.icon-btn:active:not(:disabled) {
+  transform: scale(.98);
 }
 
 .btn:focus-visible,
@@ -450,7 +603,11 @@ button:disabled {
   border: 1px solid var(--line-strong);
   border-radius: 8px;
   outline: none;
-  transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
 }
 
 .field input::placeholder,
@@ -526,11 +683,25 @@ button:disabled {
   padding: 20px;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, .58);
+  background: var(--overlay);
 }
 
 .modal.open {
   display: flex;
+  animation: backdrop-in var(--motion-base) var(--ease-out);
+}
+
+.modal.open .modal-dialog {
+  animation: dialog-in var(--motion-slow) var(--ease-spring);
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+}
+
+/* Arrivals may overshoot; nothing moves more than a few pixels. */
+@keyframes dialog-in {
+  from { opacity: 0; transform: scale(.97) translateY(6px); }
 }
 
 .modal-dialog {
@@ -540,8 +711,8 @@ button:disabled {
   overflow-y: auto;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 14px;
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .modal-header {
@@ -577,22 +748,36 @@ button:disabled {
 }
 
 .toast {
-  padding: 12px 15px;
-  color: #fff;
-  background: #263142;
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: 9px;
-  box-shadow: var(--shadow-md);
-  font-size: 14px;
-  animation: toast-in .18s ease-out;
+  padding: var(--space-3) var(--space-4);
+  color: #FFF6EE;
+  background: #33261F;
+  border: 1px solid rgba(255, 246, 238, .14);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--text-sm);
+  animation: toast-in var(--motion-slow) var(--ease-spring);
 }
 
 .toast.error {
-  background: #8f2034;
+  background: #7A1C2B;
+}
+
+.toast.success {
+  background: #1F5236;
+}
+
+/* Leaving is never a spring: it fades and settles. The class is added by
+   app.js so the element is still there while it goes. */
+.toast.is-leaving {
+  animation: toast-out var(--motion-base) var(--ease-out) forwards;
 }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(4px); }
 }
 
 .empty-state {
