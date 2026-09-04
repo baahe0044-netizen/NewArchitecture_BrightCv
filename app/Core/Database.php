@@ -36,6 +36,16 @@ final class Database
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::ATTR_STRINGIFY_FETCHES => false,
+                // A wrong DB_HOST (127.0.0.1 is correct on a box that runs its
+                // own MySQL, but shared hosts like InfinityFree put MySQL on a
+                // separate server with its own hostname) is a connection
+                // attempt that never gets a TCP reset, just silence -- without
+                // this, PDO waits on the OS's own connect timeout, commonly
+                // several minutes, and every request that touches the
+                // database hangs instead of failing. Five seconds is plenty
+                // for a real database and short enough that a wrong host
+                // reads as an error, not a frozen site.
+                PDO::ATTR_TIMEOUT => 5,
             ]
         );
 
