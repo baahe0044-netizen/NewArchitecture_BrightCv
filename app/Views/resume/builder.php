@@ -12,6 +12,7 @@ $builderPayload = [
         'print' => base_url('/resume/' . $resume['id'] . '/print'),
         'dashboard' => base_url('/dashboard'),
         'claim' => '/api/account/claim',
+        'loginClaim' => '/api/account/login-claim',
     ],
 ];
 ?>
@@ -384,11 +385,12 @@ $builderPayload = [
             <div><p class="eyebrow">One last step</p><h2 id="claimAccountTitle">Create your account to download</h2></div>
             <button class="icon-btn" type="button" data-modal-close="claimAccountModal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
         </div>
-        <p class="claim-account-intro">Your CV stays exactly as you left it — this just gives you a way to save it and come back to it later.</p>
+        <p class="claim-account-intro" id="claimAccountIntro">Your CV stays exactly as you left it — this just gives you a way to save it and come back to it later.</p>
+        <div class="form-errors" id="claimAccountFormError" role="alert" hidden></div>
         <div class="claim-account-form" id="claimAccountForm">
-            <div class="field">
+            <div class="field" data-claim-field="name">
                 <label for="claimName">Full name</label>
-                <input id="claimName" name="name" autocomplete="name" placeholder="Your full name" required>
+                <input id="claimName" name="name" autocomplete="name" placeholder="Your full name">
                 <div class="form-errors" id="claimName-errors" role="alert" hidden></div>
             </div>
             <div class="field">
@@ -397,23 +399,24 @@ $builderPayload = [
                 <div class="form-errors" id="claimEmail-errors" role="alert" hidden></div>
             </div>
             <div class="field">
-                <label for="claimPassword">Password</label>
+                <label for="claimPassword" id="claimPasswordLabel">Password</label>
                 <div class="password-wrap">
                     <input id="claimPassword" type="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" required>
                     <button type="button" data-password-toggle="claimPassword" aria-controls="claimPassword" aria-pressed="false" aria-label="Show password">Show</button>
                 </div>
-                <span class="field-hint">Use uppercase, lowercase, and a number.</span>
+                <span class="field-hint" id="claimPasswordHint">Use uppercase, lowercase, and a number.</span>
                 <div class="form-errors" id="claimPassword-errors" role="alert" hidden></div>
             </div>
-            <div class="field">
+            <div class="field" data-claim-field="password_confirmation">
                 <label for="claimPasswordConfirmation">Confirm password</label>
                 <div class="password-wrap">
-                    <input id="claimPasswordConfirmation" type="password" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password" required>
+                    <input id="claimPasswordConfirmation" type="password" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password">
                     <button type="button" data-password-toggle="claimPasswordConfirmation" aria-controls="claimPasswordConfirmation" aria-pressed="false" aria-label="Show password">Show</button>
                 </div>
                 <div class="form-errors" id="claimPasswordConfirmation-errors" role="alert" hidden></div>
             </div>
         </div>
+        <button class="claim-account-toggle" type="button" id="claimAccountToggle">Already have an account? Log in instead</button>
         <div class="modal-actions">
             <button class="btn btn-secondary" type="button" data-modal-close="claimAccountModal">Not yet</button>
             <button class="btn btn-primary" id="claimAccountSubmit" type="button">Create account and download</button>

@@ -35,6 +35,7 @@ return static function (Router $router): void {
     $router->get('/account/appearance', 'AccountController@appearance', ['auth']);
     $router->post('/account/gamification', 'AccountController@updateGamification', ['auth', 'csrf']);
     $router->post('/api/account/claim', 'AccountController@claimApi', ['auth', 'csrf']);
+    $router->post('/api/account/login-claim', 'AccountController@loginClaimApi', ['auth', 'csrf']);
 
     $router->get('/api/dashboard', 'DashboardController@data', ['auth']);
     $router->get('/api/resumes', 'ResumeController@indexApi', ['auth']);

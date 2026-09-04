@@ -94,6 +94,36 @@ final class AccountController extends Controller
         return $this->success(['user' => $result['user']], 'Account created.');
     }
 
+    /**
+     * The claim modal's other path: a guest who already has an account logs
+     * into it instead of creating a second one. This switches the session
+     * to that real account (see AuthService::loginAndClaimGuest -- same
+     * rate limiting and timing-safe failure as /login itself), which resets
+     * the session's CSRF token, so the client cannot just keep calling the
+     * save/print APIs with the token it already has -- it reloads the
+     * builder page instead, which is what actually needs a fresh one.
+     */
+    public function loginClaimApi(Request $request): Response
+    {
+        $user = Auth::user();
+        if (!$user || empty($user['is_guest'])) {
+            return $this->error('This account has already been set up.', 409);
+        }
+
+        $result = (new AuthService())->loginAndClaimGuest(
+            $request->string('email'),
+            $request->string('password'),
+            $request->ip(),
+            (int) $user['id']
+        );
+
+        if (!$result['success']) {
+            return $this->error($result['message'], 422);
+        }
+
+        return $this->success(['user' => $result['user']], 'Signed in.');
+    }
+
     public function updatePassword(Request $request): Response
     {
         $result = $this->accounts->updatePassword(

@@ -20,6 +20,12 @@ final class ActivityRepository
         $statement->execute([$userId, $resumeId, $action, $description]);
     }
 
+    public function reassignOwner(int $fromUserId, int $toUserId): void
+    {
+        $statement = $this->db->prepare('UPDATE user_activity SET user_id = ? WHERE user_id = ?');
+        $statement->execute([$toUserId, $fromUserId]);
+    }
+
     public function recent(int $userId, int $limit = 8): array
     {
         $limit = max(1, min($limit, 25));

@@ -24,6 +24,32 @@ final class AuthService
         return $user;
     }
 
+    /**
+     * The other half of the download gate's claim modal: a guest who
+     * already has an account signs into it instead of creating a second
+     * one. login() does the actual verifying (same rate limiting, same
+     * timing-safe failure) and switches the session to the real account;
+     * once that has succeeded, the CV the guest just built -- and its
+     * activity history -- moves to that real account, and the now-empty
+     * guest row is removed rather than left to accumulate.
+     */
+    public function loginAndClaimGuest(string $email, string $password, string $ip, int $guestUserId): array
+    {
+        $result = $this->login($email, $password, $ip);
+        if (!$result['success']) {
+            return $result;
+        }
+
+        $realUserId = (int) $result['user']['id'];
+        if ($realUserId !== $guestUserId) {
+            (new ResumeRepository())->reassignOwner($guestUserId, $realUserId);
+            (new ActivityRepository())->reassignOwner($guestUserId, $realUserId);
+            $this->users->deleteGuest($guestUserId);
+        }
+
+        return $result;
+    }
+
     public function login(string $email, string $password, string $ip, bool $remember = false): array
     {
         $email = mb_strtolower(trim($email));

@@ -1707,6 +1707,21 @@
   gap: 14px;
 }
 
+.claim-account-toggle {
+  display: block;
+  margin: 16px 0 0;
+  padding: 0;
+  color: var(--brand-dark);
+  background: none;
+  border: 0;
+  font-size: 13px;
+  font-weight: 750;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
 .mobile-panel-overlay {
   position: fixed;
   z-index: 89;

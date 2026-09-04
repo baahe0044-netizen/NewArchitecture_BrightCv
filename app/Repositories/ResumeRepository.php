@@ -23,6 +23,20 @@ final class ResumeRepository
         return $this->findOwned((int) $this->db->lastInsertId(), $userId);
     }
 
+    /**
+     * A guest who turns out to already have an account logs into that real
+     * one instead of creating a second -- this is what keeps the CV they
+     * just built rather than orphaning it under the now-abandoned guest
+     * row. Every resume the guest owned moves in one statement; there is
+     * never more than a handful, so this does not need batching.
+     */
+    public function reassignOwner(int $fromUserId, int $toUserId): int
+    {
+        $statement = $this->db->prepare('UPDATE resumes SET user_id = ?, updated_at = NOW() WHERE user_id = ?');
+        $statement->execute([$toUserId, $fromUserId]);
+        return $statement->rowCount();
+    }
+
     public function listByUser(int $userId): array
     {
         $statement = $this->db->prepare(

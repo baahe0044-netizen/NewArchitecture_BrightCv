@@ -1379,6 +1379,8 @@
     password_confirmation: 'claimPasswordConfirmation',
   };
 
+  let claimMode = 'create';
+
   function clearClaimErrors() {
     Object.values(CLAIM_FIELDS).forEach((id) => {
       const errorBox = document.getElementById(id + '-errors');
@@ -1388,7 +1390,51 @@
       }
       document.getElementById(id)?.removeAttribute('aria-invalid');
     });
+    const formError = document.getElementById('claimAccountFormError');
+    if (formError) {
+      formError.hidden = true;
+      formError.textContent = '';
+    }
   }
+
+  function showClaimFormError(message) {
+    const formError = document.getElementById('claimAccountFormError');
+    if (!formError) return;
+    formError.hidden = false;
+    formError.innerHTML = `<span class="form-error">${h(message)}</span>`;
+  }
+
+  // A guest who already has an account hits the same wall a fresh sign-up
+  // would (the create-account form rejects their real email as taken) with
+  // no way out of the modal -- this swaps it for a plain sign-in instead,
+  // in place, rather than sending them away from the CV they just built.
+  function setClaimMode(mode) {
+    claimMode = mode;
+    const creating = mode === 'create';
+    document.getElementById('claimAccountTitle').textContent = creating
+      ? 'Create your account to download'
+      : 'Log in to download';
+    document.getElementById('claimAccountIntro').textContent = creating
+      ? 'Your CV stays exactly as you left it — this just gives you a way to save it and come back to it later.'
+      : 'Sign in and the CV you just built moves to your account automatically.';
+    document.querySelectorAll('#claimAccountModal [data-claim-field]').forEach((field) => {
+      field.hidden = !creating;
+    });
+    document.getElementById('claimPassword').autocomplete = creating ? 'new-password' : 'current-password';
+    document.getElementById('claimPassword').placeholder = creating ? 'At least 8 characters' : 'Your password';
+    document.getElementById('claimPasswordHint').hidden = !creating;
+    document.getElementById('claimAccountSubmit').textContent = creating
+      ? 'Create account and download'
+      : 'Log in and download';
+    document.getElementById('claimAccountToggle').textContent = creating
+      ? 'Already have an account? Log in instead'
+      : 'New here? Create an account instead';
+    clearClaimErrors();
+  }
+
+  document.getElementById('claimAccountToggle')?.addEventListener('click', () => {
+    setClaimMode(claimMode === 'create' ? 'login' : 'create');
+  });
 
   function showClaimErrors(errors) {
     Object.entries(errors || {}).forEach(([key, messages]) => {
@@ -1421,6 +1467,35 @@
   document.getElementById('claimAccountSubmit')?.addEventListener('click', async (event) => {
     const button = event.currentTarget;
     clearClaimErrors();
+
+    const original = button.textContent;
+    button.disabled = true;
+
+    if (claimMode === 'login') {
+      // loginAndClaimGuest() switches the session to the real account,
+      // which resets its CSRF token -- config.csrf here is now stale for
+      // any further API call this page's JS makes, save included. A full
+      // reload is what actually gets a fresh one; ?print=1 is what tells
+      // the reloaded page to pick the download back up on its own rather
+      // than making someone click Print/PDF a second time.
+      button.textContent = 'Signing in…';
+      try {
+        await window.Lunetti.api(config.endpoints.loginClaim, {
+          method: 'POST',
+          body: JSON.stringify({
+            email: document.getElementById('claimEmail').value,
+            password: document.getElementById('claimPassword').value,
+          }),
+        });
+        window.location.href = location.pathname + '?print=1';
+      } catch (error) {
+        showClaimFormError(error.message || 'The email or password is incorrect.');
+        button.disabled = false;
+        button.textContent = original;
+      }
+      return;
+    }
+
     const payload = {
       name: document.getElementById('claimName').value,
       email: document.getElementById('claimEmail').value,
@@ -1428,8 +1503,6 @@
       password_confirmation: document.getElementById('claimPasswordConfirmation').value,
     };
 
-    const original = button.textContent;
-    button.disabled = true;
     button.textContent = 'Creating account…';
     try {
       await window.Lunetti.api(config.endpoints.claim, { method: 'POST', body: JSON.stringify(payload) });
@@ -1460,6 +1533,15 @@
     // (`let history = []` above), not the global -- window.history is
     // explicit on purpose.
     window.history.replaceState(null, '', location.pathname);
+  }
+
+  // The other side of "log in instead": that reload landed back here as the
+  // now-real account (config.isGuest is server-rendered fresh on this load,
+  // so it is already false) with ?print=1 asking for the download to just
+  // continue, rather than making someone click Print/PDF a second time.
+  if (!config.isGuest && new URLSearchParams(location.search).get('print') === '1') {
+    window.history.replaceState(null, '', location.pathname);
+    proceedToPrint(document.getElementById('printButton'));
   }
 
   async function recordExport(format) {

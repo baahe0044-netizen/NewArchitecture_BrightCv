@@ -76,6 +76,21 @@ final class UserRepository
         return $statement->rowCount() > 0;
     }
 
+    /**
+     * The other ending for a guest row: they already have an account and
+     * logged into it instead of claiming this one. Its resumes and activity
+     * have already been moved to that real account by this point, so the
+     * row is empty and would otherwise sit unclaimed forever -- the
+     * is_guest = 1 guard means this can never remove a real account, even
+     * called with a wrong id.
+     */
+    public function deleteGuest(int $id): bool
+    {
+        $statement = $this->db->prepare('DELETE FROM users WHERE id = ? AND is_guest = 1');
+        $statement->execute([$id]);
+        return $statement->rowCount() > 0;
+    }
+
     public function updateLastLogin(int $id): void
     {
         $statement = $this->db->prepare('UPDATE users SET last_login_at = NOW(), updated_at = NOW() WHERE id = ?');
