@@ -2,6 +2,7 @@
 $builderPayload = [
     'resume' => $resume,
     'templates' => $templates,
+    'isGuest' => $isGuest ?? false,
     'endpoints' => [
         'save' => '/api/resumes/' . $resume['id'],
         'ats' => '/api/resumes/' . $resume['id'] . '/ats',
@@ -10,6 +11,7 @@ $builderPayload = [
         'export' => '/api/resumes/' . $resume['id'] . '/export',
         'print' => base_url('/resume/' . $resume['id'] . '/print'),
         'dashboard' => base_url('/dashboard'),
+        'claim' => '/api/account/claim',
     ],
 ];
 ?>
@@ -375,6 +377,49 @@ $builderPayload = [
 </nav>
 
 <div class="mobile-panel-overlay" id="mobilePanelOverlay"></div>
+
+<div class="modal" id="claimAccountModal" role="dialog" aria-modal="true" aria-labelledby="claimAccountTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div><p class="eyebrow">One last step</p><h2 id="claimAccountTitle">Create your account to download</h2></div>
+            <button class="icon-btn" type="button" data-modal-close="claimAccountModal" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+        </div>
+        <p class="claim-account-intro">Your CV stays exactly as you left it — this just gives you a way to save it and come back to it later.</p>
+        <div class="claim-account-form" id="claimAccountForm">
+            <div class="field">
+                <label for="claimName">Full name</label>
+                <input id="claimName" name="name" autocomplete="name" placeholder="Your full name" required>
+                <div class="form-errors" id="claimName-errors" role="alert" hidden></div>
+            </div>
+            <div class="field">
+                <label for="claimEmail">Email address</label>
+                <input id="claimEmail" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+                <div class="form-errors" id="claimEmail-errors" role="alert" hidden></div>
+            </div>
+            <div class="field">
+                <label for="claimPassword">Password</label>
+                <div class="password-wrap">
+                    <input id="claimPassword" type="password" name="password" autocomplete="new-password" placeholder="At least 8 characters" required>
+                    <button type="button" data-password-toggle="claimPassword" aria-controls="claimPassword" aria-pressed="false" aria-label="Show password">Show</button>
+                </div>
+                <span class="field-hint">Use uppercase, lowercase, and a number.</span>
+                <div class="form-errors" id="claimPassword-errors" role="alert" hidden></div>
+            </div>
+            <div class="field">
+                <label for="claimPasswordConfirmation">Confirm password</label>
+                <div class="password-wrap">
+                    <input id="claimPasswordConfirmation" type="password" name="password_confirmation" autocomplete="new-password" placeholder="Repeat your password" required>
+                    <button type="button" data-password-toggle="claimPasswordConfirmation" aria-controls="claimPasswordConfirmation" aria-pressed="false" aria-label="Show password">Show</button>
+                </div>
+                <div class="form-errors" id="claimPasswordConfirmation-errors" role="alert" hidden></div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" type="button" data-modal-close="claimAccountModal">Not yet</button>
+            <button class="btn btn-primary" id="claimAccountSubmit" type="button">Create account and download</button>
+        </div>
+    </div>
+</div>
 
 <div class="modal" id="importCvModal" role="dialog" aria-modal="true" aria-labelledby="importCvTitle" aria-hidden="true">
     <div class="modal-dialog import-dialog">

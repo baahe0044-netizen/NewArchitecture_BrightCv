@@ -24,11 +24,20 @@ CREATE TABLE IF NOT EXISTS users (
     locale VARCHAR(10) NOT NULL DEFAULT 'en',
     job_title VARCHAR(120) NULL,
     avatar_path VARCHAR(255) NULL,
+    -- A visitor who starts a CV before creating an account gets a real row
+    -- here immediately -- a synthetic email, an unusable random password --
+    -- so every existing user_id-scoped feature (autosave, ATS, gamification)
+    -- works for them right away. is_guest=1 marks it as not a real account
+    -- yet; claiming it (see users SET on account creation at download time)
+    -- flips this to 0 and fills in the real name/email/password in place,
+    -- so the CV and its history carry over rather than needing a migration.
+    is_guest TINYINT(1) NOT NULL DEFAULT 0,
     email_verified_at DATETIME NULL,
     last_login_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_users_created_at (created_at)
+    INDEX idx_users_created_at (created_at),
+    INDEX idx_users_is_guest (is_guest)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS resume_templates (

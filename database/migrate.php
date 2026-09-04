@@ -41,7 +41,7 @@ try {
 $requiredColumns = [
     'users' => [
         'id', 'name', 'email', 'password_hash', 'auth_version', 'role', 'plan', 'locale',
-        'job_title', 'avatar_path', 'email_verified_at', 'last_login_at', 'created_at', 'updated_at',
+        'job_title', 'avatar_path', 'is_guest', 'email_verified_at', 'last_login_at', 'created_at', 'updated_at',
     ],
     'resume_templates' => [
         'id', 'template_key', 'name', 'category', 'description', 'color', 'is_active',
@@ -58,6 +58,25 @@ $columnsStatement = $pdo->prepare(
      FROM information_schema.COLUMNS
      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?'
 );
+
+// Known, additive upgrades: safe to apply to an existing BrightCV database
+// automatically rather than making every deployment stop and hand-run an
+// ALTER TABLE. Each entry only adds a column an older install of BrightCV
+// itself would be missing -- never touches or drops existing data -- so by
+// the time the strict check below runs, a legitimate older install passes
+// it instead of being told to back up and reset over one new column.
+$knownUpgrades = [
+    ['users', 'is_guest', 'ALTER TABLE users '
+        . 'ADD COLUMN is_guest TINYINT(1) NOT NULL DEFAULT 0 AFTER avatar_path, '
+        . 'ADD INDEX idx_users_is_guest (is_guest)'],
+];
+foreach ($knownUpgrades as [$table, $column, $alterSql]) {
+    $columnsStatement->execute([$database, $table]);
+    $existingColumns = $columnsStatement->fetchAll(PDO::FETCH_COLUMN);
+    if ($existingColumns !== [] && !in_array($column, $existingColumns, true)) {
+        $pdo->exec($alterSql);
+    }
+}
 
 foreach ($requiredColumns as $table => $columns) {
     $columnsStatement->execute([$database, $table]);

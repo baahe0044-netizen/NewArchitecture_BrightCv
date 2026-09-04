@@ -68,6 +68,32 @@ final class AccountController extends Controller
         return Response::redirect(base_url('/account/appearance'));
     }
 
+    /**
+     * The claim step reached from the builder's download gate -- turns the
+     * signed-in guest account into a real one in place. Auth::user() still
+     * reflects the pre-claim state for this request (it is cached per
+     * request in Auth::$user), so is_guest is read fresh from the session's
+     * own user id rather than trusted from an already-fetched $user array.
+     */
+    public function claimApi(Request $request): Response
+    {
+        $user = Auth::user();
+        if (!$user || empty($user['is_guest'])) {
+            return $this->error('This account has already been set up.', 409);
+        }
+
+        $result = $this->accounts->claimGuestAccount(
+            (int) Auth::id(),
+            $request->only(['name', 'email', 'password', 'password_confirmation'])
+        );
+
+        if (!$result['success']) {
+            return $this->error('Check the highlighted fields.', 422, $result['errors']);
+        }
+
+        return $this->success(['user' => $result['user']], 'Account created.');
+    }
+
     public function updatePassword(Request $request): Response
     {
         $result = $this->accounts->updatePassword(

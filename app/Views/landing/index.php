@@ -24,7 +24,7 @@
                 <a class="btn btn-primary" href="<?= e(base_url('/dashboard')) ?>">Open dashboard</a>
             <?php else: ?>
                 <a class="login-link" href="<?= e(base_url('/login')) ?>">Sign in</a>
-                <a class="btn btn-primary" href="<?= e(base_url('/register')) ?>">Create your CV</a>
+                <a class="btn btn-primary" href="<?= e(base_url('/resume/builder')) ?>">Create your CV</a>
             <?php endif; ?>
         </div>
     </div>
@@ -38,7 +38,7 @@
                 <h1>Create a professional CV, without fighting the formatting.</h1>
                 <p class="hero-lead">Write your experience clearly, see changes as you make them, and download a polished CV when you are ready to apply.</p>
                 <div class="hero-actions">
-                    <a class="btn btn-primary hero-primary" href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/register')) ?>">
+                    <a class="btn btn-primary hero-primary" href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/resume/builder')) ?>">
                         <?= Auth::check() ? 'Continue building' : 'Create your CV' ?>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
                     </a>
@@ -154,7 +154,7 @@
                     <h2>Start with a layout that lets your experience lead.</h2>
                     <p>Each template uses the same CV content, so you can change your mind without starting again.</p>
                 </div>
-                <a class="btn btn-secondary" href="<?= e(Auth::check() ? base_url('/templates') : base_url('/register')) ?>"><?= Auth::check() ? 'Browse all templates' : 'Create an account' ?></a>
+                <a class="btn btn-secondary" href="<?= e(Auth::check() ? base_url('/templates') : base_url('/resume/builder')) ?>"><?= Auth::check() ? 'Browse all templates' : 'Create your CV' ?></a>
             </div>
 
             <div class="landing-template-grid">
@@ -190,7 +190,7 @@
                 <h2>Build a CV you can send with confidence.</h2>
                 <p>Your content stays editable, and the layout stays professional.</p>
             </div>
-            <a class="btn final-cta-button" href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/register')) ?>"><?= Auth::check() ? 'Open your dashboard' : 'Create your CV' ?></a>
+            <a class="btn final-cta-button" href="<?= e(Auth::check() ? base_url('/dashboard') : base_url('/resume/builder')) ?>"><?= Auth::check() ? 'Open your dashboard' : 'Create your CV' ?></a>
         </div>
     </section>
 </main>

@@ -8,6 +8,22 @@ final class AuthService
     {
     }
 
+    /**
+     * Logs a brand-new visitor in as a guest, the same way login() logs in
+     * a returning one -- so every route already gated on Auth::check() (the
+     * builder, autosave, ATS, gamification, the dashboard) works for them
+     * immediately, with no separate "guest mode" to maintain in parallel.
+     * Auth::user()['is_guest'] is what the builder checks to gate the one
+     * thing that does need a real account: downloading the finished CV.
+     */
+    public function startAsGuest(): array
+    {
+        $id = $this->users->createGuest();
+        $user = $this->users->findById($id) ?? ['id' => $id, 'auth_version' => 1];
+        Auth::login($user);
+        return $user;
+    }
+
     public function login(string $email, string $password, string $ip, bool $remember = false): array
     {
         $email = mb_strtolower(trim($email));

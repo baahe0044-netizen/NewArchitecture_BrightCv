@@ -1345,18 +1345,122 @@
     return String(value || 'cv').trim().replace(/[^\p{L}\p{N}_-]+/gu, '-').replace(/^-+|-+$/g, '').slice(0, 80) || 'cv';
   }
 
-  document.getElementById('printButton')?.addEventListener('click', async (event) => {
-    const button = event.currentTarget;
-    button.disabled = true;
-    const original = button.innerHTML;
-    button.innerHTML = '<span class="spinner"></span> Preparing…';
+  async function proceedToPrint(button) {
+    const original = button ? button.innerHTML : '';
+    if (button) {
+      button.disabled = true;
+      button.innerHTML = '<span class="spinner"></span> Preparing…';
+    }
     const saved = await saveResume(true);
     if (saved) {
       window.open(config.endpoints.print, '_blank', 'noopener');
     }
-    button.disabled = false;
-    button.innerHTML = original;
+    if (button) {
+      button.disabled = false;
+      button.innerHTML = original;
+    }
+  }
+
+  document.getElementById('printButton')?.addEventListener('click', async (event) => {
+    // Every other feature works for a guest exactly as it does for a real
+    // account -- this is the one moment that needs one, so it is the one
+    // place that checks for it.
+    if (config.isGuest) {
+      window.Lunetti.openModal('claimAccountModal');
+      return;
+    }
+    await proceedToPrint(event.currentTarget);
   });
+
+  const CLAIM_FIELDS = {
+    name: 'claimName',
+    email: 'claimEmail',
+    password: 'claimPassword',
+    password_confirmation: 'claimPasswordConfirmation',
+  };
+
+  function clearClaimErrors() {
+    Object.values(CLAIM_FIELDS).forEach((id) => {
+      const errorBox = document.getElementById(id + '-errors');
+      if (errorBox) {
+        errorBox.hidden = true;
+        errorBox.innerHTML = '';
+      }
+      document.getElementById(id)?.removeAttribute('aria-invalid');
+    });
+  }
+
+  function showClaimErrors(errors) {
+    Object.entries(errors || {}).forEach(([key, messages]) => {
+      const id = CLAIM_FIELDS[key];
+      if (!id || !Array.isArray(messages) || !messages.length) return;
+      const errorBox = document.getElementById(id + '-errors');
+      if (errorBox) {
+        errorBox.hidden = false;
+        errorBox.innerHTML = messages.map((message) => `<span class="form-error">${h(message)}</span>`).join('');
+      }
+      document.getElementById(id)?.setAttribute('aria-invalid', 'true');
+    });
+  }
+
+  // The claim modal's own password show/hide -- auth.js handles this on
+  // /register itself, but the builder loads neither that script nor a form
+  // to submit natively, so the same small behavior is repeated here.
+  document.querySelectorAll('#claimAccountModal [data-password-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const input = document.getElementById(button.dataset.passwordToggle);
+      if (!input) return;
+      const visible = input.type === 'text';
+      input.type = visible ? 'password' : 'text';
+      button.textContent = visible ? 'Show' : 'Hide';
+      button.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
+      button.setAttribute('aria-pressed', String(!visible));
+    });
+  });
+
+  document.getElementById('claimAccountSubmit')?.addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    clearClaimErrors();
+    const payload = {
+      name: document.getElementById('claimName').value,
+      email: document.getElementById('claimEmail').value,
+      password: document.getElementById('claimPassword').value,
+      password_confirmation: document.getElementById('claimPasswordConfirmation').value,
+    };
+
+    const original = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Creating account…';
+    try {
+      await window.Lunetti.api(config.endpoints.claim, { method: 'POST', body: JSON.stringify(payload) });
+      config.isGuest = false;
+      window.Lunetti.closeModal('claimAccountModal');
+      window.Lunetti.toast('Account created. Preparing your download…');
+      await proceedToPrint(document.getElementById('printButton'));
+    } catch (error) {
+      const errors = error.payload && error.payload.errors;
+      if (errors && Object.keys(errors).length) {
+        showClaimErrors(errors);
+      } else {
+        window.Lunetti.toast(error.message || 'That account could not be created.', 'error');
+      }
+    } finally {
+      button.disabled = false;
+      button.textContent = original;
+    }
+  });
+
+  // A guest bounced back here by the print route itself (?claim=1, when the
+  // Print/PDF button was bypassed -- a direct link, an old tab) sees the
+  // same modal open immediately, rather than landing back in the builder
+  // with no explanation for why the download did not happen.
+  if (config.isGuest && new URLSearchParams(location.search).get('claim') === '1') {
+    window.Lunetti.openModal('claimAccountModal');
+    // Bare `history` here would resolve to this file's own undo/redo array
+    // (`let history = []` above), not the global -- window.history is
+    // explicit on purpose.
+    window.history.replaceState(null, '', location.pathname);
+  }
 
   async function recordExport(format) {
     try {

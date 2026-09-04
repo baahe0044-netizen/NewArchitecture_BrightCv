@@ -761,10 +761,43 @@ button:disabled {
   font-size: 13px;
 }
 
+.form-errors {
+  display: grid;
+  gap: 3px;
+}
+
 .form-error {
   color: var(--danger);
   font-size: 12px;
   font-weight: 600;
+}
+
+/* A show/hide toggle docked inside a password field -- used wherever a
+   password is collected outside the auth pages' own <form> (the builder's
+   account-claim modal), not just on /register and /login themselves. */
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 66px;
+}
+
+.password-wrap button {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  min-width: 48px;
+  min-height: 34px;
+  padding: 6px 8px;
+  color: var(--brand-dark);
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+  transform: translateY(-50%);
 }
 
 .alert {

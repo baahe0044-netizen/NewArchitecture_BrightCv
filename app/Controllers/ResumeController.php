@@ -17,6 +17,18 @@ final class ResumeController extends Controller
     {
         $resumeId = (int) ($id !== '' ? $id : $request->input('resume_id', 0));
         if ($resumeId <= 0) {
+            // A signed-in visitor landing here bare (a stale bookmark, the
+            // dashboard's own "start building" habit) still goes to the
+            // dashboard to pick a CV. A visitor with no session at all is
+            // "create a CV" itself, reached straight from the landing page:
+            // sign them in as a guest and hand them a fresh CV immediately,
+            // no account screen in between.
+            if (!Auth::check()) {
+                $guest = (new AuthService())->startAsGuest();
+                $resume = $this->resumes->create((int) $guest['id'], 'My CV');
+                return Response::redirect(base_url('/resume/builder/' . $resume['id']));
+            }
+
             Session::flash('message', 'Create a CV from your dashboard to start building.');
             return Response::redirect(base_url('/dashboard'));
         }
@@ -37,6 +49,7 @@ final class ResumeController extends Controller
             'templates' => $this->templates->all(),
             'gamification' => $gamification,
             'csrfToken' => Csrf::token(),
+            'isGuest' => (bool) (Auth::user()['is_guest'] ?? false),
         ]);
     }
 

@@ -18,6 +18,11 @@ final class AccountRepository
         $this->users->updatePasswordAndInvalidateSessions($userId, $hash);
     }
 
+    public function claimGuest(int $userId, string $name, string $email, string $passwordHash): bool
+    {
+        return $this->users->claimGuest($userId, $name, $email, $passwordHash);
+    }
+
     public function fullUser(int $userId): ?array
     {
         $public = $this->users->findById($userId);

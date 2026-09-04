@@ -1695,6 +1695,18 @@
   gap: 14px;
 }
 
+.claim-account-intro {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.claim-account-form {
+  display: grid;
+  gap: 14px;
+}
+
 .mobile-panel-overlay {
   position: fixed;
   z-index: 89;

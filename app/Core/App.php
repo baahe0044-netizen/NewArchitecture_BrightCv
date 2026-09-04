@@ -29,7 +29,13 @@ final class App
         header('X-Frame-Options: SAMEORIGIN');
         header('Referrer-Policy: strict-origin-when-cross-origin');
         header('Permissions-Policy: camera=(), geolocation=(), payment=()');
-        header("Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'");
+        // style-src and font-src carry fonts.googleapis.com/fonts.gstatic.com
+        // because head_meta.php (loaded on every page) actually requests the
+        // Tinos stylesheet and its two woff2 files from there. Without these,
+        // the CSP silently blocks that request on every single page load --
+        // the Times New Roman fallback the request is designed to have would
+        // fire on every visit, not just when a network genuinely blocks it.
+        header("Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'");
         header('Cross-Origin-Opener-Policy: same-origin');
         header('Cross-Origin-Resource-Policy: same-origin');
         header('Cache-Control: no-store, private');

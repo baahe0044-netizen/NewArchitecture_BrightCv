@@ -15,6 +15,17 @@ final class PdfController extends Controller
             return $this->view('errors/404', ['title' => 'CV not found'], 404);
         }
 
+        // The builder's own Print/PDF button already stops a guest before
+        // they get here, but this is the actual page a print-to-PDF reads
+        // from, so it is where the gate has to hold even if that button is
+        // bypassed -- someone typing the URL directly, an old tab, a saved
+        // link. ?claim=1 tells the builder to open the same account-creation
+        // modal on arrival, rather than a visitor bouncing back with no
+        // explanation for why the button they clicked took them here.
+        if ((bool) (Auth::user()['is_guest'] ?? false)) {
+            return Response::redirect(base_url('/resume/builder/' . $resume['id']) . '?claim=1');
+        }
+
         return $this->view('resume/print', [
             'title' => $resume['name'],
             'resume' => $resume,
