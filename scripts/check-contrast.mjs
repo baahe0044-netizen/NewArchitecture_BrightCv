@@ -105,7 +105,7 @@ const PAIRS = [
   ['--muted', '--sand', 4.5, 'muted text on the page'],
   ['--rust-deep', '--card', 4.5, 'rust link/eyebrow text on a card'],
   ['--rust-deep', '--sand', 4.5, 'rust link text on the page'],
-  ['--card', '--rust', 4.5, 'label on a rust (primary) button'],
+  ['--on-brand', '--rust', 4.5, 'label on a rust (primary) button'],
   ['--card', '--moss', 4.5, 'label on a moss (next-stage) button'],
   ['--moss-deep', '--moss-soft', 4.5, 'moss XP text on a completed row'],
   ['--rust-deep', '--card', 4.5, 'rust XP text on a card'],

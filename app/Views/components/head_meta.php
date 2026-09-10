@@ -12,15 +12,16 @@ $description = $pageDescription
 <meta name="app-url" content="<?= e(BASE_URL) ?>">
 <meta name="description" content="<?= e($description) ?>">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#EBD9BB">
+<meta name="theme-color" content="#F6EFE6">
 <meta name="format-detection" content="telephone=no">
 
-<?php /* Tinos: metrically identical to Times New Roman, so a blocked or slow
-         request falls back to real Times with no reflow. One shared link so
-         every page picks it up the same way. */ ?>
+<?php /* Unbounded (display, bold weights) + Plus Jakarta Sans (body) +
+         JetBrains Mono (scores/dates). System sans/monospace fallbacks in
+         --font-display/--font-text/--font-mono cover a blocked request; one
+         shared link so every page picks the family up the same way. */ ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;700&display=swap">
 
 <link rel="manifest" href="<?= e(base_url('/manifest.webmanifest')) ?>">
 <link rel="icon" href="<?= e(asset('icons/icon-192.png')) ?>" sizes="192x192" type="image/png">

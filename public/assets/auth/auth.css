@@ -147,7 +147,7 @@
   padding: 0 16px;
   gap: 10px;
   background: var(--card-2);
-  border-top: 2px solid var(--ink);
+  border-top: 2px solid var(--glass-border);
   font-size: 9px;
 }
 
@@ -333,7 +333,7 @@
   width: min(100%, 460px);
   padding: 32px;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -369,7 +369,7 @@
   place-items: center;
   color: var(--rust-deep);
   background: var(--gold-soft);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-sm);
 }
 

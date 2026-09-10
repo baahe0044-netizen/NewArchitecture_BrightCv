@@ -243,7 +243,7 @@
   padding: 14px;
   gap: 10px;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius);
   transition: border-color .15s ease, box-shadow .15s ease;
 }
@@ -258,11 +258,11 @@
 }
 
 /* Swatches show the actual light/dark surfaces, so they stay fixed rather
-   than following the current theme -- literal Quest hex values, not tokens. */
+   than following the current theme -- literal Glass hex values, not tokens. */
 .theme-swatch {
   height: 54px;
   overflow: hidden;
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-sm);
 }
 
@@ -271,21 +271,39 @@
   height: 100%;
 }
 
-.theme-swatch-light { background: #EBD9BB; }
-.theme-swatch-light > span:first-child { height: 34%; background: #3A2A1E; }
-.theme-swatch-light > span:last-child { height: 66%; background: #FBF3E3; }
+.theme-swatch-light { background: #F2E8CF; }
+.theme-swatch-light > span:first-child { height: 34%; background: #386641; }
+.theme-swatch-light > span:last-child { height: 66%; background: #FFFDF5; }
 
-.theme-swatch-dark { background: #1B1410; }
-.theme-swatch-dark > span:first-child { height: 34%; background: #0D0906; }
-.theme-swatch-dark > span:last-child { height: 66%; background: #241C16; }
+.theme-swatch-dark { background: #101B13; }
+.theme-swatch-dark > span:first-child { height: 34%; background: #0A120C; }
+.theme-swatch-dark > span:last-child { height: 66%; background: #1E3022; }
 
 .theme-swatch-system {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
-.theme-swatch-system > span:first-child { background: #FBF3E3; border-right: var(--edge) solid var(--ink); }
-.theme-swatch-system > span:last-child { background: #241C16; }
+.theme-swatch-system > span:first-child { background: #FFFDF5; border-right: var(--edge) solid var(--glass-border); }
+.theme-swatch-system > span:last-child { background: #1E3022; }
+
+/* ---- Accent swatches -------------------------------------------------
+   Each is the accent's own bright fill colour -- the literal --gold value
+   its [data-palette] block sets, not a token, so the swatch itself does not
+   change when the picker is used to preview a different one. */
+.palette-options {
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+}
+
+.palette-options .theme-swatch {
+  height: 40px;
+}
+
+.theme-swatch-hunter { background: #386641; }
+.theme-swatch-sage { background: #6A994E; }
+.theme-swatch-citrus { background: #A7C957; }
+.theme-swatch-cream { background: #F2E8CF; }
+.theme-swatch-brick { background: #BC4749; }
 
 .theme-option-label {
   display: flex;
@@ -360,52 +378,6 @@
 }
 
 /* ==========================================================================
-   Palette picker. Reuses the theme option layout; only the swatch differs.
-   ========================================================================== */
-.palette-options {
-  display: grid;
-  gap: var(--space-3);
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-}
-
-.palette-swatch {
-  display: block;
-  height: 46px;
-  margin-bottom: var(--space-3);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-
-/* Each swatch shows its own palette rather than the active one, so the choice
-   is legible before it is made. */
-.palette-swatch-azure {
-  background:
-    radial-gradient(120% 90% at 15% 0%, #D6E9F8 0%, transparent 60%),
-    linear-gradient(135deg, #F7FBFE 0%, #0F62A8 220%);
-}
-
-.palette-swatch-mono {
-  background:
-    radial-gradient(120% 90% at 15% 0%, #E4E4E7 0%, transparent 60%),
-    linear-gradient(135deg, #F8F8F9 0%, #1F1F23 220%);
-}
-
-.palette-swatch-ember {
-  background:
-    radial-gradient(120% 90% at 15% 0%, #F7E4D4 0%, transparent 60%),
-    linear-gradient(135deg, #FDF8F2 0%, #A93C26 220%);
-}
-
-.palette-swatch-parchment {
-  background:
-    radial-gradient(circle at 2px 2px, rgba(58, 42, 27, .18) 1px, transparent 1px) 0 0 / 9px 9px,
-    linear-gradient(135deg, #F7F0E0 0%, #E7DAC0 55%, #A6331D 220%);
-  border-color: #3A2A1B;
-  border-width: 2px;
-  box-shadow: 3px 3px 0 #3A2A1B;
-}
-
-/* ==========================================================================
    Gamification off-switch — Account → Appearance.
    ========================================================================== */
 .gamification-toggle-form {
@@ -447,7 +419,7 @@
   height: 30px;
   padding: 3px;
   background: var(--card-2);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
   transition: background-color var(--motion-base) var(--ease-out);
 }
@@ -461,7 +433,7 @@
   width: 20px;
   height: 20px;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
   transition: transform var(--motion-base) var(--ease-spring);
 }

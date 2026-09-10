@@ -14,7 +14,7 @@
 <main class="page-shell">
     <div class="container account-container">
         <section class="page-heading">
-            <div><p class="eyebrow">Account</p><h1>Appearance</h1><p>BrightCV uses one look, warm paper with heavy ink edges. This does not change how your CVs print or export — those always stay print-ready and light.</p></div>
+            <div><p class="eyebrow">Account</p><h1>Appearance</h1><p>Glass over five colours grown from one palette. This does not change how your CVs print or export — those always stay print-ready and light.</p></div>
         </section>
         <?php View::partial('components/flash', ['message' => $message ?? null]); ?>
         <div class="account-grid">
@@ -46,6 +46,48 @@
                             <span class="theme-swatch theme-swatch-dark"><span></span><span></span></span>
                             <span class="theme-option-label"><b>Dark</b><span class="theme-option-check">✓</span></span>
                             <p>Always dark, regardless of device setting.</p>
+                        </span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="card account-card">
+                <div class="account-card-heading"><div class="large-avatar">◒</div><div><h2>Accent colour</h2><p>Five colours from one palette. Light and dark still follow the Theme choice above.</p></div></div>
+
+                <div class="theme-options palette-options" role="radiogroup" aria-label="Accent colour">
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="hunter">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-hunter"></span>
+                            <span class="theme-option-label"><b>Hunter</b><span class="theme-option-check">✓</span></span>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="sage">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-sage"></span>
+                            <span class="theme-option-label"><b>Sage</b><span class="theme-option-check">✓</span></span>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="citrus">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-citrus"></span>
+                            <span class="theme-option-label"><b>Citrus</b><span class="theme-option-check">✓</span></span>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="cream">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-cream"></span>
+                            <span class="theme-option-label"><b>Cream</b><span class="theme-option-check">✓</span></span>
+                        </span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="palette" value="brick">
+                        <span class="theme-option-card">
+                            <span class="theme-swatch theme-swatch-brick"></span>
+                            <span class="theme-option-label"><b>Brick</b><span class="theme-option-check">✓</span></span>
                         </span>
                     </label>
                 </div>

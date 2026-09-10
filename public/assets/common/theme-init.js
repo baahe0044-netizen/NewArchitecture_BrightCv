@@ -1,6 +1,6 @@
 (function () {
   var mode = 'system';
-  var palette = 'parchment';
+  var palette = 'sage';
 
   try {
     var storedMode = localStorage.getItem('brightcv-theme');
@@ -8,7 +8,7 @@
       mode = storedMode;
     }
     var storedPalette = localStorage.getItem('brightcv:palette');
-    if (['parchment', 'azure', 'mono', 'ember'].indexOf(storedPalette) !== -1) {
+    if (['hunter', 'sage', 'citrus', 'cream', 'brick'].indexOf(storedPalette) !== -1) {
       palette = storedPalette;
     }
   } catch (error) {

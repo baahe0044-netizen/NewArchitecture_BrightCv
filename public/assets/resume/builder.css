@@ -15,7 +15,9 @@
   align-items: center;
   gap: 16px;
   background: var(--choco);
-  border-bottom: 3px solid var(--ink);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
 }
 
 .builder-brand-group,
@@ -220,18 +222,20 @@
   min-width: 0;
   overflow: hidden;
   background: var(--surface);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
 }
 
 .editor-panel {
   background: var(--card);
-  border-right: 3px solid var(--ink);
+  border-right: 1px solid var(--glass-border);
 }
 
 .assistant-panel {
   display: flex;
   flex-direction: column;
   background: var(--card);
-  border-left: 3px solid var(--ink);
+  border-left: 1px solid var(--glass-border);
 }
 
 .panel-mobile-header {
@@ -271,7 +275,7 @@
 .assistant-tabs button.active {
   color: var(--ink);
   background: var(--gold-soft);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
 }
 
 .editor-content-mode,
@@ -289,7 +293,7 @@
   margin: 14px 16px 0;
   padding: 14px;
   background: var(--choco);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-btn);
 }
@@ -343,7 +347,7 @@
   margin: 14px 16px;
   padding: 14px;
   background: var(--card-2);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-sm);
 }
 
@@ -366,7 +370,7 @@
   margin: 9px 0 7px;
   overflow: hidden;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
 }
 
@@ -979,7 +983,7 @@
   justify-content: space-between;
   gap: 14px;
   background: var(--card-2);
-  border-bottom: var(--edge) solid var(--ink);
+  border-bottom: var(--edge) solid var(--glass-border);
 }
 
 .preview-toolbar > div:first-child {
@@ -1013,7 +1017,7 @@
   align-items: center;
   gap: 9px;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
   font-size: 14px;
   font-weight: 700;
@@ -1025,7 +1029,7 @@
   height: 11px;
   overflow: hidden;
   background: var(--card-2);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
 }
 
@@ -1086,11 +1090,11 @@
 }
 
 /* The CV sheet's own colours are untouched (preview.css stays print-safe);
-   this is only the chrome around it -- the mockup's literal hard border and
-   offset shadow on the page, not a soft drop shadow. */
+   this is only the chrome around it -- a soft paper-on-glass drop shadow,
+   not the sheet's own content. */
 #resumePreview .cv-document {
-  border: 3px solid var(--ink);
-  box-shadow: 7px 7px 0 var(--ink);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
 }
 
 

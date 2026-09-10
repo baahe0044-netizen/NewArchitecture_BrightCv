@@ -120,14 +120,14 @@
   min-width: 0;
   overflow: hidden;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
 .resume-card:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 var(--ink);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 .resume-preview {
@@ -138,7 +138,7 @@
   place-items: center;
   overflow: hidden;
   background: var(--card-2);
-  border-bottom: var(--edge) solid var(--ink);
+  border-bottom: var(--edge) solid var(--glass-border);
 }
 
 .preview-sheet {
@@ -219,7 +219,7 @@
   padding: 5px 9px;
   color: var(--card);
   background: var(--ink);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-sm);
   text-align: center;
 }
@@ -267,7 +267,7 @@
   padding: 2px 9px;
   color: var(--ink);
   background: var(--gold-soft);
-  border: 1px solid var(--ink);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-pill);
   font-size: 10px;
   font-weight: 700;
@@ -283,7 +283,7 @@
   margin-top: 14px;
   overflow: hidden;
   background: var(--card-2);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
 }
 
@@ -357,7 +357,7 @@
   width: 150px;
   padding: 6px;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
 }
@@ -414,7 +414,7 @@
   place-items: center;
   color: var(--berry);
   background: var(--berry-soft);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
 }
 
@@ -460,7 +460,7 @@
   place-items: center;
   color: var(--ink);
   background: var(--gold-soft);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-sm);
 }
 
@@ -525,7 +525,7 @@
   place-items: center;
   color: var(--ink);
   background: var(--card-2);
-  border: 1px solid var(--ink);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-sm);
 }
 
@@ -557,7 +557,7 @@
   padding: 13px 16px;
   color: var(--ink);
   background: var(--berry-soft);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-lg);
 }
 
@@ -733,7 +733,7 @@
   gap: 26px;
   padding: 16px 22px;
   background: var(--choco);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -879,7 +879,7 @@
   flex: none;
   padding: 13px 12px;
   background: var(--card-2);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-sm);
 }
 
@@ -995,8 +995,8 @@
   margin-top: -2px;
   color: var(--on-gold);
   background: var(--gold);
-  border: 3px solid var(--ink);
-  box-shadow: 2px 2px 0 var(--ink);
+  border: 3px solid var(--glass-border);
+  box-shadow: var(--shadow-badge);
 }
 
 .is-current .journey-node b {
@@ -1044,7 +1044,7 @@ li:not(.is-done):not(.is-current) .journey-label {
 .quest-panel {
   padding: 18px;
   background: var(--gold-soft);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -1073,7 +1073,7 @@ li:not(.is-done):not(.is-current) .journey-label {
   gap: 11px;
   padding: 8px 12px;
   background: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-btn);
 }
@@ -1091,7 +1091,7 @@ li:not(.is-done):not(.is-current) .journey-label {
   align-items: center;
   justify-content: center;
   background: var(--card-2);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius-pill);
 }
 
@@ -1162,7 +1162,7 @@ li:not(.is-done):not(.is-current) .journey-label {
   align-items: center;
   justify-content: center;
   color: var(--card);
-  border: var(--edge) solid var(--ink);
+  border: var(--edge) solid var(--glass-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-badge);
 }
