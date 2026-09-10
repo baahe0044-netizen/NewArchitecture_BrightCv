@@ -21,7 +21,7 @@ if (!extension_loaded('gd')) {
     exit(1);
 }
 
-const BRAND = [0xd9, 0x8a, 0x1f];
+const BRAND = [0x6a, 0x99, 0x4e];
 const OUTPUT_DIR = __DIR__ . '/../public/assets/icons';
 
 /**

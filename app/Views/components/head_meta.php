@@ -12,7 +12,7 @@ $description = $pageDescription
 <meta name="app-url" content="<?= e(BASE_URL) ?>">
 <meta name="description" content="<?= e($description) ?>">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#F6EFE6">
+<meta name="theme-color" content="#16241A">
 <meta name="format-detection" content="telephone=no">
 
 <?php /* Unbounded (display, bold weights) + Plus Jakarta Sans (body) +

@@ -1,4 +1,5 @@
 DirectoryIndex index.php
+FileETag None
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
