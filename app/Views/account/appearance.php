@@ -66,7 +66,7 @@
                         <input type="radio" name="palette" value="sage">
                         <span class="theme-option-card">
                             <span class="theme-swatch theme-swatch-sage"></span>
-                            <span class="theme-option-label"><b>Sage</b><span class="theme-option-check">✓</span></span>
+                            <span class="theme-option-label"><b>Mint</b><span class="theme-option-check">✓</span></span>
                         </span>
                     </label>
                     <label class="theme-option">

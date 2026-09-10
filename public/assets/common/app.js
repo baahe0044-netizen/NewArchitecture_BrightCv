@@ -160,7 +160,7 @@
   const PALETTES = ['hunter', 'sage', 'citrus', 'cream', 'brick'];
   const PALETTE_LABELS = {
     hunter: 'Hunter green',
-    sage: 'Sage green',
+    sage: 'Mint',
     citrus: 'Citrus',
     cream: 'Vanilla cream',
     brick: 'Blushed brick',
@@ -189,7 +189,7 @@
       document.dispatchEvent(new CustomEvent('brightcv:palettechange', { detail: { palette } }));
     },
     label(palette) {
-      return PALETTE_LABELS[palette] || 'Sage green';
+      return PALETTE_LABELS[palette] || 'Mint';
     },
   };
 
