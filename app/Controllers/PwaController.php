@@ -26,7 +26,7 @@ final class PwaController extends Controller
             'display_override' => ['standalone', 'minimal-ui'],
             'orientation' => 'portrait-primary',
             'background_color' => '#F2E8CF',
-            'theme_color' => '#16241A',
+            'theme_color' => '#1B1025',
             'lang' => 'en',
             'dir' => 'ltr',
             'categories' => ['productivity', 'business'],

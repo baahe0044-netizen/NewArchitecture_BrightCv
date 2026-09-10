@@ -1,27 +1,30 @@
 /*
   BrightCV design tokens — "Glass".
 
-  A frosted-glass identity over a five-colour palette: vanilla-cream and
-  hunter-green as the shared light/dark foundation (page, panels, ink), and
-  five accents to choose from -- hunter, sage, citrus, cream, and brick --
-  each a colour from that same set. Every token below keeps the name Quest
-  first gave it (--rust is still "the brand hue", --choco is still "the dark
-  chrome surface", --moss is still "success") so no downstream CSS needed to
-  change selector-by-selector; only the values underneath moved.
+  A frosted-glass identity over vanilla-cream as the shared light/dark
+  foundation (page, panels) with a deep violet ink -- and five accents to
+  choose from, the default now a vivid purple with warm gold in the small
+  details (badges, XP bars, "success"), no longer any of the five greens
+  this palette started from. Every token below keeps the name Quest first
+  gave it (--rust is still "the brand hue", --choco is still "the dark
+  chrome surface", --moss is still "success") so no downstream CSS needed
+  to change selector-by-selector; only the values underneath moved.
 
   Two independent choices, not one: light/dark is the bare :root / system
   prefers-color-scheme / :root[data-theme="dark"] pattern this app has always
   used, made with the header's theme toggle or Account -> Appearance. Accent
   is data-palette="hunter|sage|citrus|cream|brick" on the same root element,
   made in Account -> Appearance and applied by the same theme-init.js that
-  applies data-theme, before first paint. Sage is the default accent and
-  needs no override block -- it is what --rust/--gold already resolve to
-  below; the other four each get one light-context and one dark-context
-  block further down, redefining only the handful of tokens an accent
-  actually touches (--rust/--rust-deep/--gold/--gold-soft/--on-gold/
-  --on-brand/--shadow-btn/--page-glow-1). Everything else -- the cream/
-  hunter-green foundation, the glass and shadow system, type -- stays
-  exactly as the light/dark blocks below define it, regardless of accent.
+  applies data-theme, before first paint. The default accent (internal key
+  "sage", shown to the user as "Violet") needs no override block -- it is
+  what --rust/--gold already resolve to below; the other four each get one
+  light-context and one dark-context block further down, redefining only
+  the handful of tokens an accent actually touches (--rust/--rust-deep/
+  --gold/--gold-soft/--on-gold/--on-brand/--shadow-btn/--page-glow-1) --
+  they still exist for anyone who wants hunter or citrus green back.
+  Everything else -- the foundation, the glass and shadow system, type --
+  stays exactly as the light/dark blocks below define it, regardless of
+  accent.
 
   The rendered CV is excluded on purpose. resume/preview.css and print.css
   keep their own print-safe colours so an exported CV stays white with black
@@ -31,35 +34,36 @@
 :root {
   color-scheme: light;
 
-  /* --- The five-colour palette, cream-and-hunter-green foundation --------
+  /* --- The cream-and-violet foundation, violet-and-gold default accent ---
      Light mode is not a mechanical invert of dark: glass needs a pale,
      warm ground and mostly-opaque panels to keep text legible, where dark
      mode can let the panel itself stay translucent over a glowing void.
-     Sage is the default accent, set directly here; the other four accents
-     (hunter, citrus, cream, brick) live in the [data-palette="..."] blocks
-     further down and override only --rust/--gold and what depends on them. */
+     The default accent is set directly here; the other four (hunter,
+     citrus, cream, brick -- still real colour options) live in the
+     [data-palette="..."] blocks further down and override only --rust/
+     --gold and what depends on them. */
   --sand: #F2E8CF;
   --card: rgba(255, 253, 245, .8);
   --card-2: rgba(247, 241, 222, .68);
-  --ink: #386641;
-  --muted: #57685A;
-  --rust: #006E60;
-  --rust-deep: #004D43;
-  --gold: #00F5D4;
-  --gold-soft: #DDFBF6;
-  --moss: #4F7A3D;
-  --moss-deep: #375626;
-  --moss-soft: #E5F0DC;
+  --ink: #2E1A47;
+  --muted: #655574;
+  --rust: #5E3690;
+  --rust-deep: #4A2B71;
+  --gold: #9B5DE5;
+  --gold-soft: #F1E7FB;
+  --moss: #8A5D0A;
+  --moss-deep: #7D5309;
+  --moss-soft: #FBF0DC;
   --berry: #BC4749;
   --berry-soft: #F7E3E2;
-  --choco: #16241A;
+  --choco: #1B1025;
 
   /* Text-on-choco: used only inside choco surfaces (header, level banner). */
   --choco-ink: #F2E8CF;
-  --choco-muted: #A9B8A8;
-  --choco-line: #253B29;
-  --choco-line-soft: #35502E;
-  --choco-well: #0E1712;
+  --choco-muted: #B8A9C4;
+  --choco-line: #2E1E3D;
+  --choco-line-soft: #453055;
+  --choco-well: #120A18;
 
   /* --- Mapped onto the names the rest of the app already uses ------------
      Kept so downstream CSS needs fewer rewrites: --brand is rust, --surface
@@ -72,10 +76,10 @@
   --brand-border: var(--ink);
   /* --brand is the darker accent shade (--rust), so its label needs light
      text -- unlike --on-gold, which sits on the bright fill and stays dark. */
-  --on-brand: #FFFDF6;
+  --on-brand: #FDFBFF;
 
-  --accent-ochre: #6B7D22;
-  --accent-ochre-soft: #F3F7E4;
+  --accent-ochre: #7D5309;
+  --accent-ochre-soft: #FBF0DC;
   --accent-moss: var(--moss);
   --accent-moss-soft: var(--moss-soft);
   --accent-teal: #1B7A85;
@@ -83,48 +87,48 @@
   --accent-plum: var(--berry);
   --accent-plum-soft: var(--berry-soft);
 
-  --ink-soft: #4A6350;
+  --ink-soft: #4A3A5A;
   --subtle: var(--muted);
-  --line: rgba(56, 102, 65, .14);
-  --line-strong: rgba(56, 102, 65, .3);
+  --line: rgba(46, 26, 71, .14);
+  --line-strong: rgba(46, 26, 71, .3);
   --surface: var(--card);
   --surface-muted: var(--card-2);
   --canvas: var(--sand);
 
   --success: var(--moss);
   --success-soft: var(--moss-soft);
-  --warning: #6B7D22;
-  --warning-soft: #F3F7E4;
+  --warning: #7D5309;
+  --warning-soft: #FBF0DC;
   --danger: #A63A3C;
   --danger-soft: #F7E3E2;
 
-  --focus: rgba(0, 245, 212, .4);
-  --overlay: rgba(22, 36, 26, .5);
+  --focus: rgba(155, 93, 229, .4);
+  --overlay: rgba(27, 16, 37, .5);
 
   /* Text set directly on a full-strength accent fill (a current-step marker,
      an earned badge, an active pill). The fill stays a bright, saturated
      colour in both themes and across every accent by design, so this reads
      correctly against it without flipping the way --ink does for body text. */
-  --on-gold: #023B34;
+  --on-gold: #140818;
 
   /* --- Shape language: thin glass edges, soft blurred elevation ----------
      Read scripts/check-contrast.mjs before changing any of these. */
   --edge: 1px;
-  --shadow-sm: 0 2px 10px rgba(22, 36, 26, .1);
-  --shadow-md: 0 10px 30px rgba(22, 36, 26, .14);
-  --shadow-lg: 0 18px 48px rgba(22, 36, 26, .18);
-  --shadow-btn: 0 6px 16px rgba(0, 245, 212, .32);
-  --shadow-badge: 0 3px 8px rgba(22, 36, 26, .14);
+  --shadow-sm: 0 2px 10px rgba(27, 16, 37, .1);
+  --shadow-md: 0 10px 30px rgba(27, 16, 37, .14);
+  --shadow-lg: 0 18px 48px rgba(27, 16, 37, .18);
+  --shadow-btn: 0 6px 16px rgba(155, 93, 229, .32);
+  --shadow-badge: 0 3px 8px rgba(27, 16, 37, .14);
 
   /* Frosted glass: a blurred, saturated panel over a glowing ground. */
   --glass-bg: var(--surface);
-  --glass-border: rgba(22, 36, 26, .12);
+  --glass-border: rgba(27, 16, 37, .12);
   --glass-shadow: var(--shadow-md);
   --glass-highlight: rgba(255, 255, 255, .5);
   --glass-blur: 20px;
   --glass-saturate: 160%;
-  --page-glow-1: rgba(0, 245, 212, .16);
-  --page-glow-2: rgba(167, 201, 87, .1);
+  --page-glow-1: rgba(155, 93, 229, .16);
+  --page-glow-2: rgba(224, 165, 38, .12);
   --page-glow-3: rgba(255, 255, 255, .5);
 
   /* No halftone in the glass system -- the glow gradients carry the ground. */
@@ -187,37 +191,37 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --sand: #101B13;
-    --card: rgba(30, 48, 34, .82);
-    --card-2: rgba(38, 58, 42, .7);
+    --sand: #170D22;
+    --card: rgba(42, 26, 58, .82);
+    --card-2: rgba(52, 34, 70, .7);
     --ink: #F2E8CF;
-    --muted: #AEBBA9;
-    --rust: #4DFFE4;
-    --rust-deep: #7AFFEC;
-    --gold: #00F5D4;
-    --gold-soft: #06322C;
-    --moss: #6FBE6A;
-    --moss-deep: #8ED488;
-    --moss-soft: #1C2E1F;
+    --muted: #C0AECF;
+    --rust: #C9A6F5;
+    --rust-deep: #DCC4FA;
+    --gold: #9B5DE5;
+    --gold-soft: #2A1840;
+    --moss: #E0A526;
+    --moss-deep: #F0BE55;
+    --moss-soft: #3A2A0C;
     --berry: #E37678;
     --berry-soft: #3A2020;
-    --choco: #0A120C;
+    --choco: #0C0714;
 
     --choco-ink: #F2E8CF;
-    --choco-muted: #9BAE96;
-    --choco-line: #223021;
-    --choco-line-soft: #34452F;
-    --choco-well: #060A07;
+    --choco-muted: #B0A0BE;
+    --choco-line: #2A1D38;
+    --choco-line-soft: #3F2C52;
+    --choco-well: #08040C;
 
     --brand: var(--rust);
     --brand-dark: var(--rust-deep);
     --brand-soft: var(--gold-soft);
     --brand-border: var(--ink);
-    --on-brand: #022A25;
-    --on-gold: #022A25;
+    --on-brand: #1E0F2E;
+    --on-gold: #140818;
 
-    --accent-ochre: #C9D98A;
-    --accent-ochre-soft: #33361C;
+    --accent-ochre: #F0BE55;
+    --accent-ochre-soft: #3A2A0C;
     --accent-moss: var(--moss);
     --accent-moss-soft: var(--moss-soft);
     --accent-teal: #4FB8C4;
@@ -235,13 +239,13 @@
 
     --success: var(--moss);
     --success-soft: var(--moss-soft);
-    --warning: #C9D98A;
-    --warning-soft: #33361C;
+    --warning: #F0BE55;
+    --warning-soft: #3A2A0C;
     --danger: #E88B8C;
     --danger-soft: #3A2020;
 
     --focus: rgba(242, 232, 207, .35);
-    --overlay: rgba(6, 10, 7, .72);
+    --overlay: rgba(6, 4, 8, .72);
 
     /* No halftone in the glass system -- the glow gradients carry the ground. */
     --grain: none;
@@ -255,14 +259,14 @@
     --glass-highlight: rgba(255, 255, 255, .08);
     --glass-blur: 20px;
     --glass-saturate: 150%;
-    --page-glow-1: rgba(0, 245, 212, .18);
-    --page-glow-2: rgba(167, 201, 87, .12);
+    --page-glow-1: rgba(155, 93, 229, .18);
+    --page-glow-2: rgba(224, 165, 38, .12);
     --page-glow-3: rgba(242, 232, 207, .04);
 
     --shadow-sm: 0 2px 14px rgba(0, 0, 0, .45);
     --shadow-md: 0 12px 34px rgba(0, 0, 0, .5);
     --shadow-lg: 0 20px 54px rgba(0, 0, 0, .55);
-    --shadow-btn: 0 8px 20px rgba(0, 245, 212, .32);
+    --shadow-btn: 0 8px 20px rgba(155, 93, 229, .32);
     --shadow-badge: 0 4px 10px rgba(0, 0, 0, .4);
   }
 }
@@ -270,37 +274,37 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --sand: #101B13;
-  --card: rgba(30, 48, 34, .82);
-  --card-2: rgba(38, 58, 42, .7);
+  --sand: #170D22;
+  --card: rgba(42, 26, 58, .82);
+  --card-2: rgba(52, 34, 70, .7);
   --ink: #F2E8CF;
-  --muted: #AEBBA9;
-  --rust: #4DFFE4;
-  --rust-deep: #7AFFEC;
-  --gold: #00F5D4;
-  --gold-soft: #06322C;
-  --moss: #6FBE6A;
-  --moss-deep: #8ED488;
-  --moss-soft: #1C2E1F;
+  --muted: #C0AECF;
+  --rust: #C9A6F5;
+  --rust-deep: #DCC4FA;
+  --gold: #9B5DE5;
+  --gold-soft: #2A1840;
+  --moss: #E0A526;
+  --moss-deep: #F0BE55;
+  --moss-soft: #3A2A0C;
   --berry: #E37678;
   --berry-soft: #3A2020;
-  --choco: #0A120C;
+  --choco: #0C0714;
 
   --choco-ink: #F2E8CF;
-  --choco-muted: #9BAE96;
-  --choco-line: #223021;
-  --choco-line-soft: #34452F;
-  --choco-well: #060A07;
+  --choco-muted: #B0A0BE;
+  --choco-line: #2A1D38;
+  --choco-line-soft: #3F2C52;
+  --choco-well: #08040C;
 
   --brand: var(--rust);
   --brand-dark: var(--rust-deep);
   --brand-soft: var(--gold-soft);
   --brand-border: var(--ink);
-  --on-brand: #022A25;
-  --on-gold: #022A25;
+  --on-brand: #1E0F2E;
+  --on-gold: #140818;
 
-  --accent-ochre: #C9D98A;
-  --accent-ochre-soft: #33361C;
+  --accent-ochre: #F0BE55;
+  --accent-ochre-soft: #3A2A0C;
   --accent-moss: var(--moss);
   --accent-moss-soft: var(--moss-soft);
   --accent-teal: #4FB8C4;
@@ -318,13 +322,13 @@
 
   --success: var(--moss);
   --success-soft: var(--moss-soft);
-  --warning: #C9D98A;
-  --warning-soft: #33361C;
+  --warning: #F0BE55;
+  --warning-soft: #3A2A0C;
   --danger: #E88B8C;
   --danger-soft: #3A2020;
 
   --focus: rgba(242, 232, 207, .35);
-  --overlay: rgba(6, 10, 7, .72);
+  --overlay: rgba(6, 4, 8, .72);
 
   --grain: none;
 
@@ -334,14 +338,14 @@
   --glass-highlight: rgba(255, 255, 255, .08);
   --glass-blur: 20px;
   --glass-saturate: 150%;
-  --page-glow-1: rgba(0, 245, 212, .18);
-  --page-glow-2: rgba(167, 201, 87, .12);
+  --page-glow-1: rgba(155, 93, 229, .18);
+  --page-glow-2: rgba(224, 165, 38, .12);
   --page-glow-3: rgba(242, 232, 207, .04);
 
   --shadow-sm: 0 2px 14px rgba(0, 0, 0, .45);
   --shadow-md: 0 12px 34px rgba(0, 0, 0, .5);
   --shadow-lg: 0 20px 54px rgba(0, 0, 0, .55);
-  --shadow-btn: 0 8px 20px rgba(0, 245, 212, .32);
+  --shadow-btn: 0 8px 20px rgba(155, 93, 229, .32);
   --shadow-badge: 0 4px 10px rgba(0, 0, 0, .4);
 }
 

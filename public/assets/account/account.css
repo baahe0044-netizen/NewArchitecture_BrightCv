@@ -272,12 +272,12 @@
 }
 
 .theme-swatch-light { background: #F2E8CF; }
-.theme-swatch-light > span:first-child { height: 34%; background: #386641; }
+.theme-swatch-light > span:first-child { height: 34%; background: #1B1025; }
 .theme-swatch-light > span:last-child { height: 66%; background: #FFFDF5; }
 
-.theme-swatch-dark { background: #101B13; }
-.theme-swatch-dark > span:first-child { height: 34%; background: #0A120C; }
-.theme-swatch-dark > span:last-child { height: 66%; background: #1E3022; }
+.theme-swatch-dark { background: #170D22; }
+.theme-swatch-dark > span:first-child { height: 34%; background: #0C0714; }
+.theme-swatch-dark > span:last-child { height: 66%; background: #2A1A3A; }
 
 .theme-swatch-system {
   display: grid;
@@ -285,7 +285,7 @@
 }
 
 .theme-swatch-system > span:first-child { background: #FFFDF5; border-right: var(--edge) solid var(--glass-border); }
-.theme-swatch-system > span:last-child { background: #1E3022; }
+.theme-swatch-system > span:last-child { background: #2A1A3A; }
 
 /* ---- Accent swatches -------------------------------------------------
    Each is the accent's own bright fill colour -- the literal --gold value
@@ -300,7 +300,7 @@
 }
 
 .theme-swatch-hunter { background: #386641; }
-.theme-swatch-sage { background: #00F5D4; }
+.theme-swatch-sage { background: #9B5DE5; }
 .theme-swatch-citrus { background: #A7C957; }
 .theme-swatch-cream { background: #F2E8CF; }
 .theme-swatch-brick { background: #BC4749; }
