@@ -27,7 +27,7 @@ const errors = await rendered.stderrText;
 assert.equal(await rendered.exitCode, 0, errors || 'The public entry point failed to boot.');
 assert.equal(errors, '', errors);
 assert.match(html, /<!doctype html>/i);
-assert.match(html, /BrightCV/);
+assert.match(html, /LunettiStar CV/);
 assert.match(html, /\/NewArchitecture_BrightCv\/public\/assets\/common\/app\.css/);
 
 console.log('Public WAMP entry-point smoke test passed.');

@@ -1,6 +1,6 @@
-# BrightCV CV Builder
+# LunettiStar CV
 
-BrightCV is a production-oriented PHP and MySQL CV builder. It combines a
+LunettiStar CV is a production-oriented PHP and MySQL CV builder. It combines a
 focused three-panel writing workspace with live A4 preview, applicant tracking
 system guidance, job-description matching, smart writing support, and secure
 account-based storage.
@@ -32,7 +32,7 @@ For ready-to-paste Windows PowerShell commands, see
   matching
 - Voice dictation where the browser supports the Web Speech API
 - Import an existing CV from PDF, Word (.docx), plain text, pasted text, or a
-  BrightCV JSON backup, reviewed before it replaces anything
+  LunettiStar CV JSON backup, reviewed before it replaces anything
 - Print-to-PDF, multilingual section headings, and portable JSON backup
 - Installable as an app (web manifest, service worker, offline page) with
   cached assets; pages and API responses are deliberately never cached, and

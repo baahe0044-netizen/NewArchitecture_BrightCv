@@ -8,7 +8,7 @@ final class PwaController extends Controller
      * The web app manifest.
      *
      * Generated rather than served as a static file because `start_url` and
-     * `scope` have to match wherever the app is installed, and BrightCV
+     * `scope` have to match wherever the app is installed, and LunettiStar CV
      * commonly runs from a subdirectory such as /NewArchitecture_BrightCv/public.
      */
     public function manifest(Request $request): Response
@@ -16,7 +16,7 @@ final class PwaController extends Controller
         $scope = rtrim(parse_url(BASE_URL, PHP_URL_PATH) ?: '/', '/') . '/';
 
         $manifest = [
-            'name' => APP_NAME . ' — CV Builder',
+            'name' => APP_NAME . ' — Build your brighter future',
             'short_name' => APP_NAME,
             'description' => 'Write, tailor, and export a professional CV from any device.',
             'id' => $scope,

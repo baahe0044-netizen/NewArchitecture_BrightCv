@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Draws the BrightCV app icons used by the web manifest and iOS home screen.
+ * Draws the LunettiStar CV app icons used by the web manifest and iOS home
+ * screen, by compositing the real logo mark onto a plain background.
  *
- * The icons are committed to the repository, so this only needs re-running when
- * the mark or the brand colour changes:
+ * The icons are committed to the repository, so this only needs re-running
+ * when the mark or its source image (assets/brand/logo-icon.png) changes:
  *
  *     php scripts/generate-icons.php
  */
@@ -21,14 +22,18 @@ if (!extension_loaded('gd')) {
     exit(1);
 }
 
-const BRAND = [0x9b, 0x5d, 0xe5];
+const SOURCE_LOGO = __DIR__ . '/../public/assets/brand/logo-icon.png';
 const OUTPUT_DIR = __DIR__ . '/../public/assets/icons';
+// White, not a brand colour: the mark's own navy is the icon's darkest
+// value, so a coloured card would swallow it. White is also what the source
+// artwork was drawn against.
+const BACKGROUND = [0xff, 0xff, 0xff];
 
 /**
  * @param float $safe fraction of the canvas the mark occupies. Maskable icons
  *              get a smaller mark so a circular or squircle crop cannot clip it.
  */
-function drawIcon(int $size, float $safe, bool $rounded): GdImage
+function drawIcon(GdImage $logo, int $size, float $safe, bool $rounded): GdImage
 {
     $image = imagecreatetruecolor($size, $size);
     imagesavealpha($image, true);
@@ -36,61 +41,42 @@ function drawIcon(int $size, float $safe, bool $rounded): GdImage
     imagefill($image, 0, 0, imagecolorallocatealpha($image, 0, 0, 0, 127));
     imagealphablending($image, true);
 
-    $brand = imagecolorallocate($image, BRAND[0], BRAND[1], BRAND[2]);
-    $white = imagecolorallocate($image, 255, 255, 255);
+    $bg = imagecolorallocate($image, BACKGROUND[0], BACKGROUND[1], BACKGROUND[2]);
 
     if ($rounded) {
         $radius = (int) round($size * 0.22);
-        imagefilledrectangle($image, $radius, 0, $size - $radius, $size, $brand);
-        imagefilledrectangle($image, 0, $radius, $size, $size - $radius, $brand);
+        imagefilledrectangle($image, $radius, 0, $size - $radius, $size, $bg);
+        imagefilledrectangle($image, 0, $radius, $size, $size - $radius, $bg);
         foreach ([[$radius, $radius], [$size - $radius, $radius], [$radius, $size - $radius], [$size - $radius, $size - $radius]] as [$cx, $cy]) {
-            imagefilledellipse($image, $cx, $cy, $radius * 2, $radius * 2, $brand);
+            imagefilledellipse($image, $cx, $cy, $radius * 2, $radius * 2, $bg);
         }
     } else {
-        imagefilledrectangle($image, 0, 0, $size, $size, $brand);
+        imagefilledrectangle($image, 0, 0, $size, $size, $bg);
     }
 
-    // A sheet of paper with a folded corner and three lines of writing: the
-    // same mark as the header logo, drawn with primitives because gd has no
-    // vector renderer.
-    $markWidth = $size * $safe * 0.72;
-    $markHeight = $size * $safe;
-    $left = (int) round(($size - $markWidth) / 2);
-    $top = (int) round(($size - $markHeight) / 2);
-    $right = (int) round($left + $markWidth);
-    $bottom = (int) round($top + $markHeight);
-    $fold = (int) round($markWidth * 0.34);
+    // Scale the logo into the safe zone, preserving its aspect ratio, then
+    // centre it on the canvas.
+    $logoWidth = imagesx($logo);
+    $logoHeight = imagesy($logo);
+    $box = $size * $safe;
+    $scale = min($box / $logoWidth, $box / $logoHeight);
+    $destWidth = (int) round($logoWidth * $scale);
+    $destHeight = (int) round($logoHeight * $scale);
+    $destX = (int) round(($size - $destWidth) / 2);
+    $destY = (int) round(($size - $destHeight) / 2);
 
-    imagefilledpolygon($image, [
-        $left, $top,
-        $right - $fold, $top,
-        $right, $top + $fold,
-        $right, $bottom,
-        $left, $bottom,
-    ], $white);
-
-    // The fold reads as a shadowed triangle in the top corner.
-    $shade = imagecolorallocatealpha($image, BRAND[0], BRAND[1], BRAND[2], 75);
-    imagefilledpolygon($image, [
-        $right - $fold, $top,
-        $right, $top + $fold,
-        $right - $fold, $top + $fold,
-    ], $shade);
-
-    $lineHeight = max(2, (int) round($markHeight * 0.055));
-    $lineLeft = (int) round($left + $markWidth * 0.17);
-    $lineRight = (int) round($right - $markWidth * 0.17);
-    $firstLine = (int) round($top + $markHeight * 0.46);
-    $gap = (int) round($markHeight * 0.17);
-
-    foreach ([0, 1, 2] as $index) {
-        $y = $firstLine + $gap * $index;
-        $end = $index === 2 ? (int) round($lineLeft + ($lineRight - $lineLeft) * 0.55) : $lineRight;
-        imagefilledrectangle($image, $lineLeft, $y, $end, $y + $lineHeight, $brand);
-    }
+    imagecopyresampled($image, $logo, $destX, $destY, 0, 0, $destWidth, $destHeight, $logoWidth, $logoHeight);
 
     return $image;
 }
+
+$logo = @imagecreatefrompng(SOURCE_LOGO);
+if (!$logo) {
+    fwrite(STDERR, "Could not read source logo at " . SOURCE_LOGO . "\n");
+    exit(1);
+}
+imagealphablending($logo, false);
+imagesavealpha($logo, true);
 
 if (!is_dir(OUTPUT_DIR) && !mkdir(OUTPUT_DIR, 0755, true) && !is_dir(OUTPUT_DIR)) {
     fwrite(STDERR, "Could not create " . OUTPUT_DIR . "\n");
@@ -110,7 +96,7 @@ $icons = [
 ];
 
 foreach ($icons as [$name, $size, $safe, $rounded]) {
-    $image = drawIcon($size, $safe, $rounded);
+    $image = drawIcon($logo, $size, $safe, $rounded);
     imagepng($image, OUTPUT_DIR . '/' . $name, 9);
     imagedestroy($image);
     printf("%-24s %dx%d\n", $name, $size, $size);

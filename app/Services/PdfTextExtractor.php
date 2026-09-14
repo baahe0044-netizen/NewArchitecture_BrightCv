@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Minimal PDF text extraction.
  *
- * BrightCV only needs the words out of a CV someone exported from Word, Google
+ * LunettiStar CV only needs the words out of a CV someone exported from Word, Google
  * Docs, Canva, or another builder, so this walks the content streams and reads
  * the text-showing operators rather than pulling in a full PDF library. It
  * deliberately does not try to handle scanned pages or fonts with custom

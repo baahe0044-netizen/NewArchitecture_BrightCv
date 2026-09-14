@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * A small SMTP client, written rather than pulled in.
  *
- * BrightCV has no Composer dependencies and shared hosts have no shell to run
+ * LunettiStar CV has no Composer dependencies and shared hosts have no shell to run
  * `composer install` on, so a library would have to be uploaded by hand and
  * kept up to date by hand. Sending one transactional message needs a short
  * conversation with the server, which is cheaper to own than to vendor.

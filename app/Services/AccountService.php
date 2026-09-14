@@ -128,7 +128,7 @@ final class AccountService
         }
 
         $user = $users->findById($userId);
-        (new ActivityRepository())->record($userId, 'account_created', 'Created a BrightCV account');
+        (new ActivityRepository())->record($userId, 'account_created', 'Created a ' . APP_NAME . ' account');
         return ['success' => true, 'user' => $user];
     }
 

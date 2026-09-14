@@ -441,7 +441,7 @@ $builderPayload = [
                 <label class="import-drop" id="importDrop" for="importFile">
                     <span class="import-drop-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg></span>
                     <b>Choose a file or drop it here</b>
-                    <small>PDF, Word (.docx), plain text, or a BrightCV backup. Up to 5 MB.</small>
+                    <small>PDF, Word (.docx), plain text, or a <?= e(APP_NAME) ?> backup. Up to 5 MB.</small>
                     <input class="sr-only" id="importFile" type="file" accept=".pdf,.docx,.txt,.md,.json,application/pdf,application/json,text/plain">
                 </label>
                 <p class="import-file-name" id="importFileName" hidden></p>

@@ -59,9 +59,9 @@ $columnsStatement = $pdo->prepare(
      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?'
 );
 
-// Known, additive upgrades: safe to apply to an existing BrightCV database
+// Known, additive upgrades: safe to apply to an existing LunettiStar CV database
 // automatically rather than making every deployment stop and hand-run an
-// ALTER TABLE. Each entry only adds a column an older install of BrightCV
+// ALTER TABLE. Each entry only adds a column an older install of LunettiStar CV
 // itself would be missing -- never touches or drops existing data -- so by
 // the time the strict check below runs, a legitimate older install passes
 // it instead of being told to back up and reset over one new column.

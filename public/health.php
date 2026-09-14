@@ -51,7 +51,7 @@ $check = static function (bool $passed, string $label, string $detail = '', bool
     echo '[WARN] ' . $label . ($detail === '' ? '' : ' — ' . $detail) . "\n";
 };
 
-echo "BrightCV deployment check\n";
+echo APP_NAME . " deployment check\n";
 echo str_repeat('-', 52) . "\n";
 
 // --- Runtime ---------------------------------------------------------------

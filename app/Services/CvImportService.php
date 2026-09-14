@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /**
- * Turns an existing CV into editable BrightCV content.
+ * Turns an existing CV into editable LunettiStar CV content.
  *
- * Accepts a PDF, Word (.docx), plain text, or a BrightCV JSON backup, reduces
+ * Accepts a PDF, Word (.docx), plain text, or a LunettiStar CV JSON backup, reduces
  * it to plain text, then reads that text with heading and date heuristics.
  * Nothing is saved here: the builder shows what was detected and the writer
  * confirms before it replaces their CV, because no parser gets every layout
@@ -21,7 +21,7 @@ final class CvImportService
 
     private const MONTHS = 'jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec';
 
-    /** Heading text a section is skipped under, because it has no BrightCV equivalent. */
+    /** Heading text a section is skipped under, because it has no LunettiStar CV equivalent. */
     public const SKIPPED = '_skipped';
 
     /** A contact block, scanned for personal details rather than imported as content. */
@@ -60,7 +60,7 @@ final class CvImportService
             'certifications', 'certificates', 'certification', 'licenses', 'licences',
             'courses', 'training', 'professional development', 'awards and certifications',
             'certifications and licenses', 'courses and certifications', 'workshops',
-            // Awards are credentials too, and this is the closest place BrightCV
+            // Awards are credentials too, and this is the closest place LunettiStar CV
             // has for them, so they are carried over rather than dropped.
             'awards', 'honours', 'honors', 'awards and honours', 'awards and honors',
             'awards and recognition', 'scholarships',
@@ -72,7 +72,7 @@ final class CvImportService
             'activities', 'extracurricular activities', 'personal interests', 'other interests',
         ],
         // Recognised so their content is never filed under the previous heading,
-        // but deliberately not imported: BrightCV has nowhere honest to put them,
+        // but deliberately not imported: LunettiStar CV has nowhere honest to put them,
         // and inventing a category would put text in a section the writer never
         // wrote it for. The review panel names them so nothing goes missing
         // silently.
@@ -118,7 +118,7 @@ final class CvImportService
 
         $extension = strtolower(pathinfo((string) ($file['name'] ?? ''), PATHINFO_EXTENSION));
         if (!in_array($extension, self::EXTENSIONS, true)) {
-            throw new RuntimeException('Supported files are PDF, Word (.docx), plain text, and BrightCV JSON backups.');
+            throw new RuntimeException('Supported files are PDF, Word (.docx), plain text, and ' . APP_NAME . ' JSON backups.');
         }
 
         $raw = (string) file_get_contents($path);
@@ -159,7 +159,7 @@ final class CvImportService
     }
 
     /**
-     * A BrightCV backup already has the right shape, so it is passed through.
+     * A LunettiStar CV backup already has the right shape, so it is passed through.
      *
      * @return array{content: array, source: string, detected: array, characters: int}
      */
@@ -168,12 +168,12 @@ final class CvImportService
         $parsed = json_decode($raw, true);
         $resume = is_array($parsed) ? ($parsed['resume'] ?? $parsed) : null;
         if (!is_array($resume) || !is_array($resume['content'] ?? null)) {
-            throw new RuntimeException('That JSON file is not a BrightCV backup.');
+            throw new RuntimeException('That JSON file is not a ' . APP_NAME . ' backup.');
         }
 
         return [
             'content' => $resume['content'],
-            'source' => 'BrightCV backup',
+            'source' => APP_NAME . ' backup',
             'detected' => $this->summarize($resume['content']) + ['skipped' => []],
             'characters' => strlen($raw),
         ];
@@ -297,7 +297,7 @@ final class CvImportService
             'settings' => ['density' => 'comfortable', 'layout' => 'stacked', 'section_order' => 'standard'],
         ];
 
-        // A CV can list more links than BrightCV has places for. The extra ones
+        // A CV can list more links than LunettiStar CV has places for. The extra ones
         // are named in the review rather than dropped without a word.
         $extraLinks = $this->unusedLinks(
             array_merge($sections['_header'] ?? [], $sections[self::CONTACT] ?? []),
@@ -857,7 +857,7 @@ final class CvImportService
     /**
      * Links in the contact block that no personal field could hold.
      *
-     * A CV often lists a portfolio, a GitHub, and a LinkedIn, while BrightCV
+     * A CV often lists a portfolio, a GitHub, and a LinkedIn, while LunettiStar CV
      * keeps one website and one LinkedIn. Naming the remainder means the writer
      * can see what did not fit instead of noticing its absence later.
      *
@@ -1504,7 +1504,7 @@ final class CvImportService
                 continue;
             }
             // A labelled line describes the project above it rather than
-            // naming a new one: "Technologies: PHP, MySQL" belongs to BrightCV.
+            // naming a new one: "Technologies: PHP, MySQL" belongs to LunettiStar CV.
             $labelled = (bool) preg_match(
                 '/^(?:technolog\w*|tech|stack|tools|built with|role|status)\s*:/iu',
                 $line

@@ -1114,7 +1114,7 @@
     const backup = {
       schema_version: 1,
       exported_at: new Date().toISOString(),
-      application: 'BrightCV',
+      application: 'LunettiStar CV',
       resume: buildSavePayload(),
     };
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
@@ -1184,12 +1184,12 @@
       ? rows.map(([label, value]) => '<div><dt>' + h(label) + '</dt><dd>' + h(value) + '</dd></div>').join('')
       : '<div><dt>Nothing recognised</dt><dd>Try pasting the text instead.</dd></div>';
 
-    // Sections BrightCV has no home for are named rather than forced into the
+    // Sections LunettiStar CV has no home for are named rather than forced into the
     // nearest category, so nothing is quietly dropped or misfiled.
     const skipped = Array.isArray(detected.skipped) ? detected.skipped : [];
     const note = document.getElementById('importSkipped');
     if (skipped.length) {
-      note.textContent = 'Not imported, because BrightCV has no field for it: '
+      note.textContent = 'Not imported, because LunettiStar CV has no field for it: '
         + skipped.join(', ') + '. Copy anything you still want across by hand.';
       note.hidden = false;
     } else {

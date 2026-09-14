@@ -2,6 +2,7 @@
   'use strict';
 
   const baseUrl = document.querySelector('meta[name="app-url"]')?.content?.replace(/\/$/, '') || '';
+  const appName = document.querySelector('meta[name="application-name"]')?.content || 'LunettiStar CV';
 
   // ------------------------------------------------------------------
   // Service worker
@@ -52,7 +53,7 @@
     const banner = document.createElement('div');
     banner.className = 'install-banner';
     banner.setAttribute('role', 'region');
-    banner.setAttribute('aria-label', 'Install BrightCV');
+    banner.setAttribute('aria-label', 'Install ' + appName);
 
     const text = document.createElement('p');
     text.textContent = message;
@@ -96,7 +97,7 @@
     deferredPrompt = event;
     if (dismissed() || alreadyInstalled()) return;
 
-    buildBanner('Install BrightCV for a full-screen app on this device.', 'Install', async (banner) => {
+    buildBanner('Install ' + appName + ' for a full-screen app on this device.', 'Install', async (banner) => {
       banner.remove();
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
@@ -117,7 +118,7 @@
   if (isIosSafari && !alreadyInstalled() && !dismissed()) {
     window.addEventListener('load', () => {
       setTimeout(() => {
-        buildBanner('Add BrightCV to your Home Screen: tap Share, then Add to Home Screen.', '', null);
+        buildBanner('Add ' + appName + ' to your Home Screen: tap Share, then Add to Home Screen.', '', null);
       }, 2500);
     });
   }

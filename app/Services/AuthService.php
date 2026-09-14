@@ -83,7 +83,7 @@ final class AuthService
 
         $this->users->updateLastLogin((int) $user['id']);
         Auth::login($user, $remember);
-        (new ActivityRepository())->record((int) $user['id'], 'signed_in', 'Signed in to BrightCV');
+        (new ActivityRepository())->record((int) $user['id'], 'signed_in', 'Signed in to ' . APP_NAME);
 
         unset($user['password_hash']);
         return ['success' => true, 'user' => $user];
@@ -141,7 +141,7 @@ final class AuthService
         }
         $user = $this->users->findById($id);
         Auth::login($user ?: ['id' => $id], false);
-        (new ActivityRepository())->record($id, 'account_created', 'Created a BrightCV account');
+        (new ActivityRepository())->record($id, 'account_created', 'Created a ' . APP_NAME . ' account');
 
         return ['success' => true, 'user' => $user];
     }
@@ -160,10 +160,10 @@ final class AuthService
         $token = bin2hex(random_bytes(32));
         (new PasswordResetRepository())->create($email, $token);
         $link = base_url('/reset-password/' . rawurlencode($token)) . '?email=' . rawurlencode($email);
-        $subject = 'Reset your BrightCV password';
+        $subject = 'Reset your ' . APP_NAME . ' password';
         $safeLink = e($link);
         $html = '<p>Hello ' . e($user['name']) . ',</p>'
-            . '<p>Use the secure link below to reset your BrightCV password. It expires in 30 minutes.</p>'
+            . '<p>Use the secure link below to reset your ' . e(APP_NAME) . ' password. It expires in 30 minutes.</p>'
             . '<p><a href="' . $safeLink . '">Reset password</a></p>'
             . '<p>If you did not request this, you can ignore the message.</p>';
         $text = "Hello {$user['name']},\n\nReset your password within 30 minutes:\n{$link}\n\n"

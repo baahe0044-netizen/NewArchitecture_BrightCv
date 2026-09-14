@@ -104,7 +104,7 @@ $detectedUrl = $detectedScheme . '://' . $detectedHost . $detectedBasePath;
 $configuredUrl = rtrim((string) env('APP_URL', $detectedUrl), '/');
 $configuredPath = (string) parse_url($configuredUrl, PHP_URL_PATH);
 
-define('APP_NAME', (string) env('APP_NAME', 'BrightCV'));
+define('APP_NAME', (string) env('APP_NAME', 'LunettiStar CV'));
 define('APP_ENV', (string) env('APP_ENV', 'production'));
 define('APP_DEBUG', (bool) env('APP_DEBUG', false));
 define('BASE_URL', $configuredUrl);

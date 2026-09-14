@@ -136,5 +136,5 @@ if ($failures !== []) {
     exit(1);
 }
 
-echo 'BrightCV is ready. Open:' . PHP_EOL;
+echo APP_NAME . ' is ready. Open:' . PHP_EOL;
 echo BASE_URL . '/' . PHP_EOL;

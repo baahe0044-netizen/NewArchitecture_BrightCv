@@ -45,7 +45,7 @@ register_shutdown_function(function () use ($TOKEN) {
         'UTF-8'
     );
 
-    echo '<!doctype html><meta charset="utf-8"><title>BrightCV self test</title>';
+    echo '<!doctype html><meta charset="utf-8"><title>LunettiStar CV self test</title>';
     echo '<style>body{margin:0;padding:20px;background:#0d1117;color:#d6dde6;'
         . 'font:13px/1.55 ui-monospace,Consolas,monospace}pre{white-space:pre-wrap;margin:0 0 22px}'
         . 'form{padding:14px;background:#161d26;border:1px solid #2a3542;border-radius:8px;max-width:520px}'
@@ -70,7 +70,7 @@ register_shutdown_function(function () use ($TOKEN) {
 });
 
 $rule = str_repeat('-', 56);
-echo "BrightCV self test\n" . $rule . "\n";
+echo "LunettiStar CV self test\n" . $rule . "\n";
 
 // --- PHP -------------------------------------------------------------------
 echo "PHP version        : " . PHP_VERSION . "\n";

@@ -1,5 +1,5 @@
 /**
- * BrightCV service worker.
+ * LunettiStar CV service worker.
  *
  * Scope comes from this file's own location, so the app keeps working when it
  * is installed from a subdirectory.
