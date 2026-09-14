@@ -7,8 +7,8 @@
   color: #23232a;
   background: #fff;
   font-family: var(--cv-font), Arial, sans-serif;
-  font-size: 9.25pt;
-  line-height: 1.43;
+  font-size: 10.5pt;
+  line-height: 1.4;
 }
 
 .cv-document *,
@@ -40,6 +40,7 @@
   margin: 0;
   color: #17171b;
   font-size: 25pt;
+  font-weight: 800;
   letter-spacing: .035em;
   line-height: 1;
 }
@@ -91,6 +92,7 @@
   color: var(--cv-accent);
   border-bottom: 1.5px solid var(--cv-accent);
   font-size: 9.5pt;
+  font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -120,13 +122,14 @@
   margin: 0;
   color: #222228;
   font-size: 9.5pt;
+  font-weight: 700;
 }
 
 .cv-organization {
   margin: 2px 0 0;
   color: #55545e;
   font-size: 8pt;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .cv-entry time,
@@ -452,11 +455,20 @@
 }
 
 /* Chips and short list items would waste a lot of vertical space at full page
-   width, so they wrap into columns instead of one item per line. */
+   width, so they wrap into roughly three per row instead of one item per
+   line. Flex rather than grid: a grid holds its empty tracks when the count
+   does not divide evenly, leaving a visible blank cell in the last row: with
+   flex, the chips on that row grow to fill it instead. */
 .cv-layout-stacked .cv-skills,
 .cv-layout-stacked .cv-languages {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 5px 7px;
+}
+
+.cv-layout-stacked .cv-skill,
+.cv-layout-stacked .cv-language {
+  flex: 1 1 30%;
 }
 
 .cv-layout-stacked .cv-certifications-section,
@@ -969,6 +981,7 @@
 
 .cv-template-minimal .cv-skill,
 .cv-template-minimal .cv-language {
+  flex: 0 1 auto;
   padding: 1px 0;
   background: transparent;
   border-radius: 0;
@@ -1035,6 +1048,7 @@
 
 .cv-template-compact .cv-skill,
 .cv-template-compact .cv-language {
+  flex: 0 1 auto;
   gap: 3px;
   padding: 2px 5px;
   background: color-mix(in srgb, var(--cv-accent) 11%, white);
@@ -1063,6 +1077,7 @@
 
 .cv-template-timeline .cv-skill,
 .cv-template-timeline .cv-language {
+  flex: 0 1 auto;
   padding: 3px 9px;
   color: var(--cv-accent);
   background: transparent;
@@ -1087,6 +1102,7 @@
 
 .cv-template-tech .cv-skill,
 .cv-template-tech .cv-language {
+  flex: 0 1 auto;
   padding: 2px 6px;
   background: color-mix(in srgb, var(--cv-accent) 10%, white);
   border-left: 2px solid var(--cv-accent);
@@ -1136,8 +1152,14 @@
 .cv-template-academic .cv-languages,
 .cv-template-academic.cv-layout-stacked .cv-skills,
 .cv-template-academic.cv-layout-stacked .cv-languages {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1px 12mm;
+}
+
+.cv-template-academic .cv-skill,
+.cv-template-academic .cv-language {
+  flex: 1 1 44%;
 }
 
 .cv-template-academic .cv-skill,
@@ -1166,6 +1188,7 @@
 /* --- Executive: small caps over a hairline bar, sized for the sidebar. --- */
 .cv-template-executive .cv-skill,
 .cv-template-executive .cv-language {
+  flex: 0 1 auto;
   flex-direction: column;
   align-items: stretch;
   gap: 3px;
@@ -1223,6 +1246,7 @@
 .cv-template-creative .cv-language,
 .cv-template-creative .cv-side .cv-skill,
 .cv-template-creative .cv-side .cv-language {
+  flex: 0 1 auto;
   padding: 3px 0;
   background: transparent;
 }
@@ -1292,8 +1316,14 @@
 .cv-template-metro .cv-languages,
 .cv-template-metro.cv-layout-stacked .cv-skills,
 .cv-template-metro.cv-layout-stacked .cv-languages {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 3px;
+}
+
+.cv-template-metro .cv-skill,
+.cv-template-metro .cv-language {
+  flex: 1 1 22%;
 }
 
 .cv-template-metro .cv-skill,
@@ -1335,9 +1365,14 @@
 .cv-template-ledger .cv-languages,
 .cv-template-ledger.cv-layout-stacked .cv-skills,
 .cv-template-ledger.cv-layout-stacked .cv-languages {
-  grid-template-columns: minmax(0, 1fr);
+  display: block;
   gap: 0;
   border-top: 1px solid #d8d7dd;
+}
+
+.cv-template-ledger .cv-skill,
+.cv-template-ledger .cv-language {
+  flex: 0 1 auto;
 }
 
 .cv-template-ledger .cv-skill,
@@ -1381,8 +1416,14 @@
 .cv-template-spectrum .cv-languages,
 .cv-template-spectrum.cv-layout-stacked .cv-skills,
 .cv-template-spectrum.cv-layout-stacked .cv-languages {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px 12mm;
+}
+
+.cv-template-spectrum .cv-skill,
+.cv-template-spectrum .cv-language {
+  flex: 1 1 44%;
 }
 
 .cv-template-spectrum .cv-skill,
@@ -1442,6 +1483,7 @@
 
 .cv-template-slate .cv-skill,
 .cv-template-slate .cv-language {
+  flex: 0 1 auto;
   padding: 3px 0;
   background: transparent;
   border-radius: 0;
@@ -1465,8 +1507,14 @@
 .cv-template-aurora .cv-languages,
 .cv-template-aurora.cv-layout-stacked .cv-skills,
 .cv-template-aurora.cv-layout-stacked .cv-languages {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 5px 8px;
+}
+
+.cv-template-aurora .cv-skill,
+.cv-template-aurora .cv-language {
+  flex: 1 1 44%;
 }
 
 /* The wash stops at the stated level, so the pill itself is the meter. */
