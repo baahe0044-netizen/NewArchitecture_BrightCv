@@ -81,9 +81,16 @@
   gap: 9mm;
 }
 
+/* Not break-inside: avoid -- a section such as Projects is several entries
+   long, and treating the whole thing as one unbreakable block means a
+   section that almost, but doesn't quite, fit in what's left of a page
+   jumps to the next one wholesale, leaving the rest of the first page
+   blank. Individual entries (.cv-entry, .cv-compact-entry, .cv-reference)
+   carry their own break-inside: avoid below, so a section can still start
+   on one page and carry its remaining entries onto the next without ever
+   splitting a single entry in half. */
 .cv-section {
   margin: 0 0 17px;
-  break-inside: avoid;
 }
 
 .cv-section h2 {
@@ -95,6 +102,7 @@
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
+  break-after: avoid;
 }
 
 .cv-summary {
