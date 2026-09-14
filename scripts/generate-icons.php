@@ -24,10 +24,9 @@ if (!extension_loaded('gd')) {
 
 const SOURCE_LOGO = __DIR__ . '/../public/assets/brand/logo-icon.png';
 const OUTPUT_DIR = __DIR__ . '/../public/assets/icons';
-// White, not a brand colour: the mark's own navy is the icon's darkest
-// value, so a coloured card would swallow it. White is also what the source
-// artwork was drawn against.
-const BACKGROUND = [0xff, 0xff, 0xff];
+// Black: the brand's own dark-canvas presentation, matching the reference
+// artwork's own background rather than a light card.
+const BACKGROUND = [0x00, 0x00, 0x00];
 
 /**
  * @param float $safe fraction of the canvas the mark occupies. Maskable icons
