@@ -615,9 +615,9 @@ svg {
 
 .brand {
   display: inline-flex;
-  min-height: 34px;
+  min-height: 44px;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
   color: var(--choco-ink);
   font-size: 25px;
   font-weight: 700;
@@ -626,9 +626,9 @@ svg {
 
 .brand-mark {
   display: grid;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
+  width: 72px;
+  height: 44px;
+  flex: 0 0 72px;
   place-items: center;
 }
 
