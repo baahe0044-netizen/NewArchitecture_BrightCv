@@ -326,7 +326,9 @@
 
 @media (max-width: 1100px) {
   .rewards-grid {
-    grid-template-columns: 1fr;
+    /* minmax(0, ...) so the column can be narrower than its widest card's
+       content; a bare 1fr pushed the page 8px past a 320px screen. */
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .level-ladder {

@@ -1649,7 +1649,7 @@ body {
 
   /* Room so the bar never covers the last row of content. */
   body:has(.bottom-nav) .page-shell {
-    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
   }
 }
 
@@ -1661,6 +1661,35 @@ body {
   }
 }
 
+
+/* Phone header. The top bar has to hold the logo, theme switch, streak,
+   account and sign-out in one row. These rules come after .chip so they win
+   over it -- written before it, the XP chip stayed visible and the row ran
+   past the screen edge, which let the whole page slide sideways. */
+@media (max-width: 640px) {
+  .app-header .chip-header-xp {
+    display: none;
+  }
+
+  .app-header .chip-gold {
+    padding: 0 10px;
+  }
+
+  .app-header .header-actions {
+    gap: 8px;
+  }
+
+  .app-header-inner {
+    gap: 12px;
+  }
+}
+
+/* The logo mark alone carries the brand where the wordmark will not fit. */
+@media (max-width: 480px) {
+  .app-header .brand > span:last-child {
+    display: none;
+  }
+}
 
 /* Installed on a phone, the app starts right under the status bar with no
    browser toolbar in between; a tap on the top bar should not land on the
