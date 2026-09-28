@@ -1206,7 +1206,7 @@ button:disabled {
 .error-page {
   display: grid;
   min-height: 100vh;
-  padding: 32px 20px;
+  padding: calc(32px + var(--safe-top)) 20px 32px;
   place-items: center;
 }
 

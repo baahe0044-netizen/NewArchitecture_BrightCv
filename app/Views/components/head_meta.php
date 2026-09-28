@@ -35,4 +35,7 @@ $description = $pageDescription
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="<?= e(APP_NAME) ?>">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<?php /* "black", not "black-translucent": a translucent status bar lays the
+         installed app underneath it on iPhone, where it swallows taps on the
+         top bar. */ ?>
+<meta name="apple-mobile-web-app-status-bar-style" content="black">

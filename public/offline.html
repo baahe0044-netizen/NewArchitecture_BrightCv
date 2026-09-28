@@ -27,6 +27,7 @@
     min-height: 100dvh;
     margin: 0;
     padding: 24px;
+    padding-top: calc(24px + max(env(safe-area-inset-top, 0px), 14px));
     padding-bottom: calc(24px + env(safe-area-inset-bottom));
     place-items: center;
     color: var(--ink);
