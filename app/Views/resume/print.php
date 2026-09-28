@@ -25,7 +25,7 @@
         </button>
     </div>
 </header>
-<div class="print-tip" role="note"><b>For a clean PDF:</b> choose A4 paper, set margins to none, use 100% scale, and enable background graphics.</div>
+<div class="print-tip" role="note"><b>For a clean PDF:</b> choose A4 paper, leave margins on Default, use 100% scale, turn off headers and footers, and enable background graphics.</div>
 <main class="print-canvas">
     <div class="print-sheet-wrap" id="printSheetWrap"><div id="printResume"></div></div>
 </main>

@@ -8,8 +8,8 @@
   z-index: 20;
   top: 0;
   display: flex;
-  min-height: 68px;
-  padding: 10px 22px;
+  min-height: calc(68px + var(--safe-top));
+  padding: calc(10px + var(--safe-top)) 22px 10px;
   align-items: center;
   justify-content: space-between;
   gap: 20px;

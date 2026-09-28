@@ -1772,6 +1772,59 @@
     if (event.target.matches('input[type="text"], input[type="email"], input[type="tel"], textarea')) lastFocusedInput = event.target;
   });
 
+  // ------------------------------------------------------------------
+  // Phone keyboard
+  //
+  // The on-screen keyboard covers the lower half of a phone, and the panels
+  // are fixed boxes the browser will not scroll for us, so a field low in the
+  // form ended up typed into blind. While a field has focus the sticky stage
+  // rail and the bottom switcher step aside (body.keyboard-open), and the
+  // field, with its label, is scrolled to the top of its panel -- the part of
+  // the screen the keyboard never reaches.
+  // ------------------------------------------------------------------
+
+  const phoneLayout = window.matchMedia('(max-width: 1100px)');
+  const typingField = 'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]), textarea';
+  let keyboardCloseTimer = 0;
+
+  function scrollParent(element) {
+    for (let node = element.parentElement; node && node !== document.body; node = node.parentElement) {
+      const overflow = getComputedStyle(node).overflowY;
+      if (overflow === 'auto' || overflow === 'scroll') return node;
+    }
+    return null;
+  }
+
+  function bringFieldToTop(field) {
+    if (document.activeElement !== field) return;
+    const scroller = scrollParent(field);
+    if (!scroller) return;
+    const anchor = field.closest('.field, .checkbox-field') || field;
+    const offset = anchor.getBoundingClientRect().top - scroller.getBoundingClientRect().top - 10;
+    if (Math.abs(offset) > 4) scroller.scrollTo({ top: scroller.scrollTop + offset, behavior: 'smooth' });
+  }
+
+  document.addEventListener('focusin', (event) => {
+    const field = event.target;
+    if (!phoneLayout.matches || !field.matches?.(typingField) || !field.closest('.editor-panel, .assistant-panel')) return;
+    clearTimeout(keyboardCloseTimer);
+    document.body.classList.add('keyboard-open');
+    // Once now, and again after the keyboard has finished sliding up and the
+    // viewport has settled at its new size.
+    requestAnimationFrame(() => bringFieldToTop(field));
+    setTimeout(() => bringFieldToTop(field), 350);
+    window.visualViewport?.addEventListener('resize', () => bringFieldToTop(field), { once: true });
+  });
+
+  document.addEventListener('focusout', () => {
+    // Moving from one field to the next fires focusout then focusin; the delay
+    // keeps the layout from jumping back in between.
+    clearTimeout(keyboardCloseTimer);
+    keyboardCloseTimer = setTimeout(() => {
+      if (!document.activeElement?.matches?.(typingField)) document.body.classList.remove('keyboard-open');
+    }, 150);
+  });
+
   document.getElementById('voiceButton')?.addEventListener('click', () => {
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!Recognition) {

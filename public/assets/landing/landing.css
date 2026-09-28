@@ -7,7 +7,8 @@
   position: sticky;
   z-index: 40;
   top: 0;
-  height: 72px;
+  height: calc(72px + var(--safe-top));
+  padding-top: var(--safe-top);
   background: color-mix(in srgb, var(--surface) 96%, transparent);
   border-bottom: 1px solid var(--line);
 }
@@ -86,6 +87,15 @@
 .hero-actions {
   display: flex;
   margin-top: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Returning visitors and new ones each get a direct way in from the hero, not
+   only from the top bar. */
+.hero-account {
+  display: flex;
+  margin: 12px 0 0;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -691,12 +701,9 @@
 
 @media (max-width: 660px) {
   .landing-nav {
-    height: 64px;
+    height: calc(64px + var(--safe-top));
   }
 
-  .landing-actions .login-link {
-    display: none;
-  }
 
   .landing-actions .btn {
     min-height: 40px;
@@ -750,6 +757,10 @@
 
   .hero-actions .btn {
     width: 100%;
+  }
+
+  .hero-account .btn {
+    flex: 1 1 0;
   }
 
   .sample-paper {

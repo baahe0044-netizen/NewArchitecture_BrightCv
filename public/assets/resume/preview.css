@@ -1551,6 +1551,10 @@
   text-transform: uppercase;
 }
 
+/* The page box keeps no margin at all. A browser prints its own header and
+   footer -- the date, the page title, the address, page numbers -- inside the
+   page margin, so any margin here puts that onto the CV. The spacing comes
+   from the sheet's padding instead (below). */
 @page {
   size: A4 portrait;
   margin: 0;
@@ -1566,9 +1570,33 @@
   }
 
   .cv-document {
+    /* A CV that runs onto a second page is sliced, not restarted, so by
+       default page two gets no top padding and its first line sits on the
+       paper edge. clone repeats the padding on every page. */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    /* A full 297mm minimum plus repeated padding would spill a one-page CV
+       onto a blank second sheet. */
+    min-height: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
+  }
+
+  /* The full-bleed templates have no padding of their own, so the header can
+     touch the paper edge. They take the same page padding as the rest, and
+     the header is pulled back up over the top padding on page one. */
+  .cv-template-executive,
+  .cv-template-creative,
+  .cv-template-bold {
+    padding-top: 14mm !important;
+    padding-bottom: 12mm !important;
+  }
+
+  .cv-template-executive .cv-header,
+  .cv-template-creative .cv-header,
+  .cv-template-bold .cv-header {
+    margin-top: -14mm;
   }
 }

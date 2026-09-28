@@ -9,8 +9,8 @@
   position: relative;
   z-index: 80;
   display: grid;
-  height: 74px;
-  padding: 0 22px;
+  height: calc(74px + var(--safe-top));
+  padding: var(--safe-top) 22px 0;
   grid-template-columns: minmax(360px, 1fr) auto minmax(360px, 1fr);
   align-items: center;
   gap: 16px;
@@ -200,8 +200,8 @@
 
 .builder-layout {
   display: grid;
-  height: calc(100vh - 72px);
-  height: calc(100dvh - 72px);
+  height: calc(100vh - 72px - var(--safe-top));
+  height: calc(100dvh - 72px - var(--safe-top));
   grid-template-columns: 480px minmax(560px, 1fr) 340px;
   /* A grid item's automatic minimum size is its own content, so a CV taller
      than the window stretched this row past the fixed height and the excess
@@ -1729,7 +1729,7 @@
 .mobile-panel-overlay {
   position: fixed;
   z-index: 89;
-  inset: 72px 0 0;
+  inset: calc(72px + var(--safe-top)) 0 0;
   display: none;
   background: rgba(15, 23, 42, .52);
 }
@@ -2275,7 +2275,7 @@
   .assistant-panel {
     position: fixed;
     z-index: 90;
-    top: 72px;
+    top: calc(72px + var(--safe-top));
     right: 0;
     bottom: 0;
     width: min(380px, 94vw);
@@ -2398,7 +2398,7 @@
   .editor-panel {
     position: fixed;
     z-index: 90;
-    top: 72px;
+    top: calc(72px + var(--safe-top));
     bottom: 64px;
     left: 0;
     width: min(430px, 96vw);
@@ -2491,14 +2491,14 @@
   }
 
   .builder-topbar {
-    height: 64px;
+    height: calc(64px + var(--safe-top));
     padding-inline: 8px;
     gap: 7px;
   }
 
   .builder-layout {
-    height: calc(100vh - 64px);
-    height: calc(100dvh - 64px);
+    height: calc(100vh - 64px - var(--safe-top));
+    height: calc(100dvh - 64px - var(--safe-top));
   }
 
   .resume-title-field {
@@ -2512,13 +2512,13 @@
 
   .editor-panel,
   .assistant-panel {
-    top: 64px;
+    top: calc(64px + var(--safe-top));
     width: 100vw;
     box-shadow: none;
   }
 
   .mobile-panel-overlay {
-    inset: 64px 0 64px;
+    inset: calc(64px + var(--safe-top)) 0 64px;
   }
 
   .preview-toolbar {
@@ -2742,21 +2742,21 @@
   /* Clear the status bar on a notched phone, and keep every panel anchored to
      the same header height. */
   .builder-topbar {
-    height: calc(64px + env(safe-area-inset-top));
-    padding-top: env(safe-area-inset-top);
+    height: calc(64px + var(--safe-top));
+    padding-top: var(--safe-top);
   }
 
   .builder-layout {
-    height: calc(100dvh - 64px - env(safe-area-inset-top));
+    height: calc(100dvh - 64px - var(--safe-top));
   }
 
   .editor-panel,
   .assistant-panel {
-    top: calc(64px + env(safe-area-inset-top));
+    top: calc(64px + var(--safe-top));
   }
 
   .mobile-panel-overlay {
-    inset: calc(64px + env(safe-area-inset-top)) 0 64px;
+    inset: calc(64px + var(--safe-top)) 0 64px;
   }
 
   /* The bottom switcher sits above the home indicator on a modern phone. */
@@ -3052,5 +3052,42 @@
   .step-footer {
     grid-column: 2;
     grid-row: 2;
+  }
+}
+
+/* ==========================================================================
+   Typing on a phone
+   builder.js sets body.keyboard-open while a field has focus. The keyboard
+   takes the lower half of the screen, so everything that is not the field
+   gives way: the sticky stage rail scrolls off with the form instead of
+   pinning a tall block above it, the bottom switcher (which would ride up on
+   top of the keyboard) is hidden, and the panel gains room at its foot so even
+   the last field on a stage can be scrolled up to the top.
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .keyboard-open .editor-sticky {
+    position: static;
+  }
+
+  .keyboard-open .builder-mobile-switch {
+    display: none;
+  }
+
+  .keyboard-open .editor-panel,
+  .keyboard-open .assistant-panel {
+    bottom: 0;
+  }
+
+  .keyboard-open .editor-content-mode::after,
+  .keyboard-open .editor-design-mode::after,
+  .keyboard-open .assistant-scroll::after {
+    content: "";
+    display: block;
+    height: 55vh;
+  }
+
+  .keyboard-open .field,
+  .keyboard-open .checkbox-field {
+    scroll-margin-top: 10px;
   }
 }

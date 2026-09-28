@@ -1,5 +1,6 @@
 .auth-page {
   min-height: 100vh;
+  padding-top: var(--safe-top);
   background-color: var(--sand);
   background-image: var(--grain);
 }

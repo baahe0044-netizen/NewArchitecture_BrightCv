@@ -23,8 +23,8 @@
             <?php if (!empty($user)): ?>
                 <a class="btn btn-primary" href="<?= e(base_url('/dashboard')) ?>">Open dashboard</a>
             <?php else: ?>
-                <a class="login-link" href="<?= e(base_url('/login')) ?>">Sign in</a>
-                <a class="btn btn-primary" href="<?= e(base_url('/resume/builder')) ?>">Create your CV</a>
+                <a class="btn btn-secondary landing-login" href="<?= e(base_url('/login')) ?>">Log in</a>
+                <a class="btn btn-primary" href="<?= e(base_url('/register')) ?>">Create account</a>
             <?php endif; ?>
         </div>
     </div>
@@ -44,6 +44,12 @@
                     </a>
                     <a class="btn btn-secondary" href="#templates">View templates</a>
                 </div>
+                <?php if (!Auth::check()): ?>
+                    <p class="hero-account">
+                        <a class="btn btn-secondary" href="<?= e(base_url('/login')) ?>">Log in</a>
+                        <a class="btn btn-primary" href="<?= e(base_url('/register')) ?>">Create account</a>
+                    </p>
+                <?php endif; ?>
                 <ul class="hero-points" aria-label="Product benefits">
                     <li>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>

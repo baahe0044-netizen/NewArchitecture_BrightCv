@@ -34,6 +34,13 @@
 :root {
   color-scheme: light;
 
+  /* Room for the phone's status bar. The page is laid out under it
+     (viewport-fit=cover, and a translucent status bar on iOS), so every
+     top bar pads itself down by this much. Installed as an app there is no
+     browser toolbar above the page either, so it never gets less than a
+     little breathing room from the top edge. */
+  --safe-top: env(safe-area-inset-top, 0px);
+
   /* --- The cream-and-violet foundation, violet-and-gold default accent ---
      Light mode is not a mechanical invert of dark: glass needs a pale,
      warm ground and mostly-opaque panels to keep text legible, where dark
@@ -642,7 +649,8 @@ svg {
   position: sticky;
   z-index: 50;
   top: 0;
-  height: 74px;
+  height: calc(74px + var(--safe-top));
+  padding-top: var(--safe-top);
   background: var(--choco);
   border-bottom: 1px solid var(--glass-border);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
@@ -1258,7 +1266,7 @@ button:disabled {
   }
 
   .app-header {
-    height: 62px;
+    height: calc(62px + var(--safe-top));
   }
 
   .app-header-inner {
@@ -1647,8 +1655,18 @@ body {
 
 /* Printing a CV must never carry app chrome onto the page. */
 @media print {
-  .bottom-nav {
+  .bottom-nav,
+  .install-banner {
     display: none !important;
   }
 }
 
+
+/* Installed on a phone, the app starts right under the status bar with no
+   browser toolbar in between; a tap on the top bar should not land on the
+   status bar or pull down the notification shade. */
+@media (display-mode: standalone), (display-mode: minimal-ui) {
+  :root {
+    --safe-top: max(env(safe-area-inset-top, 0px), 14px);
+  }
+}

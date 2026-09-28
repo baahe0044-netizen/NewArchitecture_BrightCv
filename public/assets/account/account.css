@@ -11,7 +11,7 @@
 
 .account-nav {
   position: sticky;
-  top: 88px;
+  top: calc(88px + var(--safe-top));
   display: grid;
   padding: 8px;
   gap: 3px;
