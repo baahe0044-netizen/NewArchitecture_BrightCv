@@ -109,6 +109,42 @@ test('section order follows the template, then the CV setting', () => {
   );
 });
 
+test('every template honours the section order in both layouts', () => {
+  for (const key of renderer.TEMPLATE_KEYS) {
+    for (const layout of ['stacked', 'sidebar']) {
+      const render = (order) => {
+        const data = resume();
+        data.template_key = key;
+        data.content.settings = { layout, section_order: order };
+        return sectionOrder(renderer.renderResume(data, { placeholders: false }));
+      };
+      const standard = render('standard');
+      const skillsFirst = render('skills_first');
+      assert.ok(
+        standard.indexOf('experience') < standard.indexOf('skills'),
+        key + '/' + layout + ': experience should lead skills by default'
+      );
+      assert.ok(
+        skillsFirst.indexOf('skills') < skillsFirst.indexOf('experience'),
+        key + '/' + layout + ': skills should lead experience when asked'
+      );
+    }
+  }
+});
+
+test('every template is set in Times New Roman unless another face is chosen', () => {
+  for (const key of renderer.TEMPLATE_KEYS) {
+    const data = resume();
+    data.template_key = key;
+    // 'Inter' was the old default and is no longer offered.
+    data.font_family = 'Inter';
+    assert.match(renderer.renderResume(data, { placeholders: false }), /--cv-font:Times New Roman/, key);
+  }
+  const chosen = resume();
+  chosen.font_family = 'Georgia';
+  assert.match(renderer.renderResume(chosen, { placeholders: false }), /--cv-font:Georgia/);
+});
+
 test('density is declared on the document so print matches the preview', () => {
   const data = resume();
   data.content.settings = { density: 'compact' };

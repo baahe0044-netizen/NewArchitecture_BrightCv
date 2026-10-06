@@ -46,9 +46,16 @@
     metro: { layout: 'stacked', order: 'standard' },
     ledger: { layout: 'stacked', order: 'standard' },
     spectrum: { layout: 'stacked', order: 'skills_first' },
-    slate: { layout: 'sidebar', order: 'skills_first' },
+    // Standard, not skills-first: slate is built around dot ratings down a dark
+    // sidebar, and skills-first would lift them out of it.
+    slate: { layout: 'sidebar', order: 'standard' },
     aurora: { layout: 'stacked', order: 'standard' },
   };
+
+  // Times New Roman leads and is the default: every template sets its type in
+  // it unless the writer picks another face in the Design panel.
+  const FONTS = ['Times New Roman', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
+  const DEFAULT_FONT = FONTS[0];
 
   const TEMPLATE_KEYS = Object.keys(TEMPLATES);
   const LAYOUTS = ['stacked', 'sidebar'];
@@ -62,9 +69,20 @@
       standard: ['summary', 'experience', 'education', 'skills', 'projects', 'certifications', 'languages', 'interests', 'references'],
       skills_first: ['summary', 'skills', 'experience', 'projects', 'education', 'certifications', 'languages', 'interests', 'references'],
     },
+    // Two columns honour the order too: skills sit in the sidebar by default,
+    // and "skills first" lifts them into the main column right after the
+    // summary, ahead of experience, which is the only way a skills-led page
+    // actually reads skills before work history when two columns are side by
+    // side.
     sidebar: {
-      main: ['summary', 'experience', 'projects'],
-      side: ['education', 'skills', 'certifications', 'languages', 'interests', 'references'],
+      standard: {
+        main: ['summary', 'experience', 'projects'],
+        side: ['education', 'skills', 'certifications', 'languages', 'interests', 'references'],
+      },
+      skills_first: {
+        main: ['summary', 'skills', 'experience', 'projects'],
+        side: ['education', 'certifications', 'languages', 'interests', 'references'],
+      },
     },
   };
 
@@ -178,9 +196,9 @@
     const t = translations[locale];
     const template = TEMPLATE_KEYS.includes(resume?.template_key) ? resume.template_key : 'modern';
     const accent = /^#[0-9a-f]{6}$/i.test(resume?.accent_color || '') ? resume.accent_color : '#5b4df7';
-    const font = ['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'].includes(resume?.font_family)
-      ? resume.font_family
-      : 'Inter';
+    // A CV saved with a font that is no longer offered (the old default,
+    // Inter) renders in the current default rather than failing.
+    const font = FONTS.includes(resume?.font_family) ? resume.font_family : DEFAULT_FONT;
 
     // Layout, section order, and density are CV settings that fall back to the
     // template's own design when the writer has not chosen explicitly.
@@ -295,8 +313,8 @@
     // Stacked is one full-width column down the page; sidebar keeps the older
     // two-column split for the templates designed around it.
     const body = layout === 'sidebar'
-      ? '<div class="cv-columns"><main class="cv-main">' + pick(SECTION_ORDER.sidebar.main) +
-        '</main><aside class="cv-side">' + pick(SECTION_ORDER.sidebar.side) + '</aside></div>'
+      ? '<div class="cv-columns"><main class="cv-main">' + pick(SECTION_ORDER.sidebar[sectionOrder].main) +
+        '</main><aside class="cv-side">' + pick(SECTION_ORDER.sidebar[sectionOrder].side) + '</aside></div>'
       : '<main class="cv-body">' + pick(SECTION_ORDER.stacked[sectionOrder]) + '</main>';
 
     const monogram = escapeHtml(
@@ -335,6 +353,6 @@
 
   return {
     renderResume, calculateProgress, escapeHtml, safeUrl, translations, skillStrength,
-    TEMPLATES, TEMPLATE_KEYS, LAYOUTS, ORDERS, DENSITIES, SECTION_ORDER,
+    FONTS, DEFAULT_FONT, TEMPLATES, TEMPLATE_KEYS, LAYOUTS, ORDERS, DENSITIES, SECTION_ORDER,
   };
 });

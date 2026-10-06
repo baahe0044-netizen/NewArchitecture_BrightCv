@@ -533,6 +533,12 @@ html {
   color-scheme: light;
   scroll-behavior: smooth;
   scroll-padding-top: 88px;
+  /* Scroll, but never pinch or double-tap zoom: it should behave like a
+     phone app, not a web page. iOS ignores user-scalable=no in the viewport
+     meta, so this (and the gesture handler in app.js) is what holds there. */
+  touch-action: pan-x pan-y;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -636,7 +642,12 @@ svg {
   width: 72px;
   height: 44px;
   flex: 0 0 72px;
+  padding: 4px 7px;
   place-items: center;
+  /* The mark is navy and gold, so it sits on its own white card rather than
+     on the dark header. */
+  background: #fff;
+  border-radius: 10px;
 }
 
 .brand-mark img {

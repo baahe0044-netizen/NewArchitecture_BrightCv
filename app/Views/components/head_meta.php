@@ -11,7 +11,7 @@ $description = $pageDescription
 <?php /* interactive-widget: on Android the on-screen keyboard shrinks the page
          instead of sliding over it, so fixed panels end above the keyboard and
          the field being typed in stays on screen. */ ?>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content, maximum-scale=1, user-scalable=no">
 <meta name="app-url" content="<?= e(BASE_URL) ?>">
 <meta name="description" content="<?= e($description) ?>">
 <meta name="color-scheme" content="light">

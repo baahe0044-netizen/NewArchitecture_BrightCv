@@ -23,18 +23,29 @@
   window.addEventListener('resize', fitPreview);
   window.addEventListener('orientationchange', fitPreview);
 
-  document.getElementById('printNowButton').addEventListener('click', async (event) => {
-    const button = event.currentTarget;
-    button.disabled = true;
-    button.setAttribute('aria-busy', 'true');
+  async function recordExport() {
     try {
       await window.Lunetti.api(payload.exportEndpoint, {
         method: 'POST',
         body: JSON.stringify({ format: 'pdf' }),
       });
     } catch {
-      // Printing remains available even if export analytics cannot be recorded.
+      // Exporting remains available even if export analytics cannot be recorded.
     }
+  }
+
+  document.getElementById('downloadNowButton').addEventListener('click', async (event) => {
+    const downloaded = await window.LunettiDownload.download(event.currentTarget, payload.resume, {
+      libraries: payload.pdfLibraries,
+    });
+    if (downloaded) recordExport();
+  });
+
+  document.getElementById('printNowButton').addEventListener('click', async (event) => {
+    const button = event.currentTarget;
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    await recordExport();
     button.disabled = false;
     button.removeAttribute('aria-busy');
     window.print();

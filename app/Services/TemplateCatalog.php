@@ -35,7 +35,7 @@ final class TemplateCatalog
         'metro' => ['color' => '#1d4ed8', 'layout' => 'stacked', 'order' => 'standard'],
         'ledger' => ['color' => '#3f3f46', 'layout' => 'stacked', 'order' => 'standard'],
         'spectrum' => ['color' => '#7c3aed', 'layout' => 'stacked', 'order' => 'skills_first'],
-        'slate' => ['color' => '#0f172a', 'layout' => 'sidebar', 'order' => 'skills_first'],
+        'slate' => ['color' => '#0f172a', 'layout' => 'sidebar', 'order' => 'standard'],
         'aurora' => ['color' => '#be185d', 'layout' => 'stacked', 'order' => 'standard'],
     ];
 

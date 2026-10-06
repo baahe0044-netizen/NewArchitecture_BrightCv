@@ -24,9 +24,9 @@ if (!extension_loaded('gd')) {
 
 const SOURCE_LOGO = __DIR__ . '/../public/assets/brand/logo-icon.png';
 const OUTPUT_DIR = __DIR__ . '/../public/assets/icons';
-// Black: the brand's own dark-canvas presentation, matching the reference
-// artwork's own background rather than a light card.
-const BACKGROUND = [0x00, 0x00, 0x00];
+// White: the brand's light presentation, matching the full logo artwork
+// on its white card.
+const BACKGROUND = [0xFF, 0xFF, 0xFF];
 
 /**
  * @param float $safe fraction of the canvas the mark occupies. Maskable icons

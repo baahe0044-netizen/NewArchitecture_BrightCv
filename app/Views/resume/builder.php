@@ -14,6 +14,7 @@ $builderPayload = [
         'claim' => '/api/account/claim',
         'loginClaim' => '/api/account/login-claim',
     ],
+    'pdfLibraries' => [asset('vendor/html2canvas-pro.min.js'), asset('vendor/jspdf.umd.min.js')],
 ];
 ?>
 <!doctype html>
@@ -78,6 +79,10 @@ $builderPayload = [
         </div>
         <button class="icon-btn builder-more-button" id="builderMoreButton" type="button" data-builder-more aria-controls="builderTools" aria-expanded="false" aria-label="More actions">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+        </button>
+        <button class="btn btn-secondary builder-download-button" id="downloadButton" type="button" title="Download PDF" aria-label="Download PDF">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+            Download
         </button>
         <button class="btn btn-primary" id="printButton" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg>
@@ -212,7 +217,7 @@ $builderPayload = [
             <div class="design-group">
                 <div class="field"><label for="fontFamily">Typeface</label>
                     <select id="fontFamily" data-resume-setting="font_family">
-                        <?php foreach (['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'] as $font): ?>
+                        <?php foreach (['Times New Roman', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'] as $font): ?>
                             <option <?= $resume['font_family'] === $font ? 'selected' : '' ?>><?= e($font) ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -501,6 +506,7 @@ $builderPayload = [
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/renderer.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/download.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/builder.js')) ?>" defer></script>
 </body>
 </html>

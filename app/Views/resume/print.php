@@ -19,6 +19,10 @@
     </div>
     <div class="print-actions">
         <a class="btn btn-secondary" href="<?= e(base_url('/resume/builder/' . $resume['id'])) ?>">Continue editing</a>
+        <button class="btn btn-secondary" id="downloadNowButton" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+            Download PDF
+        </button>
         <button class="btn btn-primary" id="printNowButton" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg>
             Print or save PDF
@@ -33,10 +37,12 @@
 <script type="application/json" id="printData"><?= json_encode([
     'resume' => $resume,
     'exportEndpoint' => '/api/resumes/' . $resume['id'] . '/export',
+    'pdfLibraries' => [asset('vendor/html2canvas-pro.min.js'), asset('vendor/jspdf.umd.min.js')],
 ], JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) ?></script>
 <script src="<?= e(asset('common/app.js')) ?>"></script>
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/renderer.js')) ?>"></script>
+<script src="<?= e(asset('resume/download.js')) ?>"></script>
 <script src="<?= e(asset('resume/print.js')) ?>"></script>
 </body>
 </html>

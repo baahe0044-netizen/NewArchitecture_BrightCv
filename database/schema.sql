@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS resumes (
     template_key VARCHAR(60) NOT NULL DEFAULT 'modern',
     language VARCHAR(10) NOT NULL DEFAULT 'en',
     accent_color VARCHAR(20) NOT NULL DEFAULT '#5b4df7',
-    font_family VARCHAR(60) NOT NULL DEFAULT 'Inter',
+    font_family VARCHAR(60) NOT NULL DEFAULT 'Times New Roman',
     content_json LONGTEXT NOT NULL,
     job_description LONGTEXT NULL,
     status VARCHAR(30) NOT NULL DEFAULT 'draft',

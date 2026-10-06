@@ -193,6 +193,12 @@
     },
   };
 
+  // iOS Safari still pinch-zooms despite user-scalable=no; its gesture events
+  // are the one thing that stops it. Ordinary scrolling is untouched.
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((name) => {
+    document.addEventListener(name, (event) => event.preventDefault(), { passive: false });
+  });
+
   const themeToggles = document.querySelectorAll('[data-theme-toggle]');
   const nextMode = (mode) => THEME_MODES[(THEME_MODES.indexOf(mode) + 1) % THEME_MODES.length];
 

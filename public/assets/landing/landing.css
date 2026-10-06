@@ -69,11 +69,18 @@
   max-width: 590px;
 }
 
+/* A high-contrast serif for the one headline that sells the page: it reads
+   as a polished, professional document rather than a tech product. The wide
+   display face used for every other heading would sit awkwardly beside it,
+   so this is deliberately the only place it appears. */
 .hero h1 {
   margin: 0;
-  font-size: clamp(40px, 5.2vw, 58px);
-  letter-spacing: -.052em;
-  line-height: 1.04;
+  font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 5.6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -.022em;
+  line-height: 1.08;
+  text-wrap: balance;
 }
 
 .hero-lead {
@@ -712,7 +719,7 @@
   }
 
   .hero h1 {
-    font-size: clamp(36px, 11vw, 46px);
+    font-size: clamp(38px, 11.5vw, 50px);
   }
 
   .product-grid {

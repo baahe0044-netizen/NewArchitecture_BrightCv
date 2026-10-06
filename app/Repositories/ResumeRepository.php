@@ -16,7 +16,7 @@ final class ResumeRepository
         $statement = $this->db->prepare(
             "INSERT INTO resumes
              (user_id, name, template_key, language, accent_color, font_family, content_json, status, completion, ats_score, version, created_at, updated_at)
-             VALUES (?, ?, ?, 'en', ?, 'Inter', ?, 'draft', 0, 0, 1, NOW(), NOW())"
+             VALUES (?, ?, ?, 'en', ?, 'Times New Roman', ?, 'draft', 0, 0, 1, NOW(), NOW())"
         );
         $statement->execute([$userId, $name, $templateKey, $accentColor, $this->encode($content)]);
 

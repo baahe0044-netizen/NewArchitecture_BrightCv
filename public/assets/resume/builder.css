@@ -2485,7 +2485,8 @@
 }
 
 @media (max-width: 600px) {
-  .builder-actions .btn-primary {
+  .builder-actions .btn-primary,
+  .builder-actions .builder-download-button {
     padding: 0;
     font-size: 0;
   }
@@ -2505,7 +2506,8 @@
     max-width: 45vw;
   }
 
-  .builder-actions .btn-primary svg {
+  .builder-actions .btn-primary svg,
+  .builder-actions .builder-download-button svg {
     width: 18px;
     height: 18px;
   }
@@ -2734,7 +2736,8 @@
     min-height: 44px;
   }
 
-  .builder-actions .btn-primary {
+  .builder-actions .btn-primary,
+  .builder-actions .builder-download-button {
     width: 44px;
     min-height: 44px;
   }

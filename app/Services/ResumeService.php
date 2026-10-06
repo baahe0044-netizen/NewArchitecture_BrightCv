@@ -5,7 +5,8 @@ declare(strict_types=1);
 final class ResumeService
 {
     private const LANGUAGES = ['en', 'fr', 'es'];
-    private const FONTS = ['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
+    private const FONTS = ['Times New Roman', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
+    private const DEFAULT_FONT = 'Times New Roman';
 
     public function __construct(private readonly ResumeRepository $resumes = new ResumeRepository())
     {
@@ -56,7 +57,7 @@ final class ResumeService
             'template_key' => $templateKey,
             'language' => $this->allowed($payload['language'] ?? 'en', self::LANGUAGES, 'en'),
             'accent_color' => $this->validColor($payload['accent_color'] ?? '#5b4df7'),
-            'font_family' => $this->allowed($payload['font_family'] ?? 'Inter', self::FONTS, 'Inter'),
+            'font_family' => $this->allowed($payload['font_family'] ?? self::DEFAULT_FONT, self::FONTS, self::DEFAULT_FONT),
             'job_description' => $this->clean($payload['job_description'] ?? '', 15000),
             'content' => $content,
             'completion' => $completion,

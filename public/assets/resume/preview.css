@@ -1,14 +1,27 @@
 .cv-document {
   --cv-accent: #5b4df7;
-  --cv-font: Inter;
+  --cv-font: "Times New Roman";
+  /* Every font size below is written for a 10.5pt body and multiplied by this,
+     so the whole page grows together and the hierarchy between name, headings,
+     body, dates and chips stays as designed. 1.24 puts the body at 13pt. */
+  --cv-scale: 1.24;
   width: 210mm;
   min-height: 297mm;
   padding: 15mm 16mm;
   color: #23232a;
   background: #fff;
-  font-family: var(--cv-font), Arial, sans-serif;
-  font-size: 10.5pt;
+  font-family: var(--cv-font), "Times New Roman", Times, serif;
+  font-size: calc(10.5pt * var(--cv-scale));
   line-height: 1.4;
+}
+
+/* The app styles every h1-h4 in its own display face. A CV is a document, not
+   part of the app, so its headings take the CV's font like everything else. */
+.cv-document h1,
+.cv-document h2,
+.cv-document h3,
+.cv-document h4 {
+  font-family: inherit;
 }
 
 .cv-document *,
@@ -32,14 +45,14 @@
   color: #fff;
   background: var(--cv-accent);
   border-radius: 50%;
-  font-size: 13pt;
+  font-size: calc(13pt * var(--cv-scale));
   font-weight: 800;
 }
 
 .cv-identity h1 {
   margin: 0;
   color: #17171b;
-  font-size: 25pt;
+  font-size: calc(25pt * var(--cv-scale));
   font-weight: 800;
   letter-spacing: .035em;
   line-height: 1;
@@ -48,7 +61,7 @@
 .cv-identity p {
   margin: 5px 0 0;
   color: var(--cv-accent);
-  font-size: 9pt;
+  font-size: calc(9pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -64,7 +77,7 @@
   gap: 5px 9px;
   color: #54545d;
   background: #f5f5f8;
-  font-size: 7.6pt;
+  font-size: calc(7.6pt * var(--cv-scale));
 }
 
 .cv-contact i {
@@ -98,7 +111,7 @@
   padding-bottom: 4px;
   color: var(--cv-accent);
   border-bottom: 1.5px solid var(--cv-accent);
-  font-size: 9.5pt;
+  font-size: calc(9.5pt * var(--cv-scale));
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -129,14 +142,14 @@
 .cv-entry h3 {
   margin: 0;
   color: #222228;
-  font-size: 9.5pt;
+  font-size: calc(11pt * var(--cv-scale));
   font-weight: 700;
 }
 
 .cv-organization {
   margin: 2px 0 0;
   color: #55545e;
-  font-size: 8pt;
+  font-size: calc(8pt * var(--cv-scale));
   font-weight: 700;
 }
 
@@ -144,7 +157,7 @@
 .cv-compact-entry time {
   flex: 0 0 auto;
   color: var(--cv-accent);
-  font-size: 7.2pt;
+  font-size: calc(7.2pt * var(--cv-scale));
   font-weight: 700;
   white-space: nowrap;
 }
@@ -167,13 +180,13 @@
 .cv-detail {
   margin: 5px 0 0;
   color: #4f4e57;
-  font-size: 8pt;
+  font-size: calc(8pt * var(--cv-scale));
 }
 
 .cv-link {
   margin: 3px 0 0;
   color: var(--cv-accent);
-  font-size: 7pt;
+  font-size: calc(7pt * var(--cv-scale));
 }
 
 .cv-skills {
@@ -194,13 +207,13 @@
 
 .cv-skill b,
 .cv-language b {
-  font-size: 7.5pt;
+  font-size: calc(7.5pt * var(--cv-scale));
 }
 
 .cv-skill small,
 .cv-language small {
   color: #686670;
-  font-size: 6.4pt;
+  font-size: calc(6.4pt * var(--cv-scale));
 }
 
 /* Drawn proficiency, sized from --cv-skill (0-100) and --cv-skill-dots (1-5).
@@ -230,12 +243,12 @@
 }
 
 .cv-compact-entry b {
-  font-size: 7.7pt;
+  font-size: calc(7.7pt * var(--cv-scale));
 }
 
 .cv-compact-entry span {
   color: #686670;
-  font-size: 6.8pt;
+  font-size: calc(6.8pt * var(--cv-scale));
 }
 
 .cv-interests {
@@ -249,7 +262,7 @@
   color: #4f4d58;
   background: #f3f2f6;
   border-radius: 999px;
-  font-size: 6.8pt;
+  font-size: calc(6.8pt * var(--cv-scale));
 }
 
 .cv-reference {
@@ -262,9 +275,9 @@
   display: block;
 }
 
-.cv-reference b { font-size: 7.8pt; }
-.cv-reference span { color: #55545e; font-size: 6.8pt; }
-.cv-reference small { color: #77757e; font-size: 6.5pt; }
+.cv-reference b { font-size: calc(7.8pt * var(--cv-scale)); }
+.cv-reference span { color: #55545e; font-size: calc(6.8pt * var(--cv-scale)); }
+.cv-reference small { color: #77757e; font-size: calc(6.5pt * var(--cv-scale)); }
 
 /* Executive */
 .cv-template-executive {
@@ -311,7 +324,6 @@
 /* Minimal */
 .cv-template-minimal {
   padding: 18mm 20mm;
-  font-family: Georgia, serif;
 }
 
 .cv-template-minimal .cv-header {
@@ -341,7 +353,7 @@
 .cv-template-minimal .cv-section h2 {
   color: #222;
   border-color: #aaa;
-  font-size: 8.5pt;
+  font-size: calc(8.5pt * var(--cv-scale));
   text-align: center;
 }
 
@@ -428,11 +440,10 @@
 /* Technical */
 .cv-template-tech {
   border-top: 7px solid var(--cv-accent);
-  font-family: "Source Sans 3", Arial, sans-serif;
 }
 
 .cv-template-tech .cv-identity h1 {
-  font-size: 23pt;
+  font-size: calc(23pt * var(--cv-scale));
 }
 
 .cv-template-tech .cv-section h2 {
@@ -479,6 +490,20 @@
   flex: 1 1 30%;
 }
 
+/* Skills can sit in the wide main column of a two-column page ("skills first"),
+   where the sidebar's one-per-row list would run needlessly long. :where()
+   keeps this at the lowest specificity, so a template that styles its own
+   skills container (compact, timeline, tech...) still wins. */
+:where(.cv-layout-sidebar .cv-main) .cv-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 7px;
+}
+
+:where(.cv-layout-sidebar .cv-main) .cv-skill {
+  flex: 1 1 44%;
+}
+
 .cv-layout-stacked .cv-certifications-section,
 .cv-layout-stacked .cv-references-section {
   columns: 2;
@@ -500,7 +525,7 @@
 }
 
 .cv-layout-stacked .cv-detail {
-  font-size: 8.4pt;
+  font-size: calc(8.4pt * var(--cv-scale));
 }
 
 /* ==========================================================================
@@ -511,7 +536,7 @@
 .cv-density-compact {
   padding-top: 11mm;
   padding-bottom: 11mm;
-  font-size: 8.6pt;
+  font-size: calc(8.6pt * var(--cv-scale));
   line-height: 1.34;
 }
 
@@ -556,7 +581,7 @@
 }
 
 .cv-template-classic .cv-identity h1 {
-  font-size: 22pt;
+  font-size: calc(22pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -564,7 +589,7 @@
 
 .cv-template-classic .cv-identity p {
   color: #3f3f47;
-  font-size: 9.5pt;
+  font-size: calc(9.5pt * var(--cv-scale));
   font-weight: 600;
   letter-spacing: .04em;
   text-transform: none;
@@ -576,7 +601,7 @@
   color: #45444c;
   background: transparent;
   border-bottom: 1px solid var(--cv-accent);
-  font-size: 8pt;
+  font-size: calc(8pt * var(--cv-scale));
 }
 
 .cv-template-classic .cv-contact i {
@@ -587,7 +612,7 @@
   color: #1c1c21;
   border-bottom-width: 1px;
   border-color: #c6c6cd;
-  font-size: 10pt;
+  font-size: calc(10pt * var(--cv-scale));
   letter-spacing: .06em;
 }
 
@@ -597,7 +622,6 @@
 
 .cv-template-elegant {
   padding: 18mm 19mm;
-  font-family: Georgia, "Times New Roman", serif;
 }
 
 .cv-template-elegant .cv-header {
@@ -612,14 +636,14 @@
 }
 
 .cv-template-elegant .cv-identity h1 {
-  font-size: 26pt;
+  font-size: calc(26pt * var(--cv-scale));
   font-weight: 400;
   letter-spacing: .01em;
 }
 
 .cv-template-elegant .cv-identity p {
   color: #63615c;
-  font-size: 9pt;
+  font-size: calc(9pt * var(--cv-scale));
   letter-spacing: .22em;
 }
 
@@ -629,12 +653,12 @@
   justify-content: flex-start;
   color: #5c5a55;
   background: transparent;
-  font-size: 8pt;
+  font-size: calc(8pt * var(--cv-scale));
 }
 
 .cv-template-elegant .cv-section h2 {
   border: 0;
-  font-size: 9pt;
+  font-size: calc(9pt * var(--cv-scale));
   font-style: italic;
   font-weight: 400;
   letter-spacing: .16em;
@@ -647,7 +671,7 @@
 
 .cv-template-compact {
   padding: 12mm 13mm;
-  font-size: 8.7pt;
+  font-size: calc(8.7pt * var(--cv-scale));
   line-height: 1.36;
 }
 
@@ -660,18 +684,18 @@
   height: 42px;
   flex-basis: 42px;
   border-radius: 6px;
-  font-size: 11pt;
+  font-size: calc(11pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-identity h1 {
-  font-size: 20pt;
+  font-size: calc(20pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-contact {
   margin: 10px 0 12px;
   padding: 5px 8px;
   justify-content: flex-start;
-  font-size: 7.2pt;
+  font-size: calc(7.2pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-section {
@@ -682,7 +706,7 @@
   margin-bottom: 5px;
   padding-bottom: 2px;
   border-bottom-width: 1px;
-  font-size: 8.6pt;
+  font-size: calc(8.6pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-entry {
@@ -740,8 +764,7 @@
 
 .cv-template-academic {
   padding: 17mm 20mm;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 9.5pt;
+  font-size: calc(9.5pt * var(--cv-scale));
 }
 
 .cv-template-academic .cv-header {
@@ -754,7 +777,7 @@
 }
 
 .cv-template-academic .cv-identity h1 {
-  font-size: 21pt;
+  font-size: calc(21pt * var(--cv-scale));
   font-weight: 400;
   letter-spacing: .04em;
 }
@@ -770,18 +793,18 @@
   color: #4a4956;
   background: transparent;
   border-block: 1px solid #ccccd6;
-  font-size: 8pt;
+  font-size: calc(8pt * var(--cv-scale));
 }
 
 .cv-template-academic .cv-section h2 {
   border-bottom-width: 1px;
-  font-size: 10pt;
+  font-size: calc(10pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .05em;
 }
 
 .cv-template-academic .cv-detail {
-  font-size: 8.8pt;
+  font-size: calc(8.8pt * var(--cv-scale));
 }
 
 /* ==========================================================================
@@ -805,12 +828,12 @@
   color: var(--cv-accent);
   background: #fff;
   border-radius: 10px;
-  font-size: 15pt;
+  font-size: calc(15pt * var(--cv-scale));
 }
 
 .cv-template-bold .cv-identity h1 {
   color: #fff;
-  font-size: 28pt;
+  font-size: calc(28pt * var(--cv-scale));
   font-weight: 800;
   letter-spacing: .01em;
   text-transform: uppercase;
@@ -952,7 +975,7 @@
 .cv-template-modern .cv-skill small,
 .cv-template-modern .cv-language small {
   order: 3;
-  font-size: 6pt;
+  font-size: calc(6pt * var(--cv-scale));
 }
 
 .cv-template-modern .cv-level-meter {
@@ -973,7 +996,7 @@
 .cv-template-classic .cv-language small {
   letter-spacing: .06em;
   text-transform: uppercase;
-  font-size: 5.8pt;
+  font-size: calc(5.8pt * var(--cv-scale));
 }
 
 /* --- Minimal: one quiet running line, levels left unsaid. ---------------- */
@@ -1065,12 +1088,12 @@
 
 .cv-template-compact .cv-skill b,
 .cv-template-compact .cv-language b {
-  font-size: 6.8pt;
+  font-size: calc(6.8pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-skill small,
 .cv-template-compact .cv-language small {
-  font-size: 5.6pt;
+  font-size: calc(5.6pt * var(--cv-scale));
 }
 
 /* --- Timeline: outlined pills matching the rail down the entries. -------- */
@@ -1119,16 +1142,14 @@
 
 .cv-template-tech .cv-skill b,
 .cv-template-tech .cv-language b {
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  font-size: 6.8pt;
+  font-size: calc(6.8pt * var(--cv-scale));
   font-weight: 600;
 }
 
 .cv-template-tech .cv-skill small,
 .cv-template-tech .cv-language small {
   color: color-mix(in srgb, var(--cv-accent) 60%, #5f5e66);
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  font-size: 5.6pt;
+  font-size: calc(5.6pt * var(--cv-scale));
 }
 
 /* --- Graduate: the level shown as a bar, since the words carry weight when
@@ -1151,7 +1172,7 @@
 .cv-template-graduate .cv-skill small,
 .cv-template-graduate .cv-language small {
   order: 3;
-  font-size: 5.8pt;
+  font-size: calc(5.8pt * var(--cv-scale));
   text-align: right;
 }
 
@@ -1196,7 +1217,6 @@
 /* --- Executive: small caps over a hairline bar, sized for the sidebar. --- */
 .cv-template-executive .cv-skill,
 .cv-template-executive .cv-language {
-  flex: 0 1 auto;
   flex-direction: column;
   align-items: stretch;
   gap: 3px;
@@ -1207,7 +1227,7 @@
 
 .cv-template-executive .cv-skill b,
 .cv-template-executive .cv-language b {
-  font-size: 6.8pt;
+  font-size: calc(6.8pt * var(--cv-scale));
   font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1238,7 +1258,7 @@
 
 .cv-template-bold .cv-skill b,
 .cv-template-bold .cv-language b {
-  font-size: 7pt;
+  font-size: calc(7pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -1254,7 +1274,6 @@
 .cv-template-creative .cv-language,
 .cv-template-creative .cv-side .cv-skill,
 .cv-template-creative .cv-side .cv-language {
-  flex: 0 1 auto;
   padding: 3px 0;
   background: transparent;
 }
@@ -1292,7 +1311,7 @@
 
 .cv-template-editorial .cv-skill b,
 .cv-template-editorial .cv-language b {
-  font-size: 8pt;
+  font-size: calc(8pt * var(--cv-scale));
   font-weight: 500;
   font-variant: small-caps;
   letter-spacing: .04em;
@@ -1301,7 +1320,7 @@
 .cv-template-editorial .cv-skill small,
 .cv-template-editorial .cv-language small {
   color: #8d8b93;
-  font-size: 6.2pt;
+  font-size: calc(6.2pt * var(--cv-scale));
   font-style: italic;
 }
 
@@ -1356,7 +1375,7 @@
 
 .cv-template-metro .cv-skill b,
 .cv-template-metro .cv-language b {
-  font-size: 6.8pt;
+  font-size: calc(6.8pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -1365,7 +1384,7 @@
 .cv-template-metro .cv-skill small,
 .cv-template-metro .cv-language small {
   color: rgba(255,255,255,.8);
-  font-size: 5.6pt;
+  font-size: calc(5.6pt * var(--cv-scale));
 }
 
 /* --- Ledger: a register of ruled rows, level against the right rule. ----- */
@@ -1449,14 +1468,14 @@
   display: flex;
   justify-content: space-between;
   gap: 5px;
-  font-size: 7.8pt;
+  font-size: calc(7.8pt * var(--cv-scale));
 }
 
 .cv-template-spectrum .cv-skill small,
 .cv-template-spectrum .cv-language small {
   order: 3;
   color: color-mix(in srgb, var(--cv-accent) 70%, #55545c);
-  font-size: 5.8pt;
+  font-size: calc(5.8pt * var(--cv-scale));
   letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -1491,7 +1510,6 @@
 
 .cv-template-slate .cv-skill,
 .cv-template-slate .cv-language {
-  flex: 0 1 auto;
   padding: 3px 0;
   background: transparent;
   border-radius: 0;
@@ -1500,6 +1518,12 @@
 .cv-template-slate .cv-skill small,
 .cv-template-slate .cv-language small {
   display: none;
+}
+
+/* The sidebar is the accent colour, so an interest pill needs a translucent
+   white fill to hold its white text, as Creative's does. */
+.cv-template-slate .cv-side .cv-interests span {
+  background: rgba(255, 255, 255, .14);
 }
 
 .cv-template-slate .cv-side .cv-level-meter {
@@ -1546,7 +1570,7 @@
 .cv-template-aurora .cv-skill small,
 .cv-template-aurora .cv-language small {
   color: color-mix(in srgb, var(--cv-accent) 55%, #45444d);
-  font-size: 5.8pt;
+  font-size: calc(5.8pt * var(--cv-scale));
   letter-spacing: .05em;
   text-transform: uppercase;
 }

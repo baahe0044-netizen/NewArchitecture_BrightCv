@@ -6,6 +6,9 @@
     <?php View::partial('components/head_meta'); ?>
     <meta name="description" content="Create, improve, and download a professional CV with clear guidance and practical templates.">
     <title><?= e($title ?? 'Create a professional CV') ?> · <?= e(APP_NAME) ?></title>
+    <?php /* Playfair Display: the hero headline only, so it is loaded here
+             rather than on every page through the shared head. */ ?>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&display=swap">
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('landing/landing.css')) ?>">
 </head>

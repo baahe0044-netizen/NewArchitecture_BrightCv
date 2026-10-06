@@ -7,7 +7,7 @@
   const config = JSON.parse(payloadElement.textContent);
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const h = window.LunettiResume.escapeHtml;
-  const { TEMPLATES, TEMPLATE_KEYS, LAYOUTS, ORDERS } = window.LunettiResume;
+  const { TEMPLATES, TEMPLATE_KEYS, LAYOUTS, ORDERS, FONTS, DEFAULT_FONT } = window.LunettiResume;
   const serverResume = clone(config.resume);
   let state = clone(serverResume);
   let currentSection = 'personal';
@@ -39,6 +39,11 @@
     { key: 'projects', label: 'Projects' },
     { key: 'extras', label: 'More sections' },
   ];
+
+  // "More sections" is itself a short run of sub-sections, so Back and Next walk
+  // through them before leaving it: Projects -> Certifications -> Languages ->
+  // References -> Interests, and the same way back.
+  const EXTRAS = ['certifications', 'languages', 'references', 'interests'];
 
   // Entries collapse so a CV with several roles stays scannable instead of
   // rendering as one long wall of inputs. Keyed by entry id, which survives
@@ -125,7 +130,7 @@
     if (!ORDERS.includes(state.content.settings.section_order)) state.content.settings.section_order = design.order;
     if (!['en', 'fr', 'es'].includes(state.language)) state.language = 'en';
     if (!/^#[0-9a-f]{6}$/i.test(state.accent_color || '')) state.accent_color = '#5b4df7';
-    if (!['Inter', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'].includes(state.font_family)) state.font_family = 'Inter';
+    if (!FONTS.includes(state.font_family)) state.font_family = DEFAULT_FONT;
     state.job_description = scalarText(state.job_description, 15000);
   }
 
@@ -343,9 +348,22 @@
     const count = document.getElementById('stepCount');
     if (!previous || !next || !count) return;
 
+    const inExtras = currentSection === 'extras';
+    const extraIndex = EXTRAS.indexOf(currentExtra);
+
     previous.disabled = index <= 0;
-    next.disabled = index >= SECTIONS.length - 1;
-    count.textContent = 'Step ' + (index + 1) + ' of ' + SECTIONS.length;
+    next.disabled = inExtras ? extraIndex >= EXTRAS.length - 1 : index >= SECTIONS.length - 1;
+    count.textContent = 'Step ' + (index + 1) + ' of ' + SECTIONS.length +
+      (inExtras ? ' · ' + currentExtra.charAt(0).toUpperCase() + currentExtra.slice(1) : '');
+  }
+
+  function goToExtra(name) {
+    if (!EXTRAS.includes(name)) return;
+    currentExtra = name;
+    renderEditor();
+    updateStepNav();
+    const scroller = document.getElementById('editorContentMode');
+    if (scroller) scroller.scrollTop = 0;
   }
 
   function goToSection(key, { focusFirst = true } = {}) {
@@ -789,13 +807,26 @@
   });
 
   document.querySelector('[data-step-prev]')?.addEventListener('click', () => {
+    if (currentSection === 'extras' && EXTRAS.indexOf(currentExtra) > 0) {
+      goToExtra(EXTRAS[EXTRAS.indexOf(currentExtra) - 1]);
+      return;
+    }
     const index = SECTIONS.findIndex((section) => section.key === currentSection);
     if (index > 0) goToSection(SECTIONS[index - 1].key);
   });
 
   document.querySelector('[data-step-next]')?.addEventListener('click', () => {
+    if (currentSection === 'extras') {
+      const extraIndex = EXTRAS.indexOf(currentExtra);
+      if (extraIndex < EXTRAS.length - 1) goToExtra(EXTRAS[extraIndex + 1]);
+      return;
+    }
     const index = SECTIONS.findIndex((section) => section.key === currentSection);
-    if (index < SECTIONS.length - 1) goToSection(SECTIONS[index + 1].key);
+    if (index < SECTIONS.length - 1) {
+      // Arriving at More from Projects starts at its first sub-section.
+      if (SECTIONS[index + 1].key === 'extras') currentExtra = EXTRAS[0];
+      goToSection(SECTIONS[index + 1].key);
+    }
   });
 
   document.getElementById('sectionEditor')?.addEventListener('input', handleEditorInput);
@@ -926,6 +957,7 @@
     if (extra) {
       currentExtra = extra.dataset.extraSection;
       renderExtras();
+      updateStepNav();
       return;
     }
 
@@ -1361,15 +1393,42 @@
     }
   }
 
+  async function proceedToDownload(button) {
+    const saved = await saveResume(true);
+    if (!saved) return;
+    const downloaded = await window.LunettiDownload.download(button, state, { libraries: config.pdfLibraries });
+    if (downloaded) recordExport('pdf');
+  }
+
+  // Which export a guest asked for before being stopped to create an
+  // account, so it can carry on once they have one.
+  let pendingExport = 'print';
+
+  function continueExport() {
+    return pendingExport === 'download'
+      ? proceedToDownload(document.getElementById('downloadButton'))
+      : proceedToPrint(document.getElementById('printButton'));
+  }
+
   document.getElementById('printButton')?.addEventListener('click', async (event) => {
     // Every other feature works for a guest exactly as it does for a real
-    // account -- this is the one moment that needs one, so it is the one
-    // place that checks for it.
+    // account -- exporting is the one moment that needs one, so the two
+    // export buttons are the only places that check for it.
     if (config.isGuest) {
+      pendingExport = 'print';
       window.Lunetti.openModal('claimAccountModal');
       return;
     }
     await proceedToPrint(event.currentTarget);
+  });
+
+  document.getElementById('downloadButton')?.addEventListener('click', async (event) => {
+    if (config.isGuest) {
+      pendingExport = 'download';
+      window.Lunetti.openModal('claimAccountModal');
+      return;
+    }
+    await proceedToDownload(event.currentTarget);
   });
 
   const CLAIM_FIELDS = {
@@ -1475,9 +1534,9 @@
       // loginAndClaimGuest() switches the session to the real account,
       // which resets its CSRF token -- config.csrf here is now stale for
       // any further API call this page's JS makes, save included. A full
-      // reload is what actually gets a fresh one; ?print=1 is what tells
-      // the reloaded page to pick the download back up on its own rather
-      // than making someone click Print/PDF a second time.
+      // reload is what actually gets a fresh one; ?print=1 (or ?download=1)
+      // is what tells the reloaded page to pick the export back up on its
+      // own rather than making someone click the button a second time.
       button.textContent = 'Signing in…';
       try {
         await window.Lunetti.api(config.endpoints.loginClaim, {
@@ -1487,7 +1546,7 @@
             password: document.getElementById('claimPassword').value,
           }),
         });
-        window.location.href = location.pathname + '?print=1';
+        window.location.href = location.pathname + '?' + pendingExport + '=1';
       } catch (error) {
         showClaimFormError(error.message || 'The email or password is incorrect.');
         button.disabled = false;
@@ -1509,7 +1568,7 @@
       config.isGuest = false;
       window.Lunetti.closeModal('claimAccountModal');
       window.Lunetti.toast('Account created. Preparing your download…');
-      await proceedToPrint(document.getElementById('printButton'));
+      await continueExport();
     } catch (error) {
       const errors = error.payload && error.payload.errors;
       if (errors && Object.keys(errors).length) {
@@ -1539,9 +1598,11 @@
   // now-real account (config.isGuest is server-rendered fresh on this load,
   // so it is already false) with ?print=1 asking for the download to just
   // continue, rather than making someone click Print/PDF a second time.
-  if (!config.isGuest && new URLSearchParams(location.search).get('print') === '1') {
+  const resumeExport = new URLSearchParams(location.search);
+  if (!config.isGuest && (resumeExport.get('print') === '1' || resumeExport.get('download') === '1')) {
+    pendingExport = resumeExport.get('download') === '1' ? 'download' : 'print';
     window.history.replaceState(null, '', location.pathname);
-    proceedToPrint(document.getElementById('printButton'));
+    continueExport();
   }
 
   async function recordExport(format) {

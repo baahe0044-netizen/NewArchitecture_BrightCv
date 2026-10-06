@@ -117,6 +117,10 @@
     width: 100%;
   }
 
+  .print-actions .btn-primary {
+    grid-column: 1 / -1;
+  }
+
   .print-tip {
     margin-top: 12px;
     text-align: left;
