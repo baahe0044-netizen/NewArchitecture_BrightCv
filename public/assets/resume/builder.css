@@ -1,0 +1,3096 @@
+.builder-page {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+.builder-topbar {
+  position: relative;
+  z-index: 80;
+  display: grid;
+  height: calc(74px + var(--safe-top));
+  padding: var(--safe-top) 22px 0;
+  grid-template-columns: minmax(360px, 1fr) auto minmax(360px, 1fr);
+  align-items: center;
+  gap: 16px;
+  background: var(--choco);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+.builder-brand-group,
+.builder-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.builder-brand-group .brand {
+  display: none;
+}
+
+.builder-back {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  place-items: center;
+  color: var(--choco-ink);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius);
+}
+
+.builder-back:hover {
+  color: var(--gold);
+  background: transparent;
+}
+
+.builder-back svg {
+  width: 19px;
+  height: 19px;
+}
+
+.topbar-divider {
+  display: none;
+}
+
+.resume-title-field {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  max-width: 320px;
+  align-items: center;
+  height: 42px;
+  padding: 0 14px;
+  border: var(--edge) solid var(--choco-line);
+  border-radius: var(--radius);
+}
+
+.resume-title-field input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 24px 8px 0;
+  overflow: hidden;
+  color: var(--choco-ink);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 19px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+}
+
+.resume-title-field input:hover,
+.resume-title-field input:focus {
+  background: transparent;
+  box-shadow: none;
+}
+
+.resume-title-field svg {
+  position: absolute;
+  right: 9px;
+  width: 15px;
+  height: 15px;
+  color: var(--choco-muted);
+  pointer-events: none;
+}
+
+.save-indicator {
+  display: flex;
+  height: 32px;
+  padding: 0 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--choco-ink);
+  background: var(--moss);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.save-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--choco-ink);
+  border-radius: 50%;
+}
+
+.save-indicator[data-state="saving"] {
+  color: var(--on-gold);
+  background: var(--gold);
+  border-color: var(--choco-ink);
+}
+
+.save-indicator[data-state="saving"] .save-dot {
+  background: var(--ink);
+  animation: save-pulse .8s ease infinite alternate;
+}
+
+.save-indicator[data-state="error"] {
+  color: var(--choco-ink);
+  background: var(--danger);
+  border-color: var(--choco-ink);
+}
+
+.save-indicator[data-state="error"] .save-dot {
+  background: var(--choco-ink);
+}
+
+@keyframes save-pulse {
+  to { opacity: .35; }
+}
+
+.builder-actions {
+  justify-content: flex-end;
+}
+
+.builder-actions .icon-btn {
+  width: 42px;
+  height: 42px;
+  color: var(--choco-ink);
+  background: transparent;
+  border-color: var(--choco-line);
+}
+
+.builder-actions .icon-btn:hover {
+  color: var(--gold);
+  background: transparent;
+}
+
+.builder-actions .icon-btn:disabled {
+  color: var(--choco-line-soft);
+}
+
+.builder-actions .btn {
+  min-height: 42px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.builder-actions .btn-secondary {
+  color: var(--choco-ink);
+  background: transparent;
+  border-color: var(--choco-line);
+  box-shadow: none;
+}
+
+.builder-actions .btn-secondary:hover {
+  background: var(--choco-line);
+}
+
+.builder-actions .btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.builder-xp-chip {
+  flex: none;
+}
+
+.builder-mobile-panel,
+.builder-mobile-switch {
+  display: none;
+}
+
+.builder-layout {
+  display: grid;
+  height: calc(100vh - 72px - var(--safe-top));
+  height: calc(100dvh - 72px - var(--safe-top));
+  grid-template-columns: 480px minmax(560px, 1fr) 340px;
+  /* A grid item's automatic minimum size is its own content, so a CV taller
+     than the window stretched this row past the fixed height and the excess
+     was clipped by the overflow below instead of scrolling inside the
+     preview. Both rules below keep the row at the height of the window. */
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.builder-layout > * {
+  min-height: 0;
+}
+
+.editor-panel,
+.assistant-panel {
+  position: relative;
+  z-index: 20;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--surface);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+
+.editor-panel {
+  background: var(--card);
+  border-right: 1px solid var(--glass-border);
+}
+
+.assistant-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border-left: 1px solid var(--glass-border);
+}
+
+.panel-mobile-header {
+  display: none;
+}
+
+.editor-mode-tabs,
+.assistant-tabs {
+  display: grid;
+  padding: 8px 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: var(--card);
+  border-bottom: 2px solid var(--card-2);
+}
+
+.editor-mode-tabs button,
+.assistant-tabs button {
+  min-height: 40px;
+  padding: 8px 10px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.editor-mode-tabs button:hover,
+.assistant-tabs button:hover {
+  color: var(--ink);
+  background: var(--surface-muted);
+}
+
+.editor-mode-tabs button.active,
+.assistant-tabs button.active {
+  color: var(--ink);
+  background: var(--gold-soft);
+  border: var(--edge) solid var(--glass-border);
+}
+
+.editor-content-mode,
+.editor-design-mode {
+  height: calc(100% - 57px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c7ccd3 transparent;
+}
+
+/* The level card the stage rail opens with -- Builder.dc.html's own choco
+   card, not a generic completion meter. */
+.stage-rail-level {
+  margin: 14px 16px 0;
+  padding: 14px;
+  background: var(--choco);
+  border: var(--edge) solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-btn);
+}
+
+.stage-rail-level-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.level-number-small {
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+}
+
+.stage-rail-level-name {
+  margin: 0;
+  color: var(--choco-ink);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stage-rail-level-xp {
+  margin: 0;
+  color: var(--choco-muted);
+  font-size: 13px;
+}
+
+.stage-rail-level-bar {
+  height: 12px;
+  margin-top: 11px;
+  overflow: hidden;
+  background: var(--choco-well);
+  border: var(--edge) solid var(--choco-ink);
+  border-radius: var(--radius-pill);
+}
+
+.stage-rail-level-bar div {
+  height: 100%;
+  background: var(--gold);
+}
+
+.stage-rail-level-next {
+  margin: 6px 0 0;
+  color: var(--choco-muted);
+  font-size: 12px;
+}
+
+.completion-summary {
+  margin: 14px 16px;
+  padding: 14px;
+  background: var(--card-2);
+  border: var(--edge) solid var(--glass-border);
+  border-radius: var(--radius-sm);
+}
+
+.completion-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.completion-copy b {
+  color: var(--rust-deep);
+  font-size: 14px;
+}
+
+.completion-bar {
+  height: 10px;
+  margin: 9px 0 7px;
+  overflow: hidden;
+  background: var(--card);
+  border: var(--edge) solid var(--glass-border);
+  border-radius: var(--radius-pill);
+}
+
+.completion-bar i {
+  display: block;
+  max-width: 100%;
+  height: 100%;
+  background: var(--gold);
+  transition: width .2s ease;
+}
+
+.completion-summary small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.section-nav {
+  display: grid;
+  margin: 0 12px;
+  gap: 3px;
+}
+
+.section-nav button {
+  display: grid;
+  width: 100%;
+  min-height: 52px;
+  padding: 8px;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.section-nav button:hover {
+  background: var(--surface-muted);
+}
+
+.section-nav button.active {
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border-color: var(--brand-border);
+}
+
+.section-nav button > span {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  place-items: center;
+  color: var(--muted);
+  background: #f0f2f5;
+  border-radius: 7px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.section-nav button.active > span {
+  color: var(--on-brand);
+  background: var(--brand);
+}
+
+.section-nav button b,
+.section-nav button small {
+  display: block;
+}
+
+.section-nav button b {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section-nav button small {
+  margin-top: 1px;
+  overflow: hidden;
+  color: var(--subtle);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.section-nav button > i {
+  color: var(--subtle);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.section-nav button > i.complete {
+  color: var(--success);
+}
+
+.section-editor {
+  margin-top: 16px;
+  padding: 20px 18px 48px;
+  border-top: 1px solid var(--line);
+}
+
+.section-editor-heading {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.section-editor-heading > div {
+  min-width: 0;
+}
+
+.section-editor-heading h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -.025em;
+}
+
+.section-editor-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.section-editor-heading .btn {
+  min-height: 38px;
+  padding: 8px 10px;
+  flex: 0 0 auto;
+  font-size: 10px;
+}
+
+.editor-fields {
+  display: grid;
+  gap: 15px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.builder-page .field {
+  gap: 7px;
+}
+
+.builder-page .field label {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.builder-page .field input,
+.builder-page .field textarea,
+.builder-page .field select {
+  min-height: 44px;
+  padding: 10px 11px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.builder-page .field textarea {
+  min-height: 108px;
+  line-height: 1.5;
+}
+
+.builder-page .field-hint {
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.field-label-row button {
+  min-height: 32px;
+  padding: 5px 7px;
+  color: var(--brand-dark);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.field-label-row button:hover {
+  background: var(--brand-soft);
+}
+
+.entry-list {
+  display: grid;
+  gap: 13px;
+}
+
+.entry-card {
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+.entry-card-header {
+  display: flex;
+  min-height: 48px;
+  padding: 8px 10px 8px 13px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--line);
+}
+
+.entry-card-header b {
+  max-width: 230px;
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entry-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.entry-card-actions button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.entry-card-actions button:hover {
+  color: var(--brand-dark);
+  border-color: var(--brand-border);
+}
+
+.entry-card-actions button[data-remove-entry]:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+  border-color: #f0c4cc;
+}
+
+.entry-card-actions svg {
+  width: 16px;
+  height: 16px;
+}
+
+.entry-card-body {
+  display: grid;
+  padding: 14px;
+  gap: 13px;
+}
+
+.checkbox-field {
+  display: flex;
+  min-height: 40px;
+  padding-top: 2px;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.checkbox-field input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--brand);
+}
+
+.add-entry-button {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  color: var(--brand-dark);
+  background: var(--surface);
+  border: 1px dashed var(--brand-border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.add-entry-button:hover {
+  background: var(--brand-soft);
+  border-style: solid;
+}
+
+.character-count {
+  color: var(--subtle);
+  font-size: 10px;
+}
+
+.bullet-help {
+  display: flex;
+  padding: 11px 12px;
+  align-items: flex-start;
+  gap: 9px;
+  color: var(--ink-soft);
+  background: #f1f4f8;
+  border: 1px solid #dce3eb;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.bullet-help.spaced,
+.simple-tags.spaced {
+  margin-top: 12px;
+}
+
+.bullet-help span {
+  color: var(--brand-dark);
+  font-weight: 800;
+}
+
+.tag-input-row {
+  display: flex;
+  gap: 7px;
+}
+
+.tag-input-row input {
+  flex: 1;
+}
+
+.tag-input-row button {
+  width: 44px;
+  min-height: 44px;
+  flex: 0 0 44px;
+  color: var(--on-brand);
+  background: var(--brand);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.simple-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.simple-tag {
+  display: inline-flex;
+  min-height: 34px;
+  padding: 6px 8px;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.simple-tag button {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  place-items: center;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.simple-tag button:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.extras-nav {
+  display: grid;
+  margin-bottom: 15px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.extras-nav button {
+  min-height: 40px;
+  padding: 7px 4px;
+  color: var(--muted);
+  background: var(--surface-muted);
+  border: 1px solid transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.extras-nav button.active {
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border-color: var(--brand-border);
+}
+
+.design-heading {
+  padding: 20px 18px 18px;
+}
+
+.design-heading h2 {
+  margin: 0;
+  font-size: 23px;
+  letter-spacing: -.035em;
+}
+
+.design-heading p:last-child {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.design-group {
+  padding: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.control-label {
+  margin: 0 0 10px;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.mini-template-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mini-template {
+  /* Chrome around the paper mockup, so it follows the theme; the .mini-sheet
+     inside stays white like the real document. */
+  min-height: 108px;
+  padding: 6px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mini-template:hover {
+  border-color: var(--line-strong);
+}
+
+.mini-template.active {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px var(--focus);
+}
+
+.mini-sheet {
+  display: block;
+  height: 72px;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #e2e5e9;
+}
+
+.mini-sheet i,
+.mini-sheet b {
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin: 3px 0;
+  background: #d9dde2;
+}
+
+.mini-sheet b {
+  width: 45%;
+  margin-top: 7px;
+  background: var(--mini-accent);
+}
+
+.mini-executive {
+  border-left: 11px solid var(--mini-accent);
+}
+
+.mini-creative {
+  border-top: 9px solid var(--mini-accent);
+}
+
+.mini-tech {
+  border-bottom: 5px solid var(--mini-accent);
+}
+
+.mini-graduate {
+  border-top: 12px solid var(--mini-accent);
+}
+
+.mini-template small {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: 8px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.color-options > button,
+.custom-color {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  background: var(--swatch, #fff);
+  border: 4px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--line-strong);
+  cursor: pointer;
+}
+
+.color-options > button.active {
+  box-shadow: 0 0 0 3px var(--focus), 0 0 0 1px var(--brand);
+}
+
+.custom-color {
+  position: relative;
+  color: var(--brand-dark);
+  background: var(--surface);
+  border-radius: 8px;
+}
+
+.custom-color input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.custom-color span:last-child {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  background: var(--brand-soft);
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.segmented-control {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+}
+
+.segmented-control button {
+  min-height: 40px;
+  padding: 7px 4px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.segmented-control button.active {
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border-color: var(--brand-border);
+}
+
+.preview-workspace {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  background-color: var(--sand);
+  background-image: var(--grain);
+}
+
+.preview-toolbar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  height: 62px;
+  padding: 0 20px;
+  flex: 0 0 62px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--card-2);
+  border-bottom: var(--edge) solid var(--glass-border);
+}
+
+.preview-toolbar > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+}
+
+.preview-toolbar b {
+  font-size: 16px;
+}
+
+.preview-toolbar small {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.live-dot {
+  width: 9px;
+  height: 9px;
+  background: var(--moss);
+  border-radius: 50%;
+}
+
+/* The "Robot score" meter, ported from Builder.dc.html's preview toolbar. */
+.robot-score-meter {
+  display: flex;
+  height: 34px;
+  padding: 0 12px;
+  align-items: center;
+  gap: 9px;
+  background: var(--card);
+  border: var(--edge) solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.robot-score-track {
+  display: block;
+  width: 78px;
+  height: 11px;
+  overflow: hidden;
+  background: var(--card-2);
+  border: var(--edge) solid var(--glass-border);
+  border-radius: var(--radius-pill);
+}
+
+.robot-score-track span {
+  display: block;
+  height: 100%;
+  background: var(--moss);
+}
+
+.preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.preview-controls .icon-btn {
+  width: 38px;
+  height: 38px;
+  font-size: 15px;
+}
+
+.preview-controls .icon-btn svg {
+  width: 15px;
+}
+
+.preview-controls > span {
+  min-width: 42px;
+  color: var(--ink);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.preview-scroll {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b8bec6 transparent;
+}
+
+.preview-scale {
+  display: grid;
+  width: max-content;
+  min-width: 100%;
+  min-height: 100%;
+  padding: 28px 32px 80px;
+  place-items: start center;
+  transform-origin: top center;
+}
+
+#resumePreview {
+  width: 210mm;
+  min-height: 297mm;
+  transform-origin: top center;
+  transition: transform .16s ease;
+}
+
+/* The CV sheet's own colours are untouched (preview.css stays print-safe);
+   this is only the chrome around it -- a soft paper-on-glass drop shadow,
+   not the sheet's own content. */
+#resumePreview .cv-document {
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
+}
+
+
+.mobile-edit-button {
+  display: none;
+}
+
+.assistant-heading {
+  display: flex;
+  min-height: 68px;
+  padding: 14px 16px;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.assistant-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-border);
+  border-radius: 9px;
+}
+
+.assistant-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.assistant-heading h2,
+.assistant-heading p {
+  margin: 0;
+}
+
+.assistant-heading h2 {
+  font-size: 15px;
+}
+
+.assistant-heading p {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.assistant-tabs {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.assistant-tabs button {
+  padding-inline: 4px;
+  font-size: 10px;
+}
+
+.assistant-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #c7ccd3 transparent;
+}
+
+.assistant-tab-view {
+  display: none;
+  padding: 16px 14px 28px;
+}
+
+.assistant-tab-view.active {
+  display: block;
+}
+
+.assistant-intro {
+  display: flex;
+  margin-bottom: 13px;
+  padding: 12px;
+  align-items: flex-start;
+  gap: 9px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+.sparkle {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  color: var(--brand-dark);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.sparkle svg {
+  width: 17px;
+  height: 17px;
+}
+
+.assistant-intro b {
+  font-size: 11px;
+}
+
+.assistant-intro p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.assistant-actions-list {
+  display: grid;
+  gap: 8px;
+}
+
+.assistant-actions-list > button {
+  display: grid;
+  width: 100%;
+  min-height: 58px;
+  padding: 9px 10px;
+  grid-template-columns: 35px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.assistant-actions-list > button:hover {
+  border-color: var(--brand-border);
+  background: #fcfcff;
+}
+
+.assistant-actions-list b,
+.assistant-actions-list small {
+  display: block;
+}
+
+.assistant-actions-list b {
+  font-size: 10px;
+}
+
+.assistant-actions-list small {
+  margin-top: 2px;
+  color: var(--subtle);
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.assistant-actions-list button > i {
+  color: var(--subtle);
+  font-size: 17px;
+  font-style: normal;
+}
+
+.assistant-action-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border-radius: 8px;
+}
+
+.assistant-action-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.assistant-action-icon.blue {
+  color: #2369b8;
+  background: #eaf3ff;
+}
+
+.assistant-action-icon.green {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.assistant-action-icon.amber {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+
+.assistant-result {
+  margin-top: 12px;
+  padding: 12px;
+  color: var(--ink-soft);
+  background: #f7f7fc;
+  border: 1px solid var(--brand-border);
+  border-radius: 9px;
+}
+
+.result-heading {
+  display: flex;
+  margin-bottom: 8px;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--brand-dark);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.result-heading button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  place-items: center;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.result-heading button:hover {
+  background: var(--surface);
+}
+
+#assistantResultContent {
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+#assistantResultContent p {
+  margin: 0 0 8px;
+}
+
+#assistantResultContent ul {
+  margin: 0;
+  padding-left: 17px;
+}
+
+#assistantResultContent .result-tip {
+  margin-top: 8px;
+}
+
+.assistant-result > .btn {
+  margin-top: 10px;
+}
+
+.inline-spinner {
+  display: inline-block;
+  margin-right: 5px;
+  color: var(--brand);
+  border-color: #d5d9df;
+  border-top-color: var(--brand);
+  vertical-align: -3px;
+}
+
+.voice-card {
+  display: flex;
+  margin-top: 13px;
+  padding: 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+.voice-card > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.voice-card > div > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  color: var(--brand-dark);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.voice-card svg {
+  width: 17px;
+  height: 17px;
+}
+
+.voice-card b,
+.voice-card small {
+  display: block;
+}
+
+.voice-card b {
+  font-size: 9px;
+}
+
+.voice-card small {
+  max-width: 155px;
+  color: var(--subtle);
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.voice-card .btn {
+  min-height: 36px;
+  padding-inline: 10px;
+  flex: 0 0 auto;
+  font-size: 9px;
+}
+
+.ats-score-card {
+  display: flex;
+  margin-bottom: 14px;
+  padding: 13px;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+.ats-ring,
+.progress-ring-small {
+  --score: 0;
+  position: relative;
+  display: grid;
+  width: 66px;
+  height: 66px;
+  flex: 0 0 66px;
+  place-items: center;
+  align-content: center;
+  background: conic-gradient(var(--brand) calc(var(--score) * 1%), #dfe3e8 0);
+  border-radius: 50%;
+}
+
+.ats-ring::before,
+.progress-ring-small::before {
+  position: absolute;
+  inset: 7px;
+  content: "";
+  background: var(--surface);
+  border-radius: 50%;
+}
+
+.ats-ring strong,
+.ats-ring small,
+.progress-ring-small strong {
+  position: relative;
+  z-index: 1;
+}
+
+.ats-ring strong {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.ats-ring small {
+  color: var(--subtle);
+  font-size: 7px;
+}
+
+.ats-score-card > div:last-child > span {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ats-score-card h3 {
+  margin: 3px 0 2px;
+  font-size: 13px;
+}
+
+.ats-score-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.full-button {
+  width: 100%;
+  min-height: 42px;
+  font-size: 11px;
+}
+
+.ats-categories {
+  display: grid;
+  margin-top: 16px;
+  gap: 10px;
+}
+
+.ats-category {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 7px 10px;
+}
+
+.ats-category span,
+.ats-category b {
+  font-size: 9px;
+}
+
+.ats-category span {
+  color: var(--ink-soft);
+}
+
+.ats-category b {
+  color: var(--brand-dark);
+}
+
+.ats-category div {
+  height: 6px;
+  grid-column: 1 / -1;
+  overflow: hidden;
+  background: #e2e6ea;
+  border-radius: 4px;
+}
+
+.ats-category i {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+}
+
+.recommendation-list {
+  display: grid;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+.recommendation {
+  display: flex;
+  padding: 10px;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--warning-soft);
+  border: 1px solid #ecd8ac;
+  border-radius: 8px;
+}
+
+.recommendation > span {
+  display: grid;
+  min-width: 22px;
+  height: 22px;
+  padding-inline: 4px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--warning);
+  background: var(--surface);
+  border: 1px solid #ead5a7;
+  border-radius: 6px;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+.recommendation p {
+  margin: 2px 0 0;
+  color: #655d4e;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.job-match-intro {
+  padding: 6px 6px 16px;
+  text-align: center;
+}
+
+.job-match-intro > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 10px;
+  place-items: center;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-border);
+  border-radius: 9px;
+}
+
+.job-match-intro svg {
+  width: 21px;
+  height: 21px;
+}
+
+.job-match-intro h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.job-match-intro p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+#jobDescription {
+  min-height: 190px;
+}
+
+.keyword-result {
+  display: grid;
+  margin-top: 17px;
+  gap: 16px;
+}
+
+.keyword-result h4 {
+  margin: 0 0 4px;
+  font-size: 11px;
+}
+
+.keyword-result p {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.keyword-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.keyword-cloud span {
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.keyword-cloud.matched span {
+  color: #126442;
+  background: var(--success-soft);
+  border: 1px solid #badfce;
+}
+
+.keyword-cloud.missing span {
+  color: var(--warning);
+  background: var(--warning-soft);
+  border: 1px solid #ecd8ac;
+}
+
+.progress-reward {
+  display: flex;
+  min-height: 64px;
+  padding: 10px 14px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-muted);
+  border-top: 1px solid var(--line);
+}
+
+.progress-ring-small {
+  --score: var(--progress);
+  width: 44px;
+  height: 44px;
+  flex-basis: 44px;
+  background: conic-gradient(var(--success) calc(var(--progress) * 1%), #dfe3e8 0);
+}
+
+.progress-ring-small::before {
+  inset: 5px;
+}
+
+.progress-ring-small strong {
+  font-size: 9px;
+}
+
+.progress-reward > div:last-child {
+  min-width: 0;
+}
+
+.progress-reward b,
+.progress-reward span {
+  display: block;
+}
+
+.progress-reward b {
+  font-size: 9px;
+}
+
+.progress-reward span {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.assistant-modal-form {
+  display: grid;
+  gap: 14px;
+}
+
+.claim-account-intro {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.claim-account-form {
+  display: grid;
+  gap: 14px;
+}
+
+.claim-account-toggle {
+  display: block;
+  margin: 16px 0 0;
+  padding: 0;
+  color: var(--brand-dark);
+  background: none;
+  border: 0;
+  font-size: 13px;
+  font-weight: 750;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.mobile-panel-overlay {
+  position: fixed;
+  z-index: 89;
+  inset: calc(72px + var(--safe-top)) 0 0;
+  display: none;
+  background: rgba(15, 23, 42, .52);
+}
+
+.mobile-panel-overlay.open {
+  display: block;
+}
+
+/* ---- Content entry -------------------------------------------------------
+   Progress and the section switcher are pinned to the top of the scrolling
+   panel. They previously scrolled with the form, so every section started
+   with a long scroll past roughly 400px of chrome before the first field.
+--------------------------------------------------------------------------- */
+.editor-sticky {
+  position: sticky;
+  z-index: 5;
+  top: 0;
+  padding-bottom: 8px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  /* The step chips scroll sideways inside their own row, but from within a
+     sticky box that overflow reached the panel as well, so the whole editor
+     could be dragged 200px sideways over empty space. `clip` contains it
+     without making this a scroll container, which `hidden` would do and which
+     would stop the header sticking. */
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* Ported as the mockup's own vertical "Stages" list, one row per section
+   rather than a horizontal-scrolling pill row. */
+.section-steps {
+  display: flex;
+  padding: 4px 10px 2px;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.section-steps button {
+  display: flex;
+  min-height: 48px;
+  padding: 0 12px;
+  align-items: center;
+  gap: 11px;
+  color: var(--muted);
+  background: transparent;
+  border: var(--edge) solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 16px;
+  text-align: left;
+  transition: color .15s ease, background-color .15s ease, border-color .15s ease;
+}
+
+.section-steps button:hover {
+  color: var(--ink);
+  background: var(--card-2);
+}
+
+.section-steps button.active {
+  color: var(--ink);
+  background: var(--gold-soft);
+  border-color: var(--ink);
+  box-shadow: var(--shadow-btn);
+  font-weight: 700;
+}
+
+.section-steps button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.section-steps button > i {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  background: var(--card-2);
+  border: var(--edge) solid #BCA88A;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-style: normal;
+}
+
+.section-steps button > b {
+  flex: 1;
+  min-width: 0;
+  font-weight: inherit;
+}
+
+.section-xp {
+  flex: none;
+  color: var(--rust-deep);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+/* Completion reads as done through the glyph as well as colour. */
+.section-steps button > i.complete {
+  color: var(--card);
+  background: var(--moss);
+  border-color: var(--ink);
+}
+
+.step-footer {
+  display: flex;
+  margin: 0 16px 28px;
+  padding-top: 16px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 2px solid var(--card-2);
+}
+
+.step-footer .btn {
+  min-height: 38px;
+  padding: 8px 14px;
+  font-size: 12px;
+}
+
+.step-footer .btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.step-count {
+  color: var(--subtle);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.section-empty {
+  padding: 26px 18px;
+  color: var(--muted);
+  background: var(--surface-muted);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.section-empty p {
+  margin: 0 0 13px;
+  font-size: 12px;
+}
+
+/* The whole title area toggles the entry, keeping the target large. */
+.entry-toggle {
+  display: flex;
+  min-width: 0;
+  padding: 0;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.entry-toggle:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.entry-caret {
+  color: var(--subtle);
+  font-size: 10px;
+}
+
+.entry-titles {
+  display: grid;
+  min-width: 0;
+}
+
+.entry-titles small {
+  overflow: hidden;
+  color: var(--subtle);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entry-card.collapsed {
+  background: var(--surface-muted);
+}
+
+.bullet-rows {
+  display: grid;
+  gap: 6px;
+}
+
+.bullet-row {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 6px;
+}
+
+.bullet-dot {
+  padding-top: 10px;
+  color: var(--brand);
+  text-align: center;
+  font-size: 12px;
+}
+
+.builder-page .bullet-row textarea {
+  min-height: 46px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.bullet-remove {
+  width: 26px;
+  height: 26px;
+  margin-top: 6px;
+  padding: 0;
+  color: var(--subtle);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.bullet-remove:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.add-bullet-button {
+  margin-top: 8px;
+  padding: 7px 11px;
+  color: var(--brand-dark);
+  background: var(--brand-soft);
+  border: 1px dashed var(--brand-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.add-bullet-button:hover {
+  border-color: var(--brand);
+}
+
+/* Mini template swatches for the templates added alongside the vertical layout. */
+.mini-classic {
+  border-top: 3px solid var(--mini-accent);
+}
+
+.mini-elegant {
+  border-left: 3px solid var(--mini-accent);
+}
+
+.mini-compact i,
+.mini-compact b {
+  height: 2px;
+  margin: 2px 0;
+}
+
+.mini-timeline {
+  padding-left: 14px;
+  background-image: linear-gradient(var(--mini-accent), var(--mini-accent));
+  background-repeat: no-repeat;
+  background-position: 7px 8px;
+  background-size: 1px calc(100% - 16px);
+}
+
+.mini-academic {
+  border-block: 2px solid var(--mini-accent);
+}
+
+.mini-bold {
+  border-top: 18px solid var(--mini-accent);
+}
+
+/* Swatches for the templates added with the reworked skills. */
+.mini-editorial {
+  border-top: 4px double var(--mini-accent);
+  border-bottom: 4px double var(--mini-accent);
+}
+
+.mini-editorial b {
+  height: 1px;
+}
+
+.mini-metro b {
+  height: 8px;
+  border-radius: 0;
+}
+
+/* Ruled throughout, which is the whole idea of the template. */
+.mini-ledger i,
+.mini-ledger b {
+  height: 1px;
+  border-radius: 0;
+}
+
+.mini-ledger i {
+  margin: 4px 0;
+  background: color-mix(in srgb, var(--mini-accent) 35%, white);
+}
+
+.mini-ledger b {
+  margin: 4px 0;
+  background: var(--mini-accent);
+}
+
+.mini-spectrum {
+  border-top: 6px solid var(--mini-accent);
+}
+
+.mini-spectrum b {
+  background: repeating-linear-gradient(
+    to right,
+    var(--mini-accent) 0 4px,
+    transparent 4px 6px
+  );
+}
+
+.mini-slate {
+  border-left: 11px solid var(--mini-accent);
+}
+
+.mini-aurora {
+  border-top: 9px solid transparent;
+  border-image: linear-gradient(to right, var(--mini-accent), color-mix(in srgb, var(--mini-accent) 25%, white)) 1;
+}
+
+.mini-aurora b {
+  background: linear-gradient(to right, var(--mini-accent), color-mix(in srgb, var(--mini-accent) 30%, white));
+}
+
+.design-group .field-hint {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* ==========================================================================
+   Import dialog
+   ========================================================================== */
+
+.import-dialog {
+  width: min(100%, 560px);
+}
+
+.import-tabs {
+  display: grid;
+  margin-bottom: 16px;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface-muted);
+  border-radius: 9px;
+}
+
+.import-tabs button {
+  min-height: 36px;
+  padding: 6px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.import-tabs button.active {
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(16, 24, 40, .08));
+}
+
+.import-tab-view {
+  display: none;
+}
+
+.import-tab-view.active {
+  display: block;
+}
+
+.import-drop {
+  display: grid;
+  padding: 26px 18px;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  background: var(--surface-muted);
+  border: 1.5px dashed var(--line-strong, var(--line));
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.import-drop:hover,
+.import-drop.dragging {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.import-drop-icon svg {
+  width: 26px;
+  height: 26px;
+  color: var(--brand);
+}
+
+.import-drop b {
+  font-size: 13px;
+}
+
+.import-drop small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.import-file-name {
+  margin: 10px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 650;
+  word-break: break-all;
+}
+
+.import-result {
+  margin-top: 18px;
+  padding: 14px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.import-result-head {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.import-result-head b {
+  font-size: 13px;
+}
+
+.import-result-head span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.import-detected {
+  display: grid;
+  margin: 0;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px 14px;
+}
+
+.import-detected div {
+  min-width: 0;
+}
+
+.import-detected dt {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.import-detected dd {
+  margin: 2px 0 0;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-warning {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.import-body textarea {
+  min-height: 190px;
+  resize: vertical;
+}
+
+/* ==========================================================================
+   Builder tool cluster
+   Inline in the topbar on a wide screen; the More button below takes over on
+   narrow ones (see the max-width: 920px block).
+   ========================================================================== */
+
+.builder-tools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The labels exist for the collapsed menu; inline in the topbar the icons and
+   their aria-labels carry the meaning. */
+.builder-tools .tool-label {
+  display: none;
+}
+
+.builder-more-button {
+  display: none;
+}
+
+@media (max-width: 1500px) {
+  .builder-layout {
+    grid-template-columns: 400px minmax(540px, 1fr) 320px;
+  }
+
+  .builder-topbar {
+    grid-template-columns: minmax(320px, 1fr) auto minmax(320px, 1fr);
+  }
+
+  .builder-actions .builder-secondary-action {
+    font-size: 0;
+    gap: 0;
+  }
+}
+
+@media (max-width: 1280px) {
+  .builder-layout {
+    grid-template-columns: 480px minmax(0, 1fr);
+  }
+
+  .assistant-panel {
+    position: fixed;
+    z-index: 90;
+    top: calc(72px + var(--safe-top));
+    right: 0;
+    bottom: 0;
+    width: min(380px, 94vw);
+    border-left: 1px solid var(--line);
+    box-shadow: -14px 0 32px rgba(16, 24, 40, .16);
+    transform: translateX(105%);
+    transition: transform .18s ease;
+  }
+
+  .assistant-panel.open {
+    transform: translateX(0);
+  }
+
+  .assistant-panel .panel-mobile-header {
+    display: flex;
+    height: 50px;
+    padding: 0 12px;
+    flex: 0 0 50px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .panel-mobile-header b {
+    font-size: 13px;
+  }
+
+  .panel-mobile-header .icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .builder-mobile-panel {
+    display: inline-grid;
+  }
+}
+
+@media (max-width: 1040px) {
+  .builder-brand-group .brand,
+  .topbar-divider {
+    display: none;
+  }
+
+  .builder-topbar {
+    grid-template-columns: minmax(240px, 1fr) auto minmax(280px, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  .builder-topbar {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .builder-actions > .icon-btn:not(.builder-mobile-panel):not(.builder-more-button) {
+    display: none;
+  }
+
+  /* Collapse the tool cluster into a menu hung under the More button. */
+  .builder-more-button {
+    display: inline-grid;
+  }
+
+  .builder-tools {
+    position: absolute;
+    z-index: 95;
+    top: calc(100% - 6px);
+    right: 10px;
+    display: none;
+    min-width: 190px;
+    padding: 6px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .builder-tools.open {
+    display: flex;
+  }
+
+  .builder-tools .icon-btn,
+  .builder-tools .btn {
+    width: 100%;
+    min-height: 44px;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 8px 10px;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    font-size: 13px;
+  }
+
+  .builder-tools .icon-btn {
+    display: inline-flex;
+    height: auto;
+    align-items: center;
+  }
+
+  .builder-tools .icon-btn:hover,
+  .builder-tools .btn:hover {
+    background: var(--surface-muted);
+  }
+
+  .builder-tools .tool-label {
+    display: inline;
+  }
+
+  .resume-title-field {
+    max-width: min(48vw, 300px);
+  }
+
+  .builder-layout {
+    display: block;
+  }
+
+  .editor-panel {
+    position: fixed;
+    z-index: 90;
+    top: calc(72px + var(--safe-top));
+    bottom: 64px;
+    left: 0;
+    width: min(430px, 96vw);
+    border-right: 1px solid var(--line);
+    box-shadow: 14px 0 32px rgba(16, 24, 40, .16);
+    transform: translateX(-105%);
+    transition: transform .18s ease;
+  }
+
+  .editor-panel.open {
+    transform: translateX(0);
+  }
+
+  .editor-panel .panel-mobile-header {
+    display: flex;
+    height: 50px;
+    padding: 0 12px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .editor-content-mode,
+  .editor-design-mode {
+    height: calc(100% - 107px);
+  }
+
+  .assistant-panel {
+    bottom: 64px;
+  }
+
+  .preview-workspace {
+    height: 100%;
+    padding-bottom: 64px;
+  }
+
+  .mobile-panel-overlay {
+    bottom: 64px;
+  }
+
+  .builder-mobile-switch {
+    position: fixed;
+    z-index: 93;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    height: 64px;
+    padding: 6px max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+  }
+
+  .builder-mobile-switch button {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+    color: var(--muted);
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    font-size: 9px;
+    font-weight: 700;
+  }
+
+  .builder-mobile-switch button.active {
+    color: var(--brand-dark);
+    background: var(--brand-soft);
+  }
+
+  .builder-mobile-switch svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .builder-mobile-panel {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .builder-actions .btn-primary,
+  .builder-actions .builder-download-button {
+    padding: 0;
+    font-size: 0;
+  }
+
+  .builder-topbar {
+    height: calc(64px + var(--safe-top));
+    padding-inline: 8px;
+    gap: 7px;
+  }
+
+  .builder-layout {
+    height: calc(100vh - 64px - var(--safe-top));
+    height: calc(100dvh - 64px - var(--safe-top));
+  }
+
+  .resume-title-field {
+    max-width: 45vw;
+  }
+
+  .builder-actions .btn-primary svg,
+  .builder-actions .builder-download-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .editor-panel,
+  .assistant-panel {
+    top: calc(64px + var(--safe-top));
+    width: 100vw;
+    box-shadow: none;
+  }
+
+  .mobile-panel-overlay {
+    inset: calc(64px + var(--safe-top)) 0 64px;
+  }
+
+  .preview-toolbar {
+    height: 48px;
+    padding-inline: 10px;
+    flex-basis: 48px;
+  }
+
+  .preview-toolbar small {
+    display: none;
+  }
+
+  .preview-scale {
+    padding: 16px 10px 78px;
+  }
+
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-editor {
+    padding-inline: 16px;
+  }
+
+  .modal {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .save-indicator {
+    padding-inline: 6px;
+  }
+
+  .save-dot {
+    display: none;
+  }
+
+  .resume-title-field {
+    max-width: 42vw;
+  }
+
+  .preview-controls > span {
+    min-width: 34px;
+  }
+}
+
+/* ==========================================================================
+   Touch and small screens
+   The builder is the densest screen in the app, so its desktop type and
+   control sizes need explicit correction rather than inheriting the shared
+   rules in common/app.css, which this stylesheet loads after.
+   ========================================================================== */
+
+@media (max-width: 820px) {
+  /* Every editable control reaches 16px so iOS Safari does not zoom the
+     viewport the moment a field takes focus. */
+  .builder-page .field input,
+  .builder-page .field textarea,
+  .builder-page .field select,
+  .resume-title-field input,
+  .tag-input-row input,
+  .import-body textarea {
+    font-size: 16px;
+  }
+
+  .builder-page .field label {
+    font-size: 13px;
+  }
+
+  .builder-page .field-hint {
+    font-size: 12px;
+  }
+
+  /* Thumb-sized controls throughout the chrome. */
+  .builder-topbar .icon-btn,
+  .builder-actions .icon-btn,
+  .assistant-panel .icon-btn,
+  .editor-panel .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .builder-back {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+  }
+
+  .section-steps button {
+    min-height: 44px;
+    font-size: 11px;
+  }
+
+  .editor-mode-tabs button,
+  .assistant-tabs button,
+  .extras-nav button {
+    min-height: 44px;
+    font-size: 12px;
+  }
+
+  .segmented-control button {
+    min-height: 44px;
+    font-size: 11px;
+  }
+
+  .mini-template small {
+    font-size: 10px;
+  }
+
+  .save-indicator {
+    font-size: 11px;
+  }
+
+  .assistant-actions-list button {
+    min-height: 56px;
+  }
+
+  .assistant-actions-list small,
+  .voice-card small,
+  .assistant-intro p,
+  .progress-reward span,
+  #atsScoreMessage,
+  .recommendation p,
+  .keyword-cloud span,
+  .assistant-heading p,
+  .result-heading span,
+  .job-match-intro p,
+  .keyword-result p,
+  .ats-score-card span,
+  .design-heading p:last-child {
+    font-size: 11px;
+  }
+
+  .section-steps i,
+  .section-steps i span,
+  .mini-template small,
+  .ats-ring small,
+  .recommendation > span,
+  .progress-ring-small strong,
+  .voice-card .btn,
+  #voiceButton {
+    font-size: 11px;
+  }
+
+  /* The bottom switcher is the main way to move around the builder on a
+     phone, so its labels have to be legible at a glance. */
+  .builder-mobile-switch button {
+    font-size: 12px;
+  }
+
+  .preview-controls .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  #zoomLabel,
+  .preview-toolbar small {
+    font-size: 11px;
+  }
+
+  .assistant-actions-list b,
+  .voice-card b,
+  .progress-reward b {
+    font-size: 13px;
+  }
+
+  #voiceButton,
+  .step-footer .btn,
+  .assistant-panel .btn {
+    min-height: 44px;
+  }
+
+  .bullet-remove {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .import-tabs button {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  .import-drop {
+    padding: 22px 14px;
+  }
+
+  .import-drop small,
+  .import-file-name,
+  .import-warning,
+  .import-result-head span {
+    font-size: 12px;
+  }
+
+  .import-detected dt {
+    font-size: 11px;
+  }
+
+  .import-detected dd {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* The topbar has to hold the title plus six controls, so the title field
+     shrinks rather than the tap targets. */
+  .resume-title-field {
+    max-width: 34vw;
+  }
+
+  .resume-title-field input {
+    min-height: 44px;
+  }
+
+  .builder-actions .btn-primary,
+  .builder-actions .builder-download-button {
+    width: 44px;
+    min-height: 44px;
+  }
+
+  /* Clear the status bar on a notched phone, and keep every panel anchored to
+     the same header height. */
+  .builder-topbar {
+    height: calc(64px + var(--safe-top));
+    padding-top: var(--safe-top);
+  }
+
+  .builder-layout {
+    height: calc(100dvh - 64px - var(--safe-top));
+  }
+
+  .editor-panel,
+  .assistant-panel {
+    top: calc(64px + var(--safe-top));
+  }
+
+  .mobile-panel-overlay {
+    inset: calc(64px + var(--safe-top)) 0 64px;
+  }
+
+  /* The bottom switcher sits above the home indicator on a modern phone. */
+  .builder-mobile-switch {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .builder-mobile-switch button {
+    min-height: 52px;
+  }
+
+  .mini-template-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .resume-title-field {
+    max-width: 30vw;
+  }
+}
+
+/* Sections the importer recognised but has nowhere to put. Named so the writer
+   can move them across by hand instead of wondering where they went. */
+.import-skipped {
+  margin: 12px 0 0;
+  padding: 9px 11px;
+  color: var(--ink-soft);
+  background: var(--warning-soft);
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+@media (max-width: 820px) {
+  .import-skipped {
+    font-size: 12px;
+  }
+}
+
+/* ==========================================================================
+   The builder's own step-footer (Back / Next stage) is the mobile action
+   bar in this view; the floating bottom navigation would double up with it
+   and can overlap the Next-stage button, so it stays off this page.
+   ========================================================================== */
+@media (max-width: 900px) {
+  .builder-page .bottom-nav {
+    display: none !important;
+  }
+
+  .builder-page .page-shell {
+    padding-bottom: 0;
+  }
+}
+
+/* ==========================================================================
+   Quest additions on a narrow screen.
+
+   The XP chip and the Robot score meter are supplementary -- the same
+   numbers are already on the level banner and in the review panel's own ATS
+   score -- so they step aside rather than forcing the topbar and preview
+   toolbar to overflow on a phone.
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .builder-xp-chip {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .robot-score-meter {
+    display: none;
+  }
+
+  .preview-toolbar {
+    height: auto;
+    min-height: 62px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
+  .preview-toolbar b {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 460px) {
+  .preview-toolbar small {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Stage rail on a phone: horizontal instead of vertical.
+
+   The vertical list (Builder.dc.html's own desktop layout) reads well in a
+   282px sidebar, but inside the narrower off-canvas mobile panel it pushed
+   the actual form fields hundreds of pixels down the screen before they
+   were visible at all. Below the same width where the panel goes off-canvas,
+   the stages become one scrollable row instead, so the fields under it are
+   the first thing in view.
+
+   editor-sticky itself (the level card, the CV-progress bar, and this row)
+   stays pinned above section-editor, so it is also trimmed down to close to
+   its content's minimum height here -- every px it gives up is a px
+   section-editor gains, and it is what a person actually came to this panel
+   to fill in.
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .editor-sticky {
+    padding-bottom: 4px;
+  }
+
+  .section-steps {
+    flex-direction: row;
+    padding: 4px 10px;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .section-steps::-webkit-scrollbar {
+    display: none;
+  }
+
+  .section-steps button {
+    min-height: 40px;
+    padding: 0 12px;
+    flex: 0 0 auto;
+    gap: 8px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  /* The active pill still gets the mockup's own emphasis -- gold fill, ink
+     border, hard shadow -- it just no longer needs the row's full width to
+     show it. */
+  .section-steps button.active {
+    box-shadow: var(--shadow-badge);
+  }
+
+  .section-steps button > i {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+  }
+
+  .section-xp {
+    font-size: 12px;
+  }
+
+  /* The level card and progress bar step aside too, cut down to a single
+     compact line each instead of the desktop card's full padding and
+     multi-line copy. */
+  .stage-rail-level {
+    margin: 6px 12px 0;
+    padding: 7px 10px;
+  }
+
+  .stage-rail-level-row {
+    gap: 8px;
+  }
+
+  .level-number-small {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .stage-rail-level-name {
+    font-size: 12px;
+  }
+
+  .stage-rail-level-xp {
+    font-size: 10px;
+  }
+
+  .stage-rail-level-bar {
+    height: 6px;
+    margin-top: 6px;
+  }
+
+  /* "380 XP to Drafter" is the one line the card can lose outright -- the
+     bar it sits under already shows the same progress. */
+  .stage-rail-level-next {
+    display: none;
+  }
+
+  .completion-summary {
+    margin: 6px 12px;
+    padding: 7px 10px;
+  }
+
+  .completion-copy {
+    font-size: 11px;
+  }
+
+  .completion-bar {
+    height: 6px;
+    margin: 6px 0 0;
+  }
+}
+
+/* ==========================================================================
+   Stages docked on their own side, fields on the other -- Builder.dc.html's
+   own desktop layout, which stacked the two in a single scrolling column
+   instead. Above the width where the panel is docked (not off-canvas),
+   editor-content-mode becomes two independent panes: the stage list stays
+   fully visible on the left the whole time, and the field-entry form gets
+   its own scroll on the right, so picking a different stage never means
+   losing your place in the one you were filling in.
+   ========================================================================== */
+@media (min-width: 1101px) {
+  .editor-content-mode {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: calc(100% - 57px);
+    overflow: hidden;
+  }
+
+  .editor-sticky {
+    position: static;
+    grid-column: 1;
+    grid-row: 1 / 3;
+    height: 100%;
+    padding-bottom: 12px;
+    overflow-y: auto;
+    border-right: 1px solid var(--line);
+    border-bottom: 0;
+  }
+
+  .stage-rail-level {
+    margin: 12px 12px 0;
+    padding: 10px;
+  }
+
+  .level-number-small {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .stage-rail-level-name {
+    font-size: 13px;
+  }
+
+  .stage-rail-level-xp {
+    font-size: 11px;
+  }
+
+  .stage-rail-level-next {
+    display: none;
+  }
+
+  .completion-summary {
+    margin: 8px 12px;
+    padding: 8px 10px;
+  }
+
+  .completion-copy {
+    font-size: 11px;
+  }
+
+  .section-steps button {
+    padding: 0 10px;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .section-steps button > b {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .section-xp {
+    font-size: 11px;
+  }
+
+  .section-editor {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #c7ccd3 transparent;
+  }
+
+  .step-footer {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* ==========================================================================
+   Typing on a phone
+   builder.js sets body.keyboard-open while a field has focus. The keyboard
+   takes the lower half of the screen, so everything that is not the field
+   gives way: the sticky stage rail scrolls off with the form instead of
+   pinning a tall block above it, the bottom switcher (which would ride up on
+   top of the keyboard) is hidden, and the panel gains room at its foot so even
+   the last field on a stage can be scrolled up to the top.
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .keyboard-open .editor-sticky {
+    position: static;
+  }
+
+  .keyboard-open .builder-mobile-switch {
+    display: none;
+  }
+
+  .keyboard-open .editor-panel,
+  .keyboard-open .assistant-panel {
+    bottom: 0;
+  }
+
+  .keyboard-open .editor-content-mode::after,
+  .keyboard-open .editor-design-mode::after,
+  .keyboard-open .assistant-scroll::after {
+    content: "";
+    display: block;
+    height: 55vh;
+  }
+
+  .keyboard-open .field,
+  .keyboard-open .checkbox-field {
+    scroll-margin-top: 10px;
+  }
+}

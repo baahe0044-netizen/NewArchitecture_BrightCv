@@ -1,39 +1,307 @@
 <?php
 
-require_once __DIR__ . '/../Repositories/ResumeRepository.php';
+declare(strict_types=1);
 
-class ResumeService
+final class ResumeService
 {
-    private $repository;
+    private const LANGUAGES = ['en', 'fr', 'es'];
+    private const FONTS = ['Times New Roman', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
+    private const DEFAULT_FONT = 'Times New Roman';
 
-    public function __construct()
+    public function __construct(private readonly ResumeRepository $resumes = new ResumeRepository())
     {
-        $this->repository = new ResumeRepository();
     }
 
-    public function dashboardData($userId)
+    public function all(int $userId): array
     {
-        return $this->repository->getDashboardData($userId);
+        return $this->resumes->listByUser($userId);
     }
 
-    public function getResumes($userId)
+    public function find(int $id, int $userId): ?array
     {
-        return $this->repository->getResumes($userId);
+        return $this->resumes->findOwned($id, $userId);
     }
 
-    public function createResume($userId, $title)
+    public function create(int $userId, string $name = 'Untitled CV', string $templateKey = 'modern'): array
     {
-        return $this->repository->createResume($userId, $title);
+        $name = $this->clean($name, 150) ?: 'Untitled CV';
+        $templateKey = $this->allowed($templateKey, TemplateCatalog::keys(), TemplateCatalog::DEFAULT_KEY);
+        $resume = $this->resumes->create(
+            $userId,
+            $name,
+            // A new CV starts in the layout the chosen template was designed
+            // for, so the first preview matches the template card.
+            self::defaultContent(TemplateCatalog::layout($templateKey), TemplateCatalog::order($templateKey)),
+            $templateKey,
+            TemplateCatalog::color($templateKey)
+        );
+        (new ActivityRepository())->record($userId, 'resume_created', 'Created ' . $name, (int) $resume['id']);
+        return $resume;
     }
 
-    public function getResumeForPdf($resumeId, $userId)
+    public function save(int $id, int $userId, array $payload): ?array
+    {
+        $templateKey = $this->allowed(
+            $payload['template_key'] ?? TemplateCatalog::DEFAULT_KEY,
+            TemplateCatalog::keys(),
+            TemplateCatalog::DEFAULT_KEY
+        );
+        $content = $this->sanitizeContent(
+            is_array($payload['content'] ?? null) ? $payload['content'] : [],
+            $templateKey
+        );
+        $completion = $this->completion($content);
+
+        $attributes = [
+            'name' => $this->clean($payload['name'] ?? 'Untitled CV', 150) ?: 'Untitled CV',
+            'template_key' => $templateKey,
+            'language' => $this->allowed($payload['language'] ?? 'en', self::LANGUAGES, 'en'),
+            'accent_color' => $this->validColor($payload['accent_color'] ?? '#5b4df7'),
+            'font_family' => $this->allowed($payload['font_family'] ?? self::DEFAULT_FONT, self::FONTS, self::DEFAULT_FONT),
+            'job_description' => $this->clean($payload['job_description'] ?? '', 15000),
+            'content' => $content,
+            'completion' => $completion,
+            'status' => $completion >= 80 ? 'completed' : 'draft',
+            'version' => isset($payload['version']) && is_numeric($payload['version'])
+                ? (int) $payload['version']
+                : null,
+        ];
+
+        $resume = $this->resumes->save($id, $userId, $attributes);
+        if ($resume) {
+            $activityKey = '_resume_activity_' . $id;
+            $lastActivity = (int) Session::get($activityKey, 0);
+            if ($lastActivity <= time() - 300) {
+                (new ActivityRepository())->record($userId, 'resume_saved', 'Updated ' . $attributes['name'], $id);
+                Session::put($activityKey, time());
+            }
+        }
+        return $resume;
+    }
+
+    public function duplicate(int $id, int $userId): ?array
+    {
+        $resume = $this->resumes->duplicate($id, $userId);
+        if ($resume) {
+            (new ActivityRepository())->record($userId, 'resume_duplicated', 'Duplicated ' . $resume['name'], (int) $resume['id']);
+        }
+        return $resume;
+    }
+
+    public function delete(int $id, int $userId): bool
+    {
+        $resume = $this->find($id, $userId);
+        $deleted = $this->resumes->softDelete($id, $userId);
+        if ($deleted) {
+            (new ActivityRepository())->record($userId, 'resume_deleted', 'Moved ' . ($resume['name'] ?? 'a CV') . ' to trash');
+        }
+        return $deleted;
+    }
+
+    public function completion(array $content): int
+    {
+        $personal = $content['personal'] ?? [];
+        $score = 0;
+        foreach (['full_name', 'headline', 'email', 'phone', 'location'] as $field) {
+            $score += trim((string) ($personal[$field] ?? '')) !== '' ? 4 : 0;
+        }
+        $score += mb_strlen(trim((string) ($content['summary'] ?? ''))) >= 80 ? 15 : 0;
+        $score += $this->hasMeaningfulEntry($content['experience'] ?? [], ['role', 'company']) ? 25 : 0;
+        $score += $this->hasMeaningfulEntry($content['education'] ?? [], ['degree', 'school']) ? 15 : 0;
+        $skills = array_filter($content['skills'] ?? [], static fn ($skill) => trim((string) ($skill['name'] ?? '')) !== '');
+        $score += count($skills) >= 5 ? 15 : (count($skills) >= 2 ? 8 : 0);
+        $score += (
+            $this->hasMeaningfulEntry($content['projects'] ?? [], ['name'])
+            || $this->hasMeaningfulEntry($content['certifications'] ?? [], ['name'])
+            || $this->hasMeaningfulEntry($content['languages'] ?? [], ['name'])
+        ) ? 10 : 0;
+
+        return min(100, $score);
+    }
+
+    public static function defaultContent(string $layout = 'stacked', string $sectionOrder = 'standard'): array
     {
         return [
-            'resume'      => $this->repository->getResume($resumeId, $userId),
-            'personal'    => $this->repository->getPersonal($resumeId),
-            'experience'  => $this->repository->getExperience($resumeId),
-            'education'   => $this->repository->getEducation($resumeId),
-            'skills'      => $this->repository->getSkills($resumeId)
+            'personal' => [
+                'full_name' => '',
+                'headline' => '',
+                'email' => '',
+                'phone' => '',
+                'location' => '',
+                'website' => '',
+                'linkedin' => '',
+            ],
+            'summary' => '',
+            'experience' => [[
+                'id' => self::uuid(),
+                'role' => '',
+                'company' => '',
+                'location' => '',
+                'start_date' => '',
+                'end_date' => '',
+                'current' => false,
+                'bullets' => [],
+            ]],
+            'education' => [[
+                'id' => self::uuid(),
+                'degree' => '',
+                'school' => '',
+                'location' => '',
+                'start_date' => '',
+                'end_date' => '',
+                'details' => '',
+            ]],
+            'skills' => [],
+            'projects' => [],
+            'certifications' => [],
+            'languages' => [],
+            'references' => [],
+            'interests' => [],
+            'settings' => [
+                'density' => 'comfortable',
+                'layout' => in_array($layout, TemplateCatalog::LAYOUTS, true) ? $layout : 'stacked',
+                'section_order' => in_array($sectionOrder, TemplateCatalog::ORDERS, true) ? $sectionOrder : 'standard',
+            ],
         ];
+    }
+
+    private function sanitizeContent(array $content, string $templateKey = TemplateCatalog::DEFAULT_KEY): array
+    {
+        $clean = self::defaultContent();
+        $personal = is_array($content['personal'] ?? null) ? $content['personal'] : [];
+        foreach (array_keys($clean['personal']) as $field) {
+            $clean['personal'][$field] = $this->clean($personal[$field] ?? '', 255);
+        }
+
+        $clean['summary'] = $this->clean($content['summary'] ?? '', 3000);
+        $clean['experience'] = $this->sanitizeEntries($content['experience'] ?? [], [
+            'id' => 60, 'role' => 160, 'company' => 160, 'location' => 160,
+            'start_date' => 30, 'end_date' => 30,
+        ], true);
+        $clean['education'] = $this->sanitizeEntries($content['education'] ?? [], [
+            'id' => 60, 'degree' => 180, 'school' => 180, 'location' => 160,
+            'start_date' => 30, 'end_date' => 30, 'details' => 1000,
+        ]);
+        $clean['skills'] = $this->sanitizeEntries($content['skills'] ?? [], [
+            'id' => 60, 'name' => 100, 'level' => 30,
+        ]);
+        $clean['projects'] = $this->sanitizeEntries($content['projects'] ?? [], [
+            'id' => 60, 'name' => 180, 'role' => 160, 'url' => 255,
+            'start_date' => 30, 'end_date' => 30, 'description' => 1600,
+        ]);
+        $clean['certifications'] = $this->sanitizeEntries($content['certifications'] ?? [], [
+            'id' => 60, 'name' => 180, 'issuer' => 180, 'date' => 30, 'url' => 255,
+        ]);
+        $clean['languages'] = $this->sanitizeEntries($content['languages'] ?? [], [
+            'id' => 60, 'name' => 100, 'level' => 60,
+        ]);
+        $clean['references'] = $this->sanitizeEntries($content['references'] ?? [], [
+            'id' => 60, 'name' => 160, 'position' => 160, 'company' => 160,
+            'email' => 190, 'phone' => 80,
+        ]);
+
+        $interests = is_array($content['interests'] ?? null) ? $content['interests'] : [];
+        $clean['interests'] = array_values(array_filter(array_map(
+            fn ($value) => $this->clean($value, 80),
+            array_slice($interests, 0, 20)
+        )));
+        $settings = is_array($content['settings'] ?? null) ? $content['settings'] : [];
+        $clean['settings']['density'] = $this->allowed(
+            $settings['density'] ?? 'comfortable',
+            ['compact', 'comfortable', 'spacious'],
+            'comfortable'
+        );
+        // Missing layout settings fall back to the template's own design so
+        // CVs saved before the layout control existed keep a sensible shape.
+        $clean['settings']['layout'] = $this->allowed(
+            $settings['layout'] ?? '',
+            TemplateCatalog::LAYOUTS,
+            TemplateCatalog::layout($templateKey)
+        );
+        $clean['settings']['section_order'] = $this->allowed(
+            $settings['section_order'] ?? '',
+            TemplateCatalog::ORDERS,
+            TemplateCatalog::order($templateKey)
+        );
+
+        return $clean;
+    }
+
+    private function sanitizeEntries(mixed $entries, array $fields, bool $withBullets = false): array
+    {
+        if (!is_array($entries)) {
+            return [];
+        }
+
+        $result = [];
+        foreach (array_slice($entries, 0, 25) as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+            $clean = [];
+            foreach ($fields as $field => $limit) {
+                $clean[$field] = $this->clean($entry[$field] ?? '', $limit);
+            }
+            $clean['id'] = $clean['id'] ?: self::uuid();
+            if (array_key_exists('current', $entry)) {
+                $clean['current'] = (bool) $entry['current'];
+            }
+            if ($withBullets) {
+                $bullets = is_array($entry['bullets'] ?? null) ? $entry['bullets'] : [];
+                $clean['bullets'] = array_values(array_filter(array_map(
+                    fn ($bullet) => $this->clean($bullet, 600),
+                    array_slice($bullets, 0, 12)
+                )));
+            }
+            $result[] = $clean;
+        }
+        return $result;
+    }
+
+    private function hasMeaningfulEntry(array $entries, array $fields): bool
+    {
+        foreach ($entries as $entry) {
+            $valid = true;
+            foreach ($fields as $field) {
+                if (trim((string) ($entry[$field] ?? '')) === '') {
+                    $valid = false;
+                }
+            }
+            if ($valid) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function clean(mixed $value, int $limit): string
+    {
+        if (!is_string($value) && !is_numeric($value)) {
+            return '';
+        }
+        $value = trim(strip_tags((string) $value));
+        return mb_substr($value, 0, $limit);
+    }
+
+    private function allowed(mixed $value, array $allowed, string $fallback): string
+    {
+        if (!is_string($value) && !is_numeric($value)) {
+            return $fallback;
+        }
+        $value = (string) $value;
+        return in_array($value, $allowed, true) ? $value : $fallback;
+    }
+
+    private function validColor(mixed $color): string
+    {
+        if (!is_string($color)) {
+            return '#5b4df7';
+        }
+        return preg_match('/^#[0-9a-fA-F]{6}$/', $color) ? strtolower($color) : '#5b4df7';
+    }
+
+    private static function uuid(): string
+    {
+        return bin2hex(random_bytes(8));
     }
 }

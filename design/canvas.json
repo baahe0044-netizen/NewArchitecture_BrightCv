@@ -1,0 +1,32 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "title": "Desktop — Dashboard", "x": 0, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Builder.dc.html", "title": "Desktop — CV builder", "x": 1560, "y": 0, "w": 1440, "h": 900 },
+    { "file": "Mobile.dc.html", "title": "Mobile — Dashboard", "x": 0, "y": 1060, "w": 390, "h": 844 },
+    { "file": "MobileBuilder.dc.html", "title": "Mobile — CV builder", "x": 510, "y": 1060, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    {
+      "id": "row-desktop",
+      "x": 0,
+      "y": -160,
+      "w": 620,
+      "text": "DESKTOP · 1440×900\nThe dashboard leads with one job: get back into the CV you were writing. The four vanity stat cards drop to a quiet 'At a glance' list in the rail."
+    },
+    {
+      "id": "row-mobile",
+      "x": 0,
+      "y": 920,
+      "w": 620,
+      "text": "MOBILE · 390×844\nSame two screens on a phone. Frosted bottom bar, 44px+ hit targets everywhere, and the builder splits into Write / Preview so neither is cramped."
+    },
+    {
+      "id": "what-changed",
+      "x": 1060,
+      "y": 1060,
+      "w": 480,
+      "text": "WHAT CHANGED IN THE INTERFACE\n\n1. One obvious next action. The dashboard's 'Continue where you left off' card names the specific next step, not just a percentage.\n\n2. The builder is three zones instead of two: section rail (with progress), one section at a time in the editor, live A4 preview.\n\n3. Guidance sits under the field before you get it wrong — no red until you're done typing.\n\n4. 'Fix' shortcuts jump straight to the thing that needs work.\n\n5. A route to a human on every screen.\n\nThe CV sheet itself stays white and print-safe — untouched by the app theme, as in the current code."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

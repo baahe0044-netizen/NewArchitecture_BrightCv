@@ -1,75 +1,33 @@
 <?php
 
-require_once __DIR__ . '/../../config/Database.php';
+declare(strict_types=1);
 
-class TemplateRepository
+final class TemplateRepository
 {
-    private PDO $db;
+    private readonly PDO $db;
 
     public function __construct()
     {
-        $database = new Database();
-        $this->db = $database->connect();
+        $this->db = Database::getConnection();
     }
 
-    public function getTemplates()
+    public function allActive(): array
     {
-        $stmt = $this->db->prepare("
-            SELECT
-                id,
-                name,
-                description
-            FROM resume_templates
-            WHERE is_active = 1
-            AND LENGTH(css_styles) > 0
-            AND LENGTH(html_structure) > 0
-            ORDER BY id
-        ");
-
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $statement = $this->db->query(
+            'SELECT id, template_key, name, category, description, color, is_premium
+             FROM resume_templates WHERE is_active = 1
+             ORDER BY sort_order ASC, name ASC'
+        );
+        return $statement->fetchAll();
     }
 
-    public function getTemplate($id)
+    public function findByKey(string $key): ?array
     {
-        $stmt = $this->db->prepare("
-            SELECT *
-            FROM resume_templates
-            WHERE id=?
-            LIMIT 1
-        ");
-
-        $stmt->execute([$id]);
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function getSelectedTemplate($resumeId)
-    {
-        $stmt = $this->db->prepare("
-            SELECT template_id
-            FROM resume_selected_template
-            WHERE resume_id=?
-            LIMIT 1
-        ");
-
-        $stmt->execute([$resumeId]);
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function saveSelectedTemplate($resumeId, $templateId)
-    {
-        $stmt = $this->db->prepare("
-            REPLACE INTO resume_selected_template
-            (resume_id,template_id)
-            VALUES(?,?)
-        ");
-
-        return $stmt->execute([
-            $resumeId,
-            $templateId
-        ]);
+        $statement = $this->db->prepare(
+            'SELECT id, template_key, name, category, description, color, is_premium
+             FROM resume_templates WHERE template_key = ? AND is_active = 1 LIMIT 1'
+        );
+        $statement->execute([$key]);
+        return $statement->fetch() ?: null;
     }
 }

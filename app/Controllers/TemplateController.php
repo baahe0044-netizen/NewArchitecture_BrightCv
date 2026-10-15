@@ -1,39 +1,24 @@
 <?php
 
-require_once __DIR__ . '/../Services/TemplateService.php';
+declare(strict_types=1);
 
-class TemplateController
+final class TemplateController extends Controller
 {
-    private TemplateService $service;
-
-    public function __construct()
+    public function __construct(private readonly TemplateService $templates = new TemplateService())
     {
-        $this->service = new TemplateService();
     }
 
-    public function index()
+    public function index(Request $request): Response
     {
-        $templates = $this->service->getTemplates();
-
-        require __DIR__ .
-            '/../Views/templates/list.php';
+        return $this->view('templates/list', [
+            'title' => 'CV templates',
+            'templates' => $this->templates->all(),
+            'user' => Auth::user(),
+        ]);
     }
 
-    public function preview($id)
+    public function indexApi(Request $request): Response
     {
-        $template =
-            $this->service->getTemplate($id);
-
-        require __DIR__ .
-            '/../Views/templates/preview.php';
-    }
-
-    public function useTemplate($resumeId, $templateId)
-    {
-        return $this->service
-            ->saveSelectedTemplate(
-                $resumeId,
-                $templateId
-            );
+        return $this->success(['templates' => $this->templates->all()]);
     }
 }

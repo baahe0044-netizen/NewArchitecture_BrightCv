@@ -1,27 +1,82 @@
 <?php
 
-require_once __DIR__ . '/Router.php';
+declare(strict_types=1);
 
-class App
+final class App
 {
-    protected Router $router;
+    private readonly Router $router;
 
     public function __construct()
     {
         $this->router = new Router();
-
         $routes = require CONFIG_PATH . '/routes.php';
-
-        $this->router->load($routes);
+        $routes($this->router);
     }
 
-    public function run()
+    public function run(): void
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $this->redirectToCanonicalHost();
+        $this->sendSecurityHeaders();
+        $this->router->dispatch(Request::capture())->send();
+    }
 
-        // remove base folder (/LunettiStar/public)
-        $uri = str_replace(BASE_URL, '', $uri);
+    /**
+     * Every asset URL is built from APP_URL, and the CSP only allows 'self'.
+     * A page reached on any other host name -- www. when APP_URL has none, or
+     * the reverse -- therefore has every stylesheet, script, and image
+     * blocked as cross-origin and renders as bare HTML. Sending the visitor
+     * to the configured host keeps the page and its assets on one origin.
+     */
+    private function redirectToCanonicalHost(): void
+    {
+        if (APP_ENV !== 'production' || PHP_SAPI === 'cli' || headers_sent()) {
+            return;
+        }
 
-        $this->router->direct($uri);
+        $canonical = parse_url(BASE_URL);
+        $canonicalHost = strtolower((string) ($canonical['host'] ?? ''));
+        $requestHost = strtolower((string) preg_replace('/:\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? '')));
+        if ($canonicalHost === '' || $requestHost === '' || $requestHost === $canonicalHost) {
+            return;
+        }
+
+        $origin = ($canonical['scheme'] ?? 'https') . '://' . $canonicalHost
+            . (isset($canonical['port']) ? ':' . $canonical['port'] : '');
+        $uri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
+        if ($uri === '' || $uri[0] !== '/') {
+            $uri = '/';
+        }
+
+        header('Location: ' . $origin . $uri, true, 301);
+        exit;
+    }
+
+    private function sendSecurityHeaders(): void
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: SAMEORIGIN');
+        header('Referrer-Policy: strict-origin-when-cross-origin');
+        header('Permissions-Policy: camera=(), geolocation=(), payment=()');
+        // style-src and font-src carry fonts.googleapis.com/fonts.gstatic.com
+        // because head_meta.php (loaded on every page) actually requests the
+        // Unbounded/Plus Jakarta Sans/JetBrains Mono stylesheet and its woff2
+        // files from there. Without these, the CSP silently blocks that
+        // request on every single page load -- the system-font fallback in
+        // --font-display/--font-text/--font-mono would fire on every visit,
+        // not just when a network genuinely blocks it.
+        header("Content-Security-Policy: default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data:; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'");
+        header('Cross-Origin-Opener-Policy: same-origin');
+        header('Cross-Origin-Resource-Policy: same-origin');
+        header('Cache-Control: no-store, private');
+
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+        if ($isHttps) {
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        }
     }
 }

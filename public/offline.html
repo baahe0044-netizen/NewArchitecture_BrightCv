@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#1B1025">
+<title>Offline · LunettiStar CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap">
+<style>
+  :root {
+    --sand: #F2E8CF;
+    --ink: #2E1A47;
+    --muted: #655574;
+    --rust: #5E3690;
+    --gold: #9B5DE5;
+    --on-gold: #140818;
+    --glass-border: rgba(27, 16, 37, .12);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    display: grid;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 24px;
+    padding-top: calc(24px + max(env(safe-area-inset-top, 0px), 14px));
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    place-items: center;
+    color: var(--ink);
+    background-color: var(--sand);
+    background-image:
+      radial-gradient(52% 40% at 14% 0%, rgba(155, 93, 229, .16), transparent 62%),
+      radial-gradient(44% 36% at 92% 22%, rgba(224, 165, 38, .12), transparent 60%);
+    font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+    line-height: 1.55;
+  }
+
+  .card {
+    width: min(100%, 420px);
+    padding: 32px 26px;
+    text-align: center;
+    background: rgba(255, 253, 245, .8);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    box-shadow: 0 18px 48px rgba(27, 16, 37, .18);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+  }
+
+  .mark {
+    display: grid;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 18px;
+    place-items: center;
+    color: #FFFDF6;
+    background: var(--rust);
+    border-radius: 16px;
+  }
+
+  .mark svg { width: 28px; height: 28px; }
+
+  h1 {
+    margin: 0 0 10px;
+    font-family: "Unbounded", "Arial Black", sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+  }
+
+  p {
+    margin: 0 0 22px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  button {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 18px;
+    color: var(--on-gold);
+    background: var(--gold);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(155, 93, 229, .3);
+    cursor: pointer;
+    font: inherit;
+    font-family: "Unbounded", "Arial Black", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    transition: transform .12s ease;
+  }
+
+  button:active {
+    transform: scale(.97);
+  }
+
+  small {
+    display: block;
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<main class="card">
+    <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 3.5h7l3 3V20.5H7z"/>
+            <path d="M14 3.5v3h3M9.5 11h5M9.5 14h5M9.5 17h3"/>
+        </svg>
+    </div>
+    <h1>You are offline</h1>
+    <p>LunettiStar CV needs a connection to load your CVs. Any edits you had open are still saved on this device and will appear when you reconnect.</p>
+    <button type="button" onclick="location.reload()">Try again</button>
+    <small>This page was served from your device.</small>
+</main>
+</body>
+</html>

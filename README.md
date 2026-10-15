@@ -1,179 +1,149 @@
-# BrightCV
+# LunettiStar CV
 
-BrightCV is a database-driven CV and resume builder developed with a custom PHP MVC architecture. It helps users create, manage, preview, and export professional resumes through a structured and maintainable web application.
+LunettiStar CV is a production-oriented PHP and MySQL CV builder. It combines a
+focused three-panel writing workspace with live A4 preview, applicant tracking
+system guidance, job-description matching, smart writing support, and secure
+account-based storage.
 
-## Project Status
+For complete beginner-friendly installation, testing, rebuild, troubleshooting,
+and production steps, see [SETUP_AND_REBUILD_GUIDE.md](SETUP_AND_REBUILD_GUIDE.md).
+For ready-to-paste Windows PowerShell commands, see
+[COPY_PASTE_SETUP_COMMANDS.md](COPY_PASTE_SETUP_COMMANDS.md).
 
-BrightCV is under active development. Core application areas currently include the landing page, authentication, dashboard, resume builder, template gallery, template preview, and PDF-related workflows.
+## What is included
 
-## Key Features
+- Secure registration, sign-in, logout, password reset, CSRF protection, and
+  login throttling
+- Personal dashboard with CV status, completion, ATS trends, exports, and
+  recent activity
+- Eighteen responsive, print-ready CV templates: fifteen single column
+  (vertical) and three built around a sidebar. Each sets skills its own way -
+  chips, ruled rows, tiles, running type, strength bars, segmented meters or
+  dot ratings - so the section is never the same twice
+- Guided sections for contact details, summary, experience, education, skills,
+  projects, certifications, languages, references, and interests
+- Live A4 preview with colour, typeface, density, page layout (single or two
+  column), section order, and language controls
+- Debounced server autosave, local offline recovery, undo and redo, immutable
+  version snapshots, duplication, and soft deletion
+- Rule-based smart summary and achievement writing that does not send private
+  CV content to an external provider
+- ATS scoring, content recommendations, keyword extraction, and target-job
+  matching
+- Voice dictation where the browser supports the Web Speech API
+- Import an existing CV from PDF, Word (.docx), plain text, pasted text, or a
+  LunettiStar CV JSON backup, reviewed before it replaces anything
+- Print-to-PDF, multilingual section headings, and portable JSON backup
+- Installable as an app (web manifest, service worker, offline page) with
+  cached assets; pages and API responses are deliberately never cached, and
+  signing out clears the cache
+- Built for phones first: 44px touch targets, 16px form controls so iOS does
+  not zoom on focus, safe-area insets for notched devices, and WCAG AA text
+  contrast in both the light and dark themes
+- Automated PHP parsing, JavaScript syntax checks, repository integrity checks,
+  PHP domain tests, renderer unit tests, and a builder UI smoke test
 
-- User authentication and session-based access control
-- Resume creation and management
-- Step-by-step resume builder
-- Dynamic resume preview
-- Resume template selection
-- Dashboard statistics and recent CVs
-- PDF preview and export workflow
-- Profile, account, and help pages
-- Responsive user interface
-- Layered MVC architecture
+## Requirements
 
-## Technology Stack
+- PHP 8.1 or newer with PDO MySQL, mbstring, and JSON
+- MySQL 8 or MariaDB 10.5 or newer
+- Apache with mod_rewrite enabled, or another web server configured to route
+  requests to public/index.php
+- Node.js 20 or newer only when running the development quality checks
 
-- **Backend:** PHP
-- **Database:** MySQL
-- **Frontend:** HTML5, CSS3, JavaScript, Tailwind CSS
-- **Architecture:** Custom MVC, service layer, repository pattern
-- **Development environment:** WAMP Server
-- **Version control:** Git and GitHub
+The runtime does not require Node.js. Composer is supported for optimized class
+loading but the application also has a safe fallback autoloader.
 
-## Application Architecture
+## Quick setup with WAMP
 
-```text
-app/
-├── Core/
-├── Controllers/
-├── Services/
-├── Repositories/
-├── Models/
-├── Helpers/
-├── Middleware/
-└── Views/
+1. Place the repository inside C:\wamp64\www.
+2. Copy .env.example to .env.
+3. Set APP_URL to the exact public URL for the folder. For example:
 
-api/
-config/
-public/
-storage/
-database/
-docs/
-tests/
-vendor/
-```
+       APP_URL=http://localhost/NewArchitecture_BrightCv/public
 
-### Architecture Responsibilities
+4. Keep the dedicated default database (`DB_DATABASE=brightcv_db`). An earlier
+   LunettiStar installation may already use `lunettistar_db`, which has an
+   incompatible legacy structure.
+5. Create the schema using either option:
 
-- **Controllers** receive requests and coordinate application actions.
-- **Services** contain business logic and connect controllers to data access.
-- **Repositories** handle database operations and queries.
-- **Models** represent application data and domain entities.
-- **Views** render the user-facing pages.
-- **Core** provides routing, requests, responses, authentication, and shared framework functionality.
+       php database/migrate.php
 
-## Main Pages
+   If PHP is not on PATH, use your WAMP executable:
 
-When the project folder is named `LunettiStar` inside WAMP's `www` directory, the main local routes are:
+       C:\wamp64\bin\php\php8.2.0\php.exe database\migrate.php
 
-```text
-http://localhost/LunettiStar/public/
-http://localhost/LunettiStar/public/login
-http://localhost/LunettiStar/public/dashboard
-http://localhost/LunettiStar/public/resume/builder
-http://localhost/LunettiStar/public/templates
-```
+   You can instead create an empty brightcv_db and import database/schema.sql
+   into it through phpMyAdmin.
+6. Verify the complete WAMP environment:
 
-Adjust the URLs if the project folder has a different name.
+       C:\wamp64\bin\php\php8.2.0\php.exe scripts\doctor.php
 
-## Local Installation
+   Correct every `[FAIL]` line before opening the application. This checks
+   PHP and its extensions, `.env`, `APP_KEY`, storage, MySQL, and the schema.
+7. Open:
 
-### Requirements
+       http://localhost/NewArchitecture_BrightCv/public
 
-- PHP 8 or later
-- MySQL
-- Apache
-- WAMP, XAMPP, or a comparable local PHP environment
-- Composer
-- Git
+If the folder is named LunettiStar, change APP_URL accordingly.
 
-### Setup
+## Quality checks
 
-1. Clone the repository:
+Install development-only packages, then run the full suite:
 
-```bash
-git clone https://github.com/baahe0044-netizen/NewArchitecture_BrightCv.git
-```
+    npm install
+    npm run check
 
-2. Move the project into your local web-server directory, for example:
+The suite parses every PHP file, checks every JavaScript file, verifies route,
+view, partial, and asset references, executes PHP domain tests using a bundled
+WebAssembly PHP runtime, tests the CV renderer, and exercises the live builder
+in a browser-like DOM.
+On a machine with PHP installed, the domain tests can also be run directly:
 
-```text
-C:\wamp64\www\LunettiStar
-```
+    php tests/run.php
 
-3. Install PHP dependencies if required:
+## Production launch
 
-```bash
-composer install
-```
+Before a public deployment:
 
-4. Create a MySQL database named:
+- Point the web server document root to the public directory.
+- Use APP_ENV=production and APP_DEBUG=false.
+- Set APP_KEY to a long, deployment-specific random secret.
+- Serve the site only over HTTPS.
+- Use a dedicated database account with the minimum required privileges.
+- Set MAIL_DRIVER=mail and configure the host PHP mail transport, or replace
+  MailService with the deployment provider.
+- Make storage/logs, storage/cache, storage/uploads, and storage/pdfs writable
+  by the web process but never publicly accessible.
+- Back up the database and storage directory on a tested schedule.
+- Run npm run check and php database/migrate.php as part of deployment.
 
-```text
-lunettistar_db
-```
+See docs/Installation.md and docs/Deployment.md for full details.
 
-5. Import the project SQL file from the `database` directory.
+## Main project structure
 
-6. Update the database configuration in the project's configuration files with your local credentials.
+    app/
+      Controllers/    HTTP and page orchestration
+      Core/           router, request, response, auth, CSRF, view
+      Middleware/     authentication, guest, admin, CSRF guards
+      Repositories/   database queries and ownership boundaries
+      Services/       business rules, ATS analysis, writing, accounts
+      Views/          server-rendered pages
+    config/           environment bootstrap and routes
+    database/         idempotent schema and migration command
+    public/           the only web-accessible entry point and assets
+    storage/          private generated data, logs, and temporary files
+    tests/            domain and browser-renderer tests
 
-7. Start Apache and MySQL.
+## Data model
 
-8. Open the application:
-
-```text
-http://localhost/LunettiStar/public/
-```
-
-## Database Areas
-
-The application uses tables for areas including:
-
-- users
-- resumes
-- personal information
-- education
-- experience
-- skills
-- templates
-- selected templates
-- resume generations
-- ATS scores
-- AI history
-- user activity
-
-## Screenshots
-
-Project screenshots will be added to `docs/screenshots/`.
-
-Recommended screenshots:
-
-- Landing page
-- Login page
-- Dashboard
-- Resume builder
-- Template gallery
-- Template preview
-- PDF preview
-
-## Development Roadmap
-
-- Complete resume-builder integration
-- Expand template management
-- Improve PDF export consistency
-- Add ATS scoring improvements
-- Add AI-assisted writing suggestions
-- Improve automated testing
-- Add a hosted demonstration
-
-## Security
-
-Do not commit database passwords, API keys, session secrets, or production credentials. Use environment variables or local configuration files excluded by `.gitignore`.
-
-## Author
-
-**Emmanuel Baah**  
-Backend Software Engineer  
-GitHub: [baahe0044-netizen](https://github.com/baahe0044-netizen)
+Each CV is stored as a validated JSON document in resumes.content_json. The
+record also stores layout preferences, completion, ATS score, status, and an
+incrementing version. Periodic immutable snapshots are kept in resume_versions.
+This model makes dynamic sections easy to reorder and export while ownership
+and audit data remain relational.
 
 ## License
 
-This project is currently provided for portfolio and educational review. No open-source licence has been granted unless a licence file is added later.
+This repository is currently private application code. Add an explicit license
+before distributing it outside the project team.

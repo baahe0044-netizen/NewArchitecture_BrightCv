@@ -1,5 +1,5 @@
 # Environment and secrets
-.env
+/.env
 .env.*
 !.env.example
 config/local.php
@@ -10,16 +10,16 @@ config/database.local.php
 /node_modules/
 
 # Runtime and generated files
-/storage/logs/*
-!/storage/logs/.gitkeep
 /storage/cache/*
-!/storage/cache/.gitkeep
+/storage/logs/*
+/storage/pdfs/*
 /storage/uploads/*
+!/storage/cache/.gitkeep
+!/storage/logs/.gitkeep
+!/storage/pdfs/.gitkeep
 !/storage/uploads/.gitkeep
 *.log
-
-# Generated documents
-*.pdf
+npm-debug.log*
 
 # IDE and editor settings
 /.idea/
