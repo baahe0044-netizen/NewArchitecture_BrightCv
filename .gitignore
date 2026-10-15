@@ -1,8 +1,15 @@
+# Environment and secrets
 /.env
+.env.*
+!.env.example
+config/local.php
+config/database.local.php
+
+# Dependencies
 /vendor/
 /node_modules/
-/.idea/
-/.vscode/
+
+# Runtime and generated files
 /storage/cache/*
 /storage/logs/*
 /storage/pdfs/*
@@ -11,4 +18,26 @@
 !/storage/logs/.gitkeep
 !/storage/pdfs/.gitkeep
 !/storage/uploads/.gitkeep
+*.log
 npm-debug.log*
+
+# IDE and editor settings
+/.idea/
+/.vscode/
+*.code-workspace
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary and backup files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Test and coverage output
+/coverage/
+.phpunit.result.cache
