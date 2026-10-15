@@ -15,8 +15,40 @@ final class App
 
     public function run(): void
     {
+        $this->redirectToCanonicalHost();
         $this->sendSecurityHeaders();
         $this->router->dispatch(Request::capture())->send();
+    }
+
+    /**
+     * Every asset URL is built from APP_URL, and the CSP only allows 'self'.
+     * A page reached on any other host name -- www. when APP_URL has none, or
+     * the reverse -- therefore has every stylesheet, script, and image
+     * blocked as cross-origin and renders as bare HTML. Sending the visitor
+     * to the configured host keeps the page and its assets on one origin.
+     */
+    private function redirectToCanonicalHost(): void
+    {
+        if (APP_ENV !== 'production' || PHP_SAPI === 'cli' || headers_sent()) {
+            return;
+        }
+
+        $canonical = parse_url(BASE_URL);
+        $canonicalHost = strtolower((string) ($canonical['host'] ?? ''));
+        $requestHost = strtolower((string) preg_replace('/:\d+$/', '', (string) ($_SERVER['HTTP_HOST'] ?? '')));
+        if ($canonicalHost === '' || $requestHost === '' || $requestHost === $canonicalHost) {
+            return;
+        }
+
+        $origin = ($canonical['scheme'] ?? 'https') . '://' . $canonicalHost
+            . (isset($canonical['port']) ? ':' . $canonical['port'] : '');
+        $uri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
+        if ($uri === '' || $uri[0] !== '/') {
+            $uri = '/';
+        }
+
+        header('Location: ' . $origin . $uri, true, 301);
+        exit;
     }
 
     private function sendSecurityHeaders(): void
