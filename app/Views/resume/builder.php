@@ -1,4 +1,7 @@
 <?php
+// Null when gamification is switched off, or when the view is rendered
+// without it (the builder UI test does this).
+$gamification = $gamification ?? null;
 $builderPayload = [
     'resume' => $resume,
     'templates' => $templates,
