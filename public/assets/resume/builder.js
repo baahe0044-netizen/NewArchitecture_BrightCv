@@ -2064,7 +2064,8 @@
   // the screen the keyboard never reaches.
   // ------------------------------------------------------------------
 
-  const phoneLayout = window.matchMedia('(max-width: 1100px)');
+  // matchMedia is missing in the jsdom-based UI test; there it is never a phone.
+  const phoneLayout = window.matchMedia ? window.matchMedia('(max-width: 1100px)') : { matches: false };
   const typingField = 'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]), textarea';
   let keyboardCloseTimer = 0;
 
