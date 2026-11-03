@@ -22,8 +22,8 @@ assertTrue(class_exists(Database::class), 'The database class should be availabl
 
 $content = [
     'personal' => [
-        'full_name' => 'Emmanuel Baah',
-        'email' => 'emmanuel@example.com',
+        'full_name' => 'Ama Mensah',
+        'email' => 'ama@example.com',
         'phone' => '+233 24 000 0000',
         'location' => 'Accra, Ghana',
     ],
@@ -43,6 +43,37 @@ $content = [
 $report = (new AtsService())->analyze($content, 'We need a software engineer with PHP, MySQL, JavaScript, Git and inventory experience.');
 assertTrue($report['score'] >= 70, 'A complete, relevant CV should achieve a strong ATS score.');
 assertTrue(in_array('php', $report['matched_keywords'], true), 'PHP should be detected as a matched keyword.');
+
+// Every field filled in, but with random typing: that is not a CV.
+$gibberish = [
+    'personal' => [
+        'full_name' => 'Xkqzt Pvbrw',
+        'email' => 'asdf',
+        'phone' => 'sdfsdf',
+        'location' => 'qwerty',
+    ],
+    'summary' => str_repeat('asdfgh jklqwe zxcvbn qqqqq wwwww ', 6),
+    'experience' => [[
+        'role' => 'sdfghj',
+        'company' => 'qwerty',
+        'bullets' => ['hjkl hjkl hjkl asdf', 'zxcvbnm qwertyu', 'aaaaaa bbbbbb cccccc'],
+    ]],
+    'education' => [['degree' => 'lorem ipsum', 'school' => 'dolor amet']],
+    'skills' => array_map(static fn (string $name): array => ['name' => $name], ['asdf', 'qwer', 'zxcv', 'hjkl', 'xxxx', 'sdfg']),
+];
+$junkReport = (new AtsService())->analyze($gibberish);
+assertTrue($junkReport['score'] < 30, 'Random typing must not earn a passing ATS score. Got: ' . $junkReport['score']);
+assertTrue(in_array('Summary', $junkReport['quality_issues'], true), 'The report should name the gibberish summary.');
+
+// Real wording that happens to be short, technical, or non-English is not gibberish.
+$realistic = (new AtsService())->analyze([
+    'personal' => ['full_name' => 'Kwabena Nyarko', 'email' => 'k@example.com', 'phone' => '024 123 4567', 'location' => 'Kumasi'],
+    'summary' => 'Registered nurse with six years in emergency and intensive care, trusted to lead night shifts and train new staff.',
+    'experience' => [['role' => 'Staff Nurse', 'company' => 'Komfo Anokye Teaching Hospital', 'bullets' => ['Reduced medication errors by 30% through double-check routines.']]],
+    'education' => [['degree' => 'BSc Nursing', 'school' => 'KNUST']],
+    'skills' => array_map(static fn (string $name): array => ['name' => $name], ['CPR', 'Triage', 'HTML', 'SQL', 'Patient care']),
+]);
+assertTrue($realistic['quality_issues'] === [], 'Real CV text should not be flagged as gibberish: ' . implode(', ', $realistic['quality_issues']));
 
 $validator = new Validator();
 assertTrue(!$validator->validate(['email' => 'not-an-email'], ['email' => 'required|email']), 'Invalid email should fail validation.');
