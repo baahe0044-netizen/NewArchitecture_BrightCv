@@ -8,9 +8,8 @@
  * adds no surface, and the active item is marked with aria-current so the
  * state is announced rather than only drawn.
  *
- * @var string $active One of: dashboard, templates, rewards, account.
+ * @var string $active One of: dashboard, templates, account.
  */
-$gamificationOn = Auth::id() && GamificationService::isEnabled();
 
 $items = [
     'dashboard' => [
@@ -25,16 +24,6 @@ $items = [
     ],
 ];
 
-// The centre FAB already goes to the builder, so the fourth slot is
-// Rewards where the game layer is on, and falls back to Account -- the
-// tab it would otherwise be redundant with -- where it is off.
-if ($gamificationOn) {
-    $items['rewards'] = [
-        'href' => '/rewards',
-        'label' => 'Rewards',
-        'icon' => '<path d="M6 3h12v6a6 6 0 0 1-12 0z"/><path d="M6 5H3v2a3 3 0 0 0 3 3M18 5h3v2a3 3 0 0 1-3 3"/><path d="M9 21h6M12 15v6"/>',
-    ];
-}
 
 $items['account'] = [
     'href' => '/account/profile',

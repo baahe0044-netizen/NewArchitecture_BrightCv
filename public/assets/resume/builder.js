@@ -51,7 +51,21 @@
   const collapsedEntries = new Set();
   const entryKey = (array, entry, index) => array + ':' + (entry?.id || index);
 
-  const DATE_HINT = 'Use one consistent format across your CV, for example Jan 2023.';
+  // Dates are chosen, never typed: a month and a year dropdown, stored as
+  // "YYYY-MM" (or "YYYY" with no month). See renderer.js parseDate().
+  // A profile photo is stored inside the CV as a small square JPEG data URL.
+  const PHOTO_PATTERN = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/;
+  const PHOTO_MAX_LENGTH = 280000;
+  const PHOTO_SIZE = 320;
+
+  const DATE_FIELDS = {
+    experience: ['start_date', 'end_date'],
+    education: ['start_date', 'end_date'],
+    projects: ['start_date', 'end_date'],
+    certifications: ['date'],
+  };
+  const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const PRESENT_WORDS = ['present', 'current', 'now', 'today', 'ongoing', 'aujourd’hui', "aujourd'hui", 'actualidad', 'presente'];
 
   normalizeState();
   restoreLocalDraft();
@@ -70,6 +84,7 @@
       personal: {
         full_name: '', headline: '', email: '', phone: '', location: '', website: '', linkedin: '',
       },
+      // photo is handled on its own below; it is not text.
       summary: '',
       experience: [],
       education: [],
@@ -88,6 +103,10 @@
     Object.keys(defaults.personal).forEach((key) => {
       state.content.personal[key] = scalarText(state.content.personal[key], 255);
     });
+    // The photo is an image, not text: it keeps its full length, and only a
+    // real image data URL survives (the server checks the same).
+    const photo = String(state.content.personal.photo || '');
+    state.content.personal.photo = PHOTO_PATTERN.test(photo) && photo.length <= PHOTO_MAX_LENGTH ? photo : '';
     state.content.summary = scalarText(state.content.summary, 3000);
     state.content.settings = Object.assign({}, defaults.settings, state.content.settings || {});
     const densities = ['compact', 'comfortable', 'spacious'];
@@ -116,6 +135,24 @@
           return normalized;
         });
     });
+    // Dates typed before the pickers existed (or brought in by an import)
+    // become picker values when they can be read. Anything that cannot be
+    // read is kept exactly as written, so nothing on the CV is lost.
+    Object.entries(DATE_FIELDS).forEach(([array, keys]) => {
+      state.content[array].forEach((entry) => {
+        keys.forEach((key) => {
+          const raw = String(entry[key] || '').trim();
+          if (array === 'experience' && key === 'end_date' && PRESENT_WORDS.includes(raw.toLowerCase())) {
+            entry.current = true;
+            entry.end_date = '';
+            return;
+          }
+          const parsed = window.LunettiResume.parseDate(raw);
+          if (parsed !== null) entry[key] = parsed;
+        });
+      });
+    });
+
     state.content.interests = (Array.isArray(state.content.interests) ? state.content.interests : [])
       .map((interest) => scalarText(interest, 80))
       .filter(Boolean)
@@ -203,6 +240,103 @@
       (options.hint ? '<span class="field-hint">' + h(options.hint) + '</span>' : '') + '</div>';
   }
 
+  function photoField(photo) {
+    const shows = window.LunettiResume.TEMPLATE_KEYS.filter((key) => window.LunettiResume.TEMPLATES[key].photo);
+    const current = state.template_key;
+    const note = window.LunettiResume.TEMPLATES[current]?.photo
+      ? 'Shows in the circle at the top of this template.'
+      : 'This template has no picture. Templates that show it: ' +
+        shows.map((key) => key.charAt(0).toUpperCase() + key.slice(1)).join(', ') + '.';
+    return '<div class="field photo-field">' +
+      '<span class="field-label" id="photoLabel">Profile photo <small>(optional)</small></span>' +
+      '<div class="photo-row">' +
+      '<div class="photo-preview' + (photo ? ' has-photo' : '') + '" aria-hidden="true">' +
+      (photo ? '<img src="' + h(photo) + '" alt="">' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.8 3.4-5.8 7-5.8s6.2 2 7 5.8"/></svg>') +
+      '</div><div class="photo-actions">' +
+      '<label class="btn btn-secondary photo-choose">' + (photo ? 'Change photo' : 'Add photo') +
+      '<input type="file" accept="image/jpeg,image/png,image/webp" data-photo-input aria-labelledby="photoLabel" hidden></label>' +
+      (photo ? '<button class="btn btn-secondary" type="button" data-remove-photo>Remove</button>' : '') +
+      '</div></div><span class="field-hint">' + h(note) + '</span></div>';
+  }
+
+  // Crops the chosen picture to a centred square and shrinks it, so a phone
+  // photo of several megabytes is stored as a JPEG of a few dozen kilobytes.
+  function readPhoto(file) {
+    return new Promise((resolve, reject) => {
+      if (!file || !/^image\/(jpeg|png|webp)$/.test(file.type)) {
+        reject(new Error('Choose a JPG, PNG, or WebP picture.'));
+        return;
+      }
+      // Read as a data: URL -- the CSP allows data: images but not blob:.
+      const reader = new FileReader();
+      const image = new Image();
+      image.onload = () => {
+        const side = Math.min(image.naturalWidth, image.naturalHeight);
+        const canvas = document.createElement('canvas');
+        canvas.width = PHOTO_SIZE;
+        canvas.height = PHOTO_SIZE;
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, PHOTO_SIZE, PHOTO_SIZE);
+        context.drawImage(
+          image,
+          (image.naturalWidth - side) / 2, (image.naturalHeight - side) / 2, side, side,
+          0, 0, PHOTO_SIZE, PHOTO_SIZE
+        );
+        let quality = 0.86;
+        let data = canvas.toDataURL('image/jpeg', quality);
+        while (data.length > 90000 && quality > 0.5) {
+          quality -= 0.08;
+          data = canvas.toDataURL('image/jpeg', quality);
+        }
+        resolve(data);
+      };
+      image.onerror = () => reject(new Error('That picture could not be opened.'));
+      reader.onload = () => { image.src = String(reader.result); };
+      reader.onerror = () => reject(new Error('That picture could not be read.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // How a stored date reads on a collapsed entry card.
+  function cardDate(value) {
+    return window.LunettiResume.formatDate(value, 'en');
+  }
+
+  // A month dropdown and a year dropdown, written into one stored value.
+  function dateField(label, array, index, key, value) {
+    const id = 'field-' + array + '-' + Number(index) + '-' + key;
+    const stored = String(value || '');
+    const picked = stored.match(/^(\d{4})(?:-(\d{2}))?$/);
+    const year = picked ? picked[1] : '';
+    const month = picked && picked[2] ? picked[2] : '';
+    const data = ' data-date-array="' + h(array) + '" data-date-index="' + Number(index) + '" data-date-key="' + h(key) + '"';
+    const thisYear = new Date().getFullYear();
+    const years = [];
+    for (let y = thisYear + 6; y >= 1960; y -= 1) years.push(String(y));
+    // A year saved from an old typed date can sit outside the list.
+    if (year && !years.includes(year)) years.push(year);
+
+    return '<div class="field"><label for="' + h(id) + '">' + h(label) + '</label>' +
+      '<div class="date-picker">' +
+      '<select id="' + h(id) + '"' + data + ' data-date-part="month">' +
+      '<option value="">Month</option>' +
+      MONTH_NAMES.map((name, i) => {
+        const number = String(i + 1).padStart(2, '0');
+        return '<option value="' + number + '"' + (month === number ? ' selected' : '') + '>' + h(name) + '</option>';
+      }).join('') +
+      '</select>' +
+      '<label class="sr-only" for="' + h(id) + '-year">' + h(label) + ' year</label>' +
+      '<select id="' + h(id) + '-year"' + data + ' data-date-part="year">' +
+      '<option value="">Year</option>' +
+      years.map((y) => '<option value="' + y + '"' + (year === y ? ' selected' : '') + '>' + y + '</option>').join('') +
+      '</select></div>' +
+      (stored && !picked
+        ? '<span class="field-hint">Saved as “' + h(stored) + '”. Pick a month and year to replace it.</span>'
+        : '') +
+      '</div>';
+  }
+
   function selectField(label, array, index, key, value, options) {
     const id = 'field-' + array + '-' + Number(index) + '-' + key;
     return '<div class="field"><label for="' + h(id) + '">' + h(label) + '</label><select id="' + h(id) + '" data-array="' + h(array) +
@@ -273,7 +407,8 @@
     if (currentSection === 'personal') {
       mount.innerHTML = editorHeading('Personal details', 'Make it easy for recruiters to contact you.') +
         '<div class="editor-fields">' +
-        field('Full name', 'personal.full_name', c.personal.full_name, { placeholder: 'e.g. Emmanuel Baah', maxlength: 120, autocomplete: 'name' }) +
+        photoField(c.personal.photo) +
+        field('Full name', 'personal.full_name', c.personal.full_name, { placeholder: 'e.g. Ama Mensah', maxlength: 120, autocomplete: 'name' }) +
         field('Professional headline', 'personal.headline', c.personal.headline, { placeholder: 'e.g. Software Engineer', maxlength: 160 }) +
         '<div class="field-grid">' +
         field('Email', 'personal.email', c.personal.email, { type: 'email', placeholder: 'you@example.com', maxlength: 190, autocomplete: 'email' }) +
@@ -325,6 +460,7 @@
           ? '<div class="entry-list">' + c.skills.map((entry, index) => renderSkill(entry, index)).join('') + '</div>' +
             '<button class="add-entry-button" type="button" data-add-entry="skills">+ Add skill</button>'
           : emptyState('No skills added yet.', '+ Add your first skill', 'skills')) +
+        skillSuggestions() +
         '<div class="bullet-help spaced"><span>ATS</span><div>Use the same truthful terminology as the target job description. Five to twelve focused skills usually work well.</div></div>';
       return;
     }
@@ -351,10 +487,25 @@
     const inExtras = currentSection === 'extras';
     const extraIndex = EXTRAS.indexOf(currentExtra);
 
+    // More's four sub-sections are real steps of their own, so they count:
+    // six main steps before More, then one per sub-section.
+    const mainSteps = SECTIONS.length - 1;
+    const total = mainSteps + EXTRAS.length;
+    const position = inExtras ? mainSteps + extraIndex + 1 : index + 1;
+    const lastStep = position === total;
+
     previous.disabled = index <= 0;
-    next.disabled = inExtras ? extraIndex >= EXTRAS.length - 1 : index >= SECTIONS.length - 1;
-    count.textContent = 'Step ' + (index + 1) + ' of ' + SECTIONS.length +
+    next.disabled = false;
+    count.textContent = 'Step ' + position + ' of ' + total +
       (inExtras ? ' · ' + currentExtra.charAt(0).toUpperCase() + currentExtra.slice(1) : '');
+
+    // The last step finishes the CV, so Next becomes the download.
+    if (next.dataset.mode !== (lastStep ? 'download' : 'next')) {
+      next.dataset.mode = lastStep ? 'download' : 'next';
+      next.innerHTML = lastStep
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg> Download CV'
+        : 'Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+    }
   }
 
   function goToExtra(name) {
@@ -403,7 +554,7 @@
 
   function renderExperience(entry, index) {
     const bullets = Array.isArray(entry.bullets) ? entry.bullets : [];
-    const period = [entry.start_date, entry.current ? 'Present' : entry.end_date].filter(Boolean).join(' – ');
+    const period = [cardDate(entry.start_date), entry.current ? 'Present' : cardDate(entry.end_date)].filter(Boolean).join(' – ');
     const summary = [entry.company, period].filter(Boolean).join(' · ');
 
     const body =
@@ -412,11 +563,11 @@
       arrayField('Company', 'experience', index, 'company', entry.company, { placeholder: 'Company name', maxlength: 160 }) +
       arrayField('Location', 'experience', index, 'location', entry.location, { placeholder: 'City, Country', maxlength: 160 }) +
       '</div><div class="field-grid">' +
-      arrayField('Start date', 'experience', index, 'start_date', entry.start_date, { placeholder: 'Jan 2023', maxlength: 30 }) +
+      dateField('Start date', 'experience', index, 'start_date', entry.start_date) +
       (entry.current
         ? '<div class="field"><label>End date</label><input value="Present" disabled aria-label="End date"></div>'
-        : arrayField('End date', 'experience', index, 'end_date', entry.end_date, { placeholder: 'Jun 2026', maxlength: 30 })) +
-      '</div><span class="field-hint">' + h(DATE_HINT) + '</span>' +
+        : dateField('End date', 'experience', index, 'end_date', entry.end_date)) +
+      '</div>' +
       '<label class="checkbox-field"><input type="checkbox" data-array="experience" data-index="' + index + '" data-key="current"' +
       (entry.current ? ' checked' : '') + '><span>I currently work here</span></label>' +
       // A group label rather than <label for>, since the achievements are now
@@ -431,7 +582,7 @@
   }
 
   function renderEducation(entry, index) {
-    const period = [entry.start_date, entry.end_date].filter(Boolean).join(' – ');
+    const period = [cardDate(entry.start_date), cardDate(entry.end_date)].filter(Boolean).join(' – ');
     const summary = [entry.school, period].filter(Boolean).join(' · ');
 
     const body =
@@ -439,12 +590,26 @@
       arrayField('Institution', 'education', index, 'school', entry.school, { placeholder: 'Institution name', maxlength: 180 }) +
       '<div class="field-grid">' +
       arrayField('Location', 'education', index, 'location', entry.location, { placeholder: 'Accra, Ghana', maxlength: 160 }) +
-      arrayField('Start date', 'education', index, 'start_date', entry.start_date, { placeholder: 'Sep 2024', maxlength: 30 }) +
+      '</div><div class="field-grid">' +
+      dateField('Start date', 'education', index, 'start_date', entry.start_date) +
+      dateField('End date', 'education', index, 'end_date', entry.end_date) +
       '</div>' +
-      arrayField('End date', 'education', index, 'end_date', entry.end_date, { placeholder: 'Jun 2026', maxlength: 30, hint: DATE_HINT }) +
       arrayField('Details', 'education', index, 'details', entry.details, { type: 'textarea', placeholder: 'Honours, relevant coursework, or achievement', maxlength: 1000 }) ;
 
     return entryCard('education', index, entry, entry.degree || 'New qualification', summary, body);
+  }
+
+  // Tap-to-add chips worked out from the headline and job titles.
+  function skillSuggestions() {
+    if (!window.LunettiSkills) return '';
+    const c = state.content;
+    const titles = [c.personal.headline, ...c.experience.map((entry) => entry.role), ...c.projects.map((entry) => entry.role)];
+    const suggested = window.LunettiSkills.suggest(titles, c.skills.map((entry) => entry.name));
+    if (!suggested.length) return '';
+    return '<div class="skill-suggestions"><p class="field-label">Suggested skills <small>Tap to add the ones you really have</small></p>' +
+      '<div class="skill-suggestion-list">' +
+      suggested.map((name) => '<button type="button" class="skill-suggestion" data-suggest-skill="' + h(name) + '">+ ' + h(name) + '</button>').join('') +
+      '</div></div>';
   }
 
   function renderSkill(entry, index) {
@@ -457,7 +622,7 @@
   }
 
   function renderProject(entry, index) {
-    const period = [entry.start_date, entry.end_date].filter(Boolean).join(' – ');
+    const period = [cardDate(entry.start_date), cardDate(entry.end_date)].filter(Boolean).join(' – ');
     const summary = [entry.role, period].filter(Boolean).join(' · ');
 
     const body =
@@ -466,8 +631,8 @@
       arrayField('Your role', 'projects', index, 'role', entry.role, { placeholder: 'e.g. Full-stack developer', maxlength: 160 }) +
       arrayField('Project link', 'projects', index, 'url', entry.url, { placeholder: 'github.com/you/project', maxlength: 255 }) +
       '</div><div class="field-grid">' +
-      arrayField('Start date', 'projects', index, 'start_date', entry.start_date, { placeholder: 'Mar 2026', maxlength: 30 }) +
-      arrayField('End date', 'projects', index, 'end_date', entry.end_date, { placeholder: 'Jul 2026', maxlength: 30 }) +
+      dateField('Start date', 'projects', index, 'start_date', entry.start_date) +
+      dateField('End date', 'projects', index, 'end_date', entry.end_date) +
       '</div>' +
       arrayField('What you built and why it matters', 'projects', index, 'description', entry.description, { type: 'textarea', placeholder: 'Technology, problem solved, and result…', maxlength: 1600 }) ;
 
@@ -487,11 +652,11 @@
       body = (c.certifications.length
         ? '<div class="entry-list">' + c.certifications.map((entry, index) => entryCard(
             'certifications', index, entry, entry.name || 'New certification',
-            [entry.issuer, entry.date].filter(Boolean).join(' · '),
+            [entry.issuer, cardDate(entry.date)].filter(Boolean).join(' · '),
             arrayField('Certification', 'certifications', index, 'name', entry.name, { placeholder: 'e.g. AWS Cloud Practitioner', maxlength: 180 }) +
             '<div class="field-grid">' +
             arrayField('Issuer', 'certifications', index, 'issuer', entry.issuer, { placeholder: 'Issuing organization', maxlength: 180 }) +
-            arrayField('Date', 'certifications', index, 'date', entry.date, { placeholder: 'Mar 2026', maxlength: 30 }) +
+            dateField('Date', 'certifications', index, 'date', entry.date) +
             '</div>' +
             arrayField('Credential link', 'certifications', index, 'url', entry.url, { placeholder: 'https://…', maxlength: 255 })
           )).join('') + '</div><button class="add-entry-button" type="button" data-add-entry="certifications">+ Add certification</button>'
@@ -610,7 +775,9 @@
     const summaryComplete = String(c.summary || '').trim().length >= 80;
     const experienceComplete = c.experience.some((item) => item.role && item.company && item.bullets?.some((b) => String(b).trim()));
     const educationComplete = c.education.some((item) => item.degree && item.school);
-    const skillsComplete = c.skills.filter((item) => String(item.name || '').trim()).length >= 5;
+    // One named skill ticks the section, like one entry does everywhere else;
+    // the five-to-twelve advice lives in the Skills step itself.
+    const skillsComplete = c.skills.some((item) => String(item.name || '').trim());
     const projectsComplete = c.projects.some((item) => item.name && item.description);
     const extrasComplete = c.certifications.some((item) => item.name) || c.languages.some((item) => item.name) || c.references.some((item) => item.name) || c.interests.length;
     const checks = { personal: personalComplete, summary: summaryComplete, experience: experienceComplete, education: educationComplete, skills: skillsComplete, projects: projectsComplete, extras: Boolean(extrasComplete) };
@@ -815,7 +982,11 @@
     if (index > 0) goToSection(SECTIONS[index - 1].key);
   });
 
-  document.querySelector('[data-step-next]')?.addEventListener('click', () => {
+  document.querySelector('[data-step-next]')?.addEventListener('click', (event) => {
+    if (event.currentTarget.dataset.mode === 'download') {
+      startDownload(event.currentTarget);
+      return;
+    }
     if (currentSection === 'extras') {
       const extraIndex = EXTRAS.indexOf(currentExtra);
       if (extraIndex < EXTRAS.length - 1) goToExtra(EXTRAS[extraIndex + 1]);
@@ -843,6 +1014,31 @@
         const counter = document.getElementById('summaryCount');
         if (counter) counter.textContent = element.value.length + ' / 3,000';
       }
+      stateChanged();
+      return;
+    }
+
+    if (element.matches?.('[data-photo-input]')) {
+      if (event.type !== 'change') return;
+      const file = element.files && element.files[0];
+      if (!file) return;
+      readPhoto(file).then((photo) => {
+        state.content.personal.photo = photo;
+        rerenderEditor();
+        stateChanged({ history: true, immediatePreview: true });
+      }).catch((error) => window.Lunetti.toast(error.message, 'error'));
+      return;
+    }
+
+    if (element.dataset.datePart) {
+      const entry = state.content[element.dataset.dateArray]?.[Number(element.dataset.dateIndex)];
+      if (!entry) return;
+      const picker = element.closest('.date-picker');
+      const month = picker?.querySelector('[data-date-part="month"]')?.value || '';
+      const year = picker?.querySelector('[data-date-part="year"]')?.value || '';
+      // A month on its own is not a date yet, so nothing is stored until a
+      // year is chosen; the month stays selected meanwhile.
+      entry[element.dataset.dateKey] = year ? (month ? year + '-' + month : year) : '';
       stateChanged();
       return;
     }
@@ -913,6 +1109,24 @@
       const entry = state.content[array]?.[entryIndex];
       if (!entry || !Array.isArray(entry.bullets)) return;
       entry.bullets.splice(Number(removeBullet.dataset.removeBullet), 1);
+      rerenderEditor();
+      stateChanged({ history: true });
+      return;
+    }
+
+    if (event.target.closest('[data-remove-photo]')) {
+      state.content.personal.photo = '';
+      rerenderEditor();
+      stateChanged({ history: true, immediatePreview: true });
+      return;
+    }
+
+    const suggestion = event.target.closest('[data-suggest-skill]');
+    if (suggestion) {
+      const skill = Object.assign(defaultEntry('skills'), { name: suggestion.dataset.suggestSkill });
+      state.content.skills.push(skill);
+      // Added already named, so it starts collapsed and the list stays short.
+      collapsedEntries.add(entryKey('skills', skill, state.content.skills.length - 1));
       rerenderEditor();
       stateChanged({ history: true });
       return;
@@ -1034,6 +1248,8 @@
         state.content.settings.section_order = design.order;
       }
       updateDesignControls();
+      // The photo note says whether this template shows the picture.
+      if (currentSection === 'personal') rerenderEditor();
       stateChanged({ history: true, immediatePreview: true });
     });
   });
@@ -1358,9 +1574,12 @@
     // Design settings belong to this CV, not to the file being imported, so
     // only the written content is replaced.
     const settings = clone(state.content.settings);
+    // A CV file carries no photo, so the one already on this CV stays.
+    const photo = state.content.personal.photo;
     state.content = importedContent;
     normalizeState();
     state.content.settings = settings;
+    state.content.personal.photo = photo;
 
     document.getElementById('resumeTitle').value = state.name;
     renderEditor();
@@ -1406,7 +1625,7 @@
 
   function continueExport() {
     return pendingExport === 'download'
-      ? proceedToDownload(document.getElementById('downloadButton'))
+      ? proceedToDownload(document.querySelector('[data-step-next]'))
       : proceedToPrint(document.getElementById('printButton'));
   }
 
@@ -1422,14 +1641,15 @@
     await proceedToPrint(event.currentTarget);
   });
 
-  document.getElementById('downloadButton')?.addEventListener('click', async (event) => {
+  // The Download CV button on the last step.
+  async function startDownload(button) {
     if (config.isGuest) {
       pendingExport = 'download';
       window.Lunetti.openModal('claimAccountModal');
       return;
     }
-    await proceedToDownload(event.currentTarget);
-  });
+    await proceedToDownload(button);
+  }
 
   const CLAIM_FIELDS = {
     name: 'claimName',

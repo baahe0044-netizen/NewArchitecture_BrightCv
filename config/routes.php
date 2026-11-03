@@ -26,14 +26,13 @@ return static function (Router $router): void {
     $router->get('/resume/builder', 'ResumeController@builder');
     $router->get('/resume/builder/{id}', 'ResumeController@builder', ['auth']);
     $router->get('/resume/{id}/print', 'PdfController@preview', ['auth']);
-    $router->get('/rewards', 'RewardsController@index', ['auth']);
+    $router->get('/rewards', 'DashboardController@legacyRewards', ['auth']);
 
     $router->get('/account/profile', 'AccountController@profile', ['auth']);
     $router->post('/account/profile', 'AccountController@updateProfile', ['auth', 'csrf']);
     $router->get('/account/security', 'AccountController@security', ['auth']);
     $router->post('/account/password', 'AccountController@updatePassword', ['auth', 'csrf']);
     $router->get('/account/appearance', 'AccountController@appearance', ['auth']);
-    $router->post('/account/gamification', 'AccountController@updateGamification', ['auth', 'csrf']);
     $router->post('/api/account/claim', 'AccountController@claimApi', ['auth', 'csrf']);
     $router->post('/api/account/login-claim', 'AccountController@loginClaimApi', ['auth', 'csrf']);
 

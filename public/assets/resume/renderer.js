@@ -29,27 +29,29 @@
   // Template registry. `layout` is the shape the template was designed for and
   // `order` is its natural section sequence; both are only defaults — the CV's
   // own settings win when the writer picks something else in the Design panel.
+  // `photo` says whether the template shows the circle at the top, which is
+  // where a profile photo goes; the four that hide it stay text-only.
   const TEMPLATES = {
-    modern: { layout: 'stacked', order: 'standard' },
-    classic: { layout: 'stacked', order: 'skills_first' },
-    minimal: { layout: 'stacked', order: 'standard' },
-    elegant: { layout: 'stacked', order: 'standard' },
-    compact: { layout: 'stacked', order: 'standard' },
-    timeline: { layout: 'stacked', order: 'standard' },
-    tech: { layout: 'stacked', order: 'skills_first' },
-    graduate: { layout: 'stacked', order: 'skills_first' },
-    academic: { layout: 'stacked', order: 'standard' },
-    executive: { layout: 'sidebar', order: 'standard' },
-    bold: { layout: 'stacked', order: 'standard' },
-    creative: { layout: 'sidebar', order: 'standard' },
-    editorial: { layout: 'stacked', order: 'standard' },
-    metro: { layout: 'stacked', order: 'standard' },
-    ledger: { layout: 'stacked', order: 'standard' },
-    spectrum: { layout: 'stacked', order: 'skills_first' },
+    modern: { layout: 'stacked', order: 'standard', photo: true },
+    classic: { layout: 'stacked', order: 'skills_first', photo: false },
+    minimal: { layout: 'stacked', order: 'standard', photo: false },
+    elegant: { layout: 'stacked', order: 'standard', photo: false },
+    compact: { layout: 'stacked', order: 'standard', photo: true },
+    timeline: { layout: 'stacked', order: 'standard', photo: true },
+    tech: { layout: 'stacked', order: 'skills_first', photo: true },
+    graduate: { layout: 'stacked', order: 'skills_first', photo: true },
+    academic: { layout: 'stacked', order: 'standard', photo: false },
+    executive: { layout: 'sidebar', order: 'standard', photo: true },
+    bold: { layout: 'stacked', order: 'standard', photo: true },
+    creative: { layout: 'sidebar', order: 'standard', photo: true },
+    editorial: { layout: 'stacked', order: 'standard', photo: true },
+    metro: { layout: 'stacked', order: 'standard', photo: true },
+    ledger: { layout: 'stacked', order: 'standard', photo: true },
+    spectrum: { layout: 'stacked', order: 'skills_first', photo: true },
     // Standard, not skills-first: slate is built around dot ratings down a dark
     // sidebar, and skills-first would lift them out of it.
-    slate: { layout: 'sidebar', order: 'standard' },
-    aurora: { layout: 'stacked', order: 'standard' },
+    slate: { layout: 'sidebar', order: 'standard', photo: true },
+    aurora: { layout: 'stacked', order: 'standard', photo: true },
   };
 
   // Times New Roman leads and is the default: every template sets its type in
@@ -116,10 +118,68 @@
     );
   }
 
+  // Dates are picked as a month and a year and stored as "YYYY-MM" (or
+  // "YYYY" when only the year is known). Anything else is text typed before
+  // the pickers existed, or brought in by an import, and is shown as written.
+  const MONTHS = {
+    en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    fr: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+    es: ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sept.', 'oct.', 'nov.', 'dic.'],
+  };
+
+  // Month names a typed date might use, in any of the three CV languages.
+  const MONTH_WORDS = [
+    ['jan', 'january', 'janv', 'janvier', 'ene', 'enero'],
+    ['feb', 'february', 'fév', 'févr', 'fev', 'fevr', 'février', 'fevrier', 'febrero'],
+    ['mar', 'march', 'mars', 'marzo'],
+    ['apr', 'april', 'avr', 'avril', 'abr', 'abril'],
+    ['may', 'mai', 'mayo'],
+    ['jun', 'june', 'juin', 'junio'],
+    ['jul', 'july', 'juil', 'juillet', 'julio'],
+    ['aug', 'august', 'août', 'aout', 'ago', 'agosto'],
+    ['sep', 'sept', 'september', 'septembre', 'septiembre', 'setiembre'],
+    ['oct', 'october', 'octobre', 'octubre'],
+    ['nov', 'november', 'novembre', 'noviembre'],
+    ['dec', 'december', 'déc', 'decembre', 'décembre', 'dic', 'diciembre'],
+  ];
+
+  /**
+   * Reads a date into the stored "YYYY-MM" / "YYYY" form, or returns null
+   * when the text is not a date this can be sure about.
+   */
+  function parseDate(value) {
+    const text = String(value || '').trim().toLowerCase();
+    if (!text) return '';
+    const pad = (month) => String(month).padStart(2, '0');
+    const validMonth = (month) => month >= 1 && month <= 12;
+    let match = text.match(/^(\d{4})(?:[-/.](\d{1,2}))?$/);
+    if (match) {
+      if (!match[2]) return match[1];
+      return validMonth(Number(match[2])) ? match[1] + '-' + pad(match[2]) : null;
+    }
+    match = text.match(/^(\d{1,2})[-/.](\d{4})$/);
+    if (match) return validMonth(Number(match[1])) ? match[2] + '-' + pad(match[1]) : null;
+    match = text.match(/^([\p{L}]+)\.?,?\s*(?:de\s+)?(\d{4})$/u);
+    if (match) {
+      const index = MONTH_WORDS.findIndex((words) => words.includes(match[1]));
+      return index === -1 ? null : match[2] + '-' + pad(index + 1);
+    }
+    return null;
+  }
+
+  function formatDate(value, locale) {
+    const text = String(value || '').trim();
+    const match = text.match(/^(\d{4})-(\d{2})$/);
+    if (match && Number(match[2]) >= 1 && Number(match[2]) <= 12) {
+      return (MONTHS[locale] || MONTHS.en)[Number(match[2]) - 1] + ' ' + match[1];
+    }
+    return text;
+  }
+
   function formatPeriod(entry, locale) {
     const t = translations[locale] || translations.en;
-    const start = String(entry.start_date || '').trim();
-    const end = entry.current ? t.present : String(entry.end_date || '').trim();
+    const start = formatDate(entry.start_date, locale);
+    const end = entry.current ? t.present : formatDate(entry.end_date, locale);
     if (!start && !end) return '';
     if (!start) return escapeHtml(end);
     if (!end) return escapeHtml(start);
@@ -275,7 +335,7 @@
     const certificationBody = certifications.map((item) =>
       '<article class="cv-compact-entry"><div><b>' + escapeHtml(item.name || '') + '</b>' +
       (item.issuer ? '<span>' + escapeHtml(item.issuer) + '</span>' : '') + '</div>' +
-      (item.date ? '<time>' + escapeHtml(item.date) + '</time>' : '') + '</article>'
+      (item.date ? '<time>' + escapeHtml(formatDate(item.date, locale)) + '</time>' : '') + '</article>'
     ).join('');
 
     const languages = meaningful(content.languages, ['name']);
@@ -320,11 +380,17 @@
     const monogram = escapeHtml(
       (personal.full_name || 'CV').split(/\s+/).map((part) => part[0] || '').slice(0, 2).join('').toUpperCase()
     );
+    // A photo takes the place of the initials in the circle. Templates that
+    // hide the circle stay text-only.
+    const photo = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/]+=*$/.test(String(personal.photo || ''))
+      ? personal.photo
+      : '';
 
     return '<article class="cv-document cv-template-' + template + ' cv-layout-' + layout +
       ' cv-order-' + sectionOrder + ' cv-density-' + density +
       '" style="--cv-accent:' + accent + ';--cv-font:' + escapeHtml(font) + '">' +
-      '<header class="cv-header"><div class="cv-monogram">' + monogram + '</div>' +
+      '<header class="cv-header' + (photo ? ' cv-has-photo' : '') + '"><div class="cv-monogram">' +
+      (photo ? '<img class="cv-photo" src="' + escapeHtml(photo) + '" alt="">' : monogram) + '</div>' +
       '<div class="cv-identity"><h1>' + name + '</h1><p>' + headline + '</p></div></header>' +
       '<div class="cv-contact">' + contactItems.join('<i aria-hidden="true"></i>') + '</div>' +
       body +
@@ -352,7 +418,7 @@
   }
 
   return {
-    renderResume, calculateProgress, escapeHtml, safeUrl, translations, skillStrength,
+    renderResume, calculateProgress, escapeHtml, safeUrl, translations, skillStrength, parseDate, formatDate, MONTHS,
     FONTS, DEFAULT_FONT, TEMPLATES, TEMPLATE_KEYS, LAYOUTS, ORDERS, DENSITIES, SECTION_ORDER,
   };
 });

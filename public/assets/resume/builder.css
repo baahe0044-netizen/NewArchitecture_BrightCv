@@ -189,10 +189,6 @@
   height: 16px;
 }
 
-.builder-xp-chip {
-  flex: none;
-}
-
 .builder-mobile-panel,
 .builder-mobile-switch {
   display: none;
@@ -289,59 +285,6 @@
 
 /* The level card the stage rail opens with -- Builder.dc.html's own choco
    card, not a generic completion meter. */
-.stage-rail-level {
-  margin: 14px 16px 0;
-  padding: 14px;
-  background: var(--choco);
-  border: var(--edge) solid var(--glass-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-btn);
-}
-
-.stage-rail-level-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.level-number-small {
-  width: 44px;
-  height: 44px;
-  font-size: 22px;
-}
-
-.stage-rail-level-name {
-  margin: 0;
-  color: var(--choco-ink);
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.stage-rail-level-xp {
-  margin: 0;
-  color: var(--choco-muted);
-  font-size: 13px;
-}
-
-.stage-rail-level-bar {
-  height: 12px;
-  margin-top: 11px;
-  overflow: hidden;
-  background: var(--choco-well);
-  border: var(--edge) solid var(--choco-ink);
-  border-radius: var(--radius-pill);
-}
-
-.stage-rail-level-bar div {
-  height: 100%;
-  background: var(--gold);
-}
-
-.stage-rail-level-next {
-  margin: 6px 0 0;
-  color: var(--choco-muted);
-  font-size: 12px;
-}
 
 .completion-summary {
   margin: 14px 16px;
@@ -516,6 +459,121 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+/* Profile photo: a round preview beside Add/Change and Remove. */
+.photo-field .field-label small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.photo-row {
+  display: flex;
+  margin-top: 8px;
+  align-items: center;
+  gap: 14px;
+}
+
+.photo-preview {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  place-items: center;
+  overflow: hidden;
+  color: var(--muted);
+  background: var(--card-2);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.photo-preview svg {
+  width: 38px;
+  height: 38px;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.photo-actions .btn {
+  min-height: 40px;
+  font-size: 14px;
+}
+
+.photo-choose {
+  cursor: pointer;
+}
+
+@media (max-width: 820px) {
+  .photo-actions .btn {
+    min-height: 44px;
+  }
+}
+
+/* Suggested skills: tap a chip to add it. */
+.skill-suggestions {
+  margin-top: 18px;
+}
+
+.skill-suggestions .field-label small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.skill-suggestion-list {
+  display: flex;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-suggestion {
+  min-height: 36px;
+  padding: 6px 12px;
+  color: var(--brand);
+  background: var(--brand-soft);
+  border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.skill-suggestion:hover,
+.skill-suggestion:focus-visible {
+  color: var(--on-brand);
+  background: var(--brand);
+}
+
+@media (max-width: 820px) {
+  .skill-suggestion {
+    min-height: 44px;
+  }
+}
+
+/* A date is a month dropdown and a year dropdown side by side. */
+.date-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.date-picker select {
+  min-width: 0;
+  width: 100%;
 }
 
 .builder-page .field {
@@ -1097,7 +1155,6 @@
   box-shadow: var(--shadow-lg);
 }
 
-
 .mobile-edit-button {
   display: none;
 }
@@ -1542,7 +1599,7 @@
   align-items: flex-start;
   gap: 8px;
   background: var(--warning-soft);
-  border: 1px solid #ecd8ac;
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
   border-radius: 8px;
 }
 
@@ -1555,7 +1612,7 @@
   place-items: center;
   color: var(--warning);
   background: var(--surface);
-  border: 1px solid #ead5a7;
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
   border-radius: 6px;
   font-size: 7px;
   font-weight: 800;
@@ -1563,7 +1620,7 @@
 
 .recommendation p {
   margin: 2px 0 0;
-  color: #655d4e;
+  color: var(--ink-soft);
   font-size: 8px;
   line-height: 1.45;
 }
@@ -1636,15 +1693,15 @@
 }
 
 .keyword-cloud.matched span {
-  color: #126442;
+  color: var(--success);
   background: var(--success-soft);
-  border: 1px solid #badfce;
+  border: 1px solid color-mix(in srgb, var(--success) 35%, transparent);
 }
 
 .keyword-cloud.missing span {
   color: var(--warning);
   background: var(--warning-soft);
-  border: 1px solid #ecd8ac;
+  border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
 }
 
 .progress-reward {
@@ -1811,7 +1868,7 @@
   justify-content: center;
   color: transparent;
   background: var(--card-2);
-  border: var(--edge) solid #BCA88A;
+  border: var(--edge) solid var(--line-strong);
   border-radius: var(--radius-pill);
   font-size: 13px;
   font-style: normal;
@@ -1821,14 +1878,6 @@
   flex: 1;
   min-width: 0;
   font-weight: inherit;
-}
-
-.section-xp {
-  flex: none;
-  color: var(--rust-deep);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .04em;
 }
 
 /* Completion reads as done through the glyph as well as colour. */
@@ -2485,8 +2534,7 @@
 }
 
 @media (max-width: 600px) {
-  .builder-actions .btn-primary,
-  .builder-actions .builder-download-button {
+  .builder-actions .btn-primary {
     padding: 0;
     font-size: 0;
   }
@@ -2506,8 +2554,7 @@
     max-width: 45vw;
   }
 
-  .builder-actions .btn-primary svg,
-  .builder-actions .builder-download-button svg {
+  .builder-actions .btn-primary svg {
     width: 18px;
     height: 18px;
   }
@@ -2736,8 +2783,7 @@
     min-height: 44px;
   }
 
-  .builder-actions .btn-primary,
-  .builder-actions .builder-download-button {
+  .builder-actions .btn-primary {
     width: 44px;
     min-height: 44px;
   }
@@ -2824,11 +2870,6 @@
    score -- so they step aside rather than forcing the topbar and preview
    toolbar to overflow on a phone.
    ========================================================================== */
-@media (max-width: 1100px) {
-  .builder-xp-chip {
-    display: none;
-  }
-}
 
 @media (max-width: 720px) {
   .robot-score-meter {
@@ -2911,46 +2952,12 @@
     font-size: 11px;
   }
 
-  .section-xp {
-    font-size: 12px;
-  }
-
   /* The level card and progress bar step aside too, cut down to a single
      compact line each instead of the desktop card's full padding and
      multi-line copy. */
-  .stage-rail-level {
-    margin: 6px 12px 0;
-    padding: 7px 10px;
-  }
-
-  .stage-rail-level-row {
-    gap: 8px;
-  }
-
-  .level-number-small {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
-
-  .stage-rail-level-name {
-    font-size: 12px;
-  }
-
-  .stage-rail-level-xp {
-    font-size: 10px;
-  }
-
-  .stage-rail-level-bar {
-    height: 6px;
-    margin-top: 6px;
-  }
 
   /* "380 XP to Drafter" is the one line the card can lose outright -- the
      bar it sits under already shows the same progress. */
-  .stage-rail-level-next {
-    display: none;
-  }
 
   .completion-summary {
     margin: 6px 12px;
@@ -2996,29 +3003,6 @@
     border-bottom: 0;
   }
 
-  .stage-rail-level {
-    margin: 12px 12px 0;
-    padding: 10px;
-  }
-
-  .level-number-small {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-  }
-
-  .stage-rail-level-name {
-    font-size: 13px;
-  }
-
-  .stage-rail-level-xp {
-    font-size: 11px;
-  }
-
-  .stage-rail-level-next {
-    display: none;
-  }
-
   .completion-summary {
     margin: 8px 12px;
     padding: 8px 10px;
@@ -3037,10 +3021,6 @@
   .section-steps button > b {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .section-xp {
-    font-size: 11px;
   }
 
   .section-editor {

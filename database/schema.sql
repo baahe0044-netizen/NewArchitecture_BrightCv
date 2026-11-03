@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS users (
     avatar_path VARCHAR(255) NULL,
     -- A visitor who starts a CV before creating an account gets a real row
     -- here immediately -- a synthetic email, an unusable random password --
-    -- so every existing user_id-scoped feature (autosave, ATS, gamification)
+    -- so every existing user_id-scoped feature (autosave, ATS)
     -- works for them right away. is_guest=1 marks it as not a real account
     -- yet; claiming it (see users SET on account creation at download time)
     -- flips this to 0 and fills in the real name/email/password in place,

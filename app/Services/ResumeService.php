@@ -172,6 +172,8 @@ final class ResumeService
         foreach (array_keys($clean['personal']) as $field) {
             $clean['personal'][$field] = $this->clean($personal[$field] ?? '', 255);
         }
+        // The photo is an image, not text, so it skips the text cleaning.
+        $clean['personal']['photo'] = $this->validPhoto($personal['photo'] ?? '');
 
         $clean['summary'] = $this->clean($content['summary'] ?? '', 3000);
         $clean['experience'] = $this->sanitizeEntries($content['experience'] ?? [], [
@@ -281,6 +283,26 @@ final class ResumeService
         }
         $value = trim(strip_tags((string) $value));
         return mb_substr($value, 0, $limit);
+    }
+
+    /**
+     * A profile photo is kept only when it is a real JPEG, PNG, or WebP
+     * image in a base64 data URL of no more than about 200 KB. Anything
+     * else is dropped rather than stored.
+     */
+    private function validPhoto(mixed $value): string
+    {
+        if (!is_string($value) || $value === '' || strlen($value) > 280000) {
+            return '';
+        }
+        if (!preg_match('#^data:image/(jpeg|png|webp);base64,([A-Za-z0-9+/]+=*)$#', $value, $match)) {
+            return '';
+        }
+        $bytes = base64_decode($match[2], true);
+        if ($bytes === false || @getimagesizefromstring($bytes) === false) {
+            return '';
+        }
+        return $value;
     }
 
     private function allowed(mixed $value, array $allowed, string $fallback): string

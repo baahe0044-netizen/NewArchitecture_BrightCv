@@ -151,48 +151,6 @@
     },
   };
 
-  // Palette is the other axis: which accent colour, independent of light
-  // against dark. theme-init.js already reads and applies the stored value
-  // before first paint (to avoid a flash); this is the write side, mirroring
-  // BrightTheme's own shape so Account -> Appearance can drive both the same
-  // way.
-  const PALETTE_KEY = 'brightcv:palette';
-  const PALETTES = ['hunter', 'sage', 'citrus', 'cream', 'brick'];
-  const PALETTE_LABELS = {
-    hunter: 'Hunter green',
-    sage: 'Violet',
-    citrus: 'Citrus',
-    cream: 'Vanilla cream',
-    brick: 'Blushed brick',
-  };
-
-  window.BrightPalette = {
-    get() {
-      try {
-        const stored = localStorage.getItem(PALETTE_KEY);
-        return PALETTES.includes(stored) ? stored : 'sage';
-      } catch {
-        return 'sage';
-      }
-    },
-    apply(palette) {
-      document.documentElement.setAttribute('data-palette', PALETTES.includes(palette) ? palette : 'sage');
-    },
-    set(palette) {
-      if (!PALETTES.includes(palette)) return;
-      this.apply(palette);
-      try {
-        localStorage.setItem(PALETTE_KEY, palette);
-      } catch {
-        /* Palette still applies for this page view, it just will not persist. */
-      }
-      document.dispatchEvent(new CustomEvent('brightcv:palettechange', { detail: { palette } }));
-    },
-    label(palette) {
-      return PALETTE_LABELS[palette] || 'Violet';
-    },
-  };
-
   // iOS Safari still pinch-zooms despite user-scalable=no; its gesture events
   // are the one thing that stops it. Ordinary scrolling is untouched.
   ['gesturestart', 'gesturechange', 'gestureend'].forEach((name) => {

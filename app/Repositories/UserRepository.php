@@ -41,7 +41,7 @@ final class UserRepository
 
     /**
      * A CV started before any account exists still needs a real user_id --
-     * every existing feature (autosave, ATS, gamification, dashboard) is
+     * every existing feature (autosave, ATS, dashboard) is
      * scoped to one. A synthetic, unguessable email and password satisfy the
      * NOT NULL/UNIQUE columns without either ever being shown or usable to
      * sign in; claimGuest() below fills in the real values in place.
@@ -60,7 +60,7 @@ final class UserRepository
 
     /**
      * Turns a guest row into a real account in place -- same id, same
-     * resumes, same gamification history -- rather than creating a new
+     * resumes, same activity history -- rather than creating a new
      * account and migrating data across. Returns false if the row was
      * already claimed (or never existed), so the caller can tell "someone
      * already set this account up" apart from a genuine database error.

@@ -1,15 +1,14 @@
 (function () {
   var mode = 'system';
+  // One colour scheme: white, blue, and black. 'sage' is the internal key
+  // of the default token set in app.css; a palette someone picked before
+  // the other schemes were removed is ignored rather than half-applied.
   var palette = 'sage';
 
   try {
     var storedMode = localStorage.getItem('brightcv-theme');
     if (storedMode === 'light' || storedMode === 'dark') {
       mode = storedMode;
-    }
-    var storedPalette = localStorage.getItem('brightcv:palette');
-    if (['hunter', 'sage', 'citrus', 'cream', 'brick'].indexOf(storedPalette) !== -1) {
-      palette = storedPalette;
     }
   } catch (error) {
     /* localStorage unavailable (private mode, disabled storage) — fall back to

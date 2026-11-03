@@ -175,28 +175,6 @@ if (!function_exists('human_time_ago')) {
     }
 }
 
-if (!function_exists('badge_icon')) {
-    /**
-     * The inline SVG shape for one earned badge, keyed the same as
-     * GamificationService::badgesFor() names them. Icons are the reference
-     * mockups' own shapes: stroke-based, rounded caps, no icon font.
-     */
-    function badge_icon(string $key): string
-    {
-        $paths = [
-            'first-draft' => '<path d="M6 3h8l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M13 3v5h5"/>',
-            'numbers-person' => '<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>',
-            'tight-summary' => '<path d="M4 7h16M4 12h11M4 17h7"/>',
-            'five-days' => '<path d="M12 3c2.5 3 4.5 5 4.5 8a4.5 4.5 0 0 1-9 0c0-1.4.5-2.5 1.4-3.7.6 1 1.3 1.5 2.1 1.7C11.4 7 11.6 5 12 3z"/>',
-            'first-download' => '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/>',
-            'two-cvs' => '<rect x="4" y="4" width="7" height="7" rx="1.4"/><rect x="13" y="4" width="7" height="7" rx="1.4"/><rect x="4" y="13" width="7" height="7" rx="1.4"/><rect x="13" y="13" width="7" height="7" rx="1.4"/>',
-        ];
-
-        $body = $paths[$key] ?? $paths['first-draft'];
-        return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $body . '</svg>';
-    }
-}
-
 Session::start();
 
 set_exception_handler(static function (Throwable $exception): void {

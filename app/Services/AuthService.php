@@ -11,7 +11,7 @@ final class AuthService
     /**
      * Logs a brand-new visitor in as a guest, the same way login() logs in
      * a returning one -- so every route already gated on Auth::check() (the
-     * builder, autosave, ATS, gamification, the dashboard) works for them
+     * builder, autosave, ATS, the dashboard) works for them
      * immediately, with no separate "guest mode" to maintain in parallel.
      * Auth::user()['is_guest'] is what the builder checks to gate the one
      * thing that does need a real account: downloading the finished CV.

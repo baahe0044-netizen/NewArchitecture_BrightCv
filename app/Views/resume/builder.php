@@ -1,7 +1,4 @@
 <?php
-// Null when gamification is switched off, or when the view is rendered
-// without it (the builder UI test does this).
-$gamification = $gamification ?? null;
 $builderPayload = [
     'resume' => $resume,
     'templates' => $templates,
@@ -53,9 +50,6 @@ $builderPayload = [
 
     <div class="builder-actions">
         <?php View::partial('components/theme_toggle'); ?>
-        <?php if ($gamification !== null && (int) $gamification['xp_today'] > 0): ?>
-            <span class="chip chip-gold builder-xp-chip">+<?= (int) $gamification['xp_today'] ?> XP today</span>
-        <?php endif; ?>
         <!--
             These four sit inline in the topbar on a wide screen and collapse
             into the "More actions" menu on a phone. They stay one set of
@@ -82,10 +76,6 @@ $builderPayload = [
         </div>
         <button class="icon-btn builder-more-button" id="builderMoreButton" type="button" data-builder-more aria-controls="builderTools" aria-expanded="false" aria-label="More actions">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
-        </button>
-        <button class="btn btn-secondary builder-download-button" id="downloadButton" type="button" title="Download PDF" aria-label="Download PDF">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
-            Download
         </button>
         <button class="btn btn-primary" id="printButton" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7z"/></svg>
@@ -115,20 +105,6 @@ $builderPayload = [
                 which pushed every field ~400px down the panel.
             -->
             <div class="editor-sticky">
-                <?php if ($gamification !== null): $level = $gamification['level']; ?>
-                    <div class="stage-rail-level">
-                        <div class="stage-rail-level-row">
-                            <span class="level-number level-number-small"><?= (int) $level['level'] ?></span>
-                            <div>
-                                <p class="stage-rail-level-name"><?= e($level['name']) ?></p>
-                                <p class="stage-rail-level-xp"><?= number_format((int) $gamification['xp']) ?> XP</p>
-                            </div>
-                        </div>
-                        <div class="stage-rail-level-bar"><div style="width:<?= (int) $level['progress_percent'] ?>%"></div></div>
-                        <p class="stage-rail-level-next"><?= number_format((int) $level['xp_to_next']) ?> XP to <?= e($level['next_name']) ?></p>
-                    </div>
-                <?php endif; ?>
-
                 <div class="completion-summary">
                     <div class="completion-copy"><span>CV progress</span><b id="completionPercent"><?= (int) $resume['completion'] ?>%</b></div>
                     <div class="completion-bar"><i id="completionBar" style="width:<?= (int) $resume['completion'] ?>%"></i></div>
@@ -137,13 +113,6 @@ $builderPayload = [
 
                 <nav class="section-steps" id="sectionNav" aria-label="CV sections">
                     <?php
-                    // The same weights ResumeService::completion() already scores a
-                    // CV against, shown up front rather than invented for display --
-                    // filling this section is worth exactly this much of the total.
-                    $sectionWeights = [
-                        'personal' => 20, 'summary' => 15, 'experience' => 25,
-                        'education' => 15, 'skills' => 15, 'projects' => 10, 'extras' => null,
-                    ];
                     $sectionLabels = [
                         'personal' => 'Personal', 'summary' => 'Summary', 'experience' => 'Experience',
                         'education' => 'Education', 'skills' => 'Skills', 'projects' => 'Projects', 'extras' => 'More',
@@ -153,7 +122,6 @@ $builderPayload = [
                         <button class="<?= $key === 'personal' ? 'active' : '' ?>" type="button" data-section="<?= e($key) ?>">
                             <i data-section-check="<?= e($key) ?>">○</i>
                             <b><?= e($label) ?></b>
-                            <?php if ($sectionWeights[$key] !== null): ?><span class="section-xp">+<?= (int) $sectionWeights[$key] ?></span><?php endif; ?>
                         </button>
                     <?php endforeach; ?>
                 </nav>
@@ -510,6 +478,7 @@ $builderPayload = [
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/renderer.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/download.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/skill-suggestions.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/builder.js')) ?>" defer></script>
 </body>
 </html>

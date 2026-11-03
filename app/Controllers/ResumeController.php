@@ -8,8 +8,7 @@ final class ResumeController extends Controller
         private readonly ResumeService $resumes = new ResumeService(),
         private readonly TemplateService $templates = new TemplateService(),
         private readonly AIService $assistant = new AIService(),
-        private readonly AtsService $ats = new AtsService(),
-        private readonly GamificationService $gamification = new GamificationService()
+        private readonly AtsService $ats = new AtsService()
     ) {
     }
 
@@ -38,16 +37,11 @@ final class ResumeController extends Controller
             return $this->view('errors/404', ['title' => 'CV not found'], 404);
         }
 
-        $gamification = GamificationService::isEnabled()
-            ? $this->gamification->summaryForUser((int) Auth::id())
-            : null;
-
         return $this->view('resume/builder', [
             'title' => 'Edit ' . $resume['name'],
             'user' => Auth::user(),
             'resume' => $resume,
             'templates' => $this->templates->all(),
-            'gamification' => $gamification,
             'csrfToken' => Csrf::token(),
             'isGuest' => (bool) (Auth::user()['is_guest'] ?? false),
         ]);

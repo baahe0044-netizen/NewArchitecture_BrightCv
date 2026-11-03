@@ -10,9 +10,9 @@ function resume(overrides = {}) {
     font_family: 'Inter',
     content: {
       personal: {
-        full_name: 'Emmanuel Baah',
+        full_name: 'Ama Mensah',
         headline: 'Software Engineer',
-        email: 'emmanuel@example.com',
+        email: 'ama@example.com',
         phone: '+233 24 000 0000',
         location: 'Accra, Ghana',
         website: '',
@@ -41,7 +41,7 @@ function resume(overrides = {}) {
 test('renders a selected template and core CV sections', () => {
   const html = renderer.renderResume(resume(), { placeholders: false });
   assert.match(html, /cv-template-modern/);
-  assert.match(html, /EMMANUEL BAAH|Emmanuel Baah/);
+  assert.match(html, /AMA MENSAH|Ama Mensah/);
   assert.match(html, /Professional Summary/);
   assert.match(html, /Improved checkout completion by 18%/);
 });
@@ -221,4 +221,30 @@ test('every template can be rendered and names itself on the document', () => {
     data.template_key = key;
     assert.match(renderer.renderResume(data, { placeholders: false }), new RegExp('cv-template-' + key + '\\b'));
   }
+});
+
+test('picked dates are shown as a month and year, typed ones as written', () => {
+  assert.equal(renderer.parseDate('Jan 2023'), '2023-01');
+  assert.equal(renderer.parseDate('01/2023'), '2023-01');
+  assert.equal(renderer.parseDate('septembre 2021'), '2021-09');
+  assert.equal(renderer.parseDate('2020'), '2020');
+  assert.equal(renderer.parseDate('Summer 2020'), null);
+  assert.equal(renderer.formatDate('2023-01', 'en'), 'Jan 2023');
+  assert.equal(renderer.formatDate('2023-08', 'fr'), 'août 2023');
+  assert.equal(renderer.formatDate('Summer 2020', 'en'), 'Summer 2020');
+
+  const data = resume();
+  data.content.experience = [{ role: 'Engineer', company: 'Acme', start_date: '2021-03', end_date: '', current: true, bullets: [] }];
+  assert.match(renderer.renderResume(data, { placeholders: false }), /Mar 2021 — Present/);
+});
+
+test('a photo replaces the initials, and only a real image data URL is used', () => {
+  const data = resume();
+  data.content.personal.photo = 'data:image/jpeg;base64,/9j/4AAQSkZJRg==';
+  assert.match(renderer.renderResume(data, { placeholders: false }), /<img class="cv-photo" src="data:image\/jpeg;base64,/);
+
+  data.content.personal.photo = 'javascript:alert(1)';
+  const html = renderer.renderResume(data, { placeholders: false });
+  assert.ok(!html.includes('cv-photo'));
+  assert.ok(!html.includes('javascript:'));
 });
