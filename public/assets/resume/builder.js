@@ -492,20 +492,13 @@
     const mainSteps = SECTIONS.length - 1;
     const total = mainSteps + EXTRAS.length;
     const position = inExtras ? mainSteps + extraIndex + 1 : index + 1;
-    const lastStep = position === total;
 
     previous.disabled = index <= 0;
-    next.disabled = false;
+    // The Download CV button sits under Back/Next on every step, so the
+    // last step simply has nowhere further to go.
+    next.disabled = position === total;
     count.textContent = 'Step ' + position + ' of ' + total +
       (inExtras ? ' · ' + currentExtra.charAt(0).toUpperCase() + currentExtra.slice(1) : '');
-
-    // The last step finishes the CV, so Next becomes the download.
-    if (next.dataset.mode !== (lastStep ? 'download' : 'next')) {
-      next.dataset.mode = lastStep ? 'download' : 'next';
-      next.innerHTML = lastStep
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg> Download CV'
-        : 'Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
-    }
   }
 
   function goToExtra(name) {
@@ -982,11 +975,12 @@
     if (index > 0) goToSection(SECTIONS[index - 1].key);
   });
 
-  document.querySelector('[data-step-next]')?.addEventListener('click', (event) => {
-    if (event.currentTarget.dataset.mode === 'download') {
-      startDownload(event.currentTarget);
-      return;
-    }
+  // Two of them: pinned under Back/Next, and in the phone's bottom bar.
+  document.querySelectorAll('[data-download-cv]').forEach((button) => {
+    button.addEventListener('click', (event) => startDownload(event.currentTarget));
+  });
+
+  document.querySelector('[data-step-next]')?.addEventListener('click', () => {
     if (currentSection === 'extras') {
       const extraIndex = EXTRAS.indexOf(currentExtra);
       if (extraIndex < EXTRAS.length - 1) goToExtra(EXTRAS[extraIndex + 1]);
@@ -1625,7 +1619,7 @@
 
   function continueExport() {
     return pendingExport === 'download'
-      ? proceedToDownload(document.querySelector('[data-step-next]'))
+      ? proceedToDownload(document.querySelector('[data-download-cv]'))
       : proceedToPrint(document.getElementById('printButton'));
   }
 
@@ -1641,7 +1635,7 @@
     await proceedToPrint(event.currentTarget);
   });
 
-  // The Download CV button on the last step.
+  // The Download CV button pinned under Back/Next.
   async function startDownload(button) {
     if (config.isGuest) {
       pendingExport = 'download';

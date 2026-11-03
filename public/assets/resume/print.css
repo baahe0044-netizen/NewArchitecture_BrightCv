@@ -45,7 +45,7 @@
 
 .print-toolbar small {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .print-toolbar .btn {

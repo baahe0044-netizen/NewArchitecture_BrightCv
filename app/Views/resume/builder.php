@@ -129,15 +129,23 @@ $builderPayload = [
 
             <section class="section-editor" id="sectionEditor" aria-live="polite"></section>
 
+            <!-- Pinned to the bottom of the editor, so Download CV is always in
+                 reach, on every step, without scrolling to the end. -->
             <div class="step-footer">
-                <button class="btn btn-secondary" type="button" data-step-prev>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-                    Back
-                </button>
-                <span class="step-count" id="stepCount"></span>
-                <button class="btn btn-primary" type="button" data-step-next>
-                    Next
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                <div class="step-nav">
+                    <button class="btn btn-secondary" type="button" data-step-prev>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                        Back
+                    </button>
+                    <span class="step-count" id="stepCount"></span>
+                    <button class="btn btn-secondary" type="button" data-step-next>
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                    </button>
+                </div>
+                <button class="btn btn-primary step-download" type="button" data-download-cv>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+                    Download CV
                 </button>
             </div>
         </div>
@@ -350,6 +358,10 @@ $builderPayload = [
     <button type="button" data-toggle-panel="assistant" aria-controls="assistantPanel" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h5"/><path d="m9 16 1.5 1.5L14 14"/></svg>
         Review
+    </button>
+    <button class="mobile-switch-download" type="button" data-download-cv>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+        Download
     </button>
 </nav>
 

@@ -30,7 +30,9 @@
 
 .auth-kicker {
   margin: 0 0 12px;
-  color: var(--gold);
+  /* The panel behind it is the dark header colour in both themes, so the
+     label takes a light blue that stays readable on it. */
+  color: #93C5FD;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .09em;
@@ -93,7 +95,7 @@
 .auth-workspace-head small {
   margin-top: 2px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .auth-workspace-head strong {
@@ -101,7 +103,7 @@
   align-items: center;
   gap: 6px;
   color: var(--success);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .auth-workspace-head strong i {
@@ -140,7 +142,7 @@
 .auth-workspace-body span {
   margin-top: 3px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .auth-workspace-footer {
@@ -149,7 +151,7 @@
   gap: 10px;
   background: var(--card-2);
   border-top: 2px solid var(--glass-border);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .auth-workspace-footer span {
@@ -180,7 +182,7 @@
 }
 
 .register-visual .auth-kicker {
-  color: var(--gold);
+  color: #93C5FD;
 }
 
 .auth-benefits {

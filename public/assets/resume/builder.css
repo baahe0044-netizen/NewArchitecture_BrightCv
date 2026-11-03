@@ -105,8 +105,8 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  color: var(--choco-ink);
-  background: var(--moss);
+  color: var(--on-gold);
+  background: var(--gold);
   border: var(--edge) solid var(--choco-ink);
   border-radius: var(--radius-pill);
   font-size: 13px;
@@ -328,7 +328,7 @@
 .completion-summary small {
   display: block;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -370,9 +370,9 @@
   height: 31px;
   place-items: center;
   color: var(--muted);
-  background: #f0f2f5;
+  background: var(--card-2);
   border-radius: 7px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -397,14 +397,14 @@
   margin-top: 1px;
   overflow: hidden;
   color: var(--subtle);
-  font-size: 10px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .section-nav button > i {
   color: var(--subtle);
-  font-size: 8px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 700;
 }
@@ -447,7 +447,7 @@
   min-height: 38px;
   padding: 8px 10px;
   flex: 0 0 auto;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .editor-fields {
@@ -600,7 +600,7 @@
 }
 
 .builder-page .field-hint {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -619,7 +619,7 @@
   border: 0;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -684,7 +684,7 @@
 .entry-card-actions button[data-remove-entry]:hover {
   color: var(--danger);
   background: var(--danger-soft);
-  border-color: #f0c4cc;
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
 }
 
 .entry-card-actions svg {
@@ -735,7 +735,7 @@
 
 .character-count {
   color: var(--subtle);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .bullet-help {
@@ -744,10 +744,10 @@
   align-items: flex-start;
   gap: 9px;
   color: var(--ink-soft);
-  background: #f1f4f8;
-  border: 1px solid #dce3eb;
+  background: var(--card-2);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -835,7 +835,7 @@
   border: 1px solid transparent;
   border-radius: 7px;
   cursor: pointer;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -943,7 +943,7 @@
   margin-top: 5px;
   overflow: hidden;
   color: var(--ink-soft);
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1011,7 +1011,7 @@
   border: 1px solid var(--line);
   border-radius: 7px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -1196,7 +1196,7 @@
 
 .assistant-heading p {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .assistant-tabs {
@@ -1205,7 +1205,7 @@
 
 .assistant-tabs button {
   padding-inline: 4px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .assistant-scroll {
@@ -1260,7 +1260,7 @@
 .assistant-intro p {
   margin: 3px 0 0;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -1287,7 +1287,7 @@
 
 .assistant-actions-list > button:hover {
   border-color: var(--brand-border);
-  background: #fcfcff;
+  background: var(--card-2);
 }
 
 .assistant-actions-list b,
@@ -1296,13 +1296,13 @@
 }
 
 .assistant-actions-list b {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .assistant-actions-list small {
   margin-top: 2px;
   color: var(--subtle);
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -1328,8 +1328,8 @@
 }
 
 .assistant-action-icon.blue {
-  color: #2369b8;
-  background: #eaf3ff;
+  color: var(--brand);
+  background: var(--brand-soft);
 }
 
 .assistant-action-icon.green {
@@ -1346,7 +1346,7 @@
   margin-top: 12px;
   padding: 12px;
   color: var(--ink-soft);
-  background: #f7f7fc;
+  background: var(--card-2);
   border: 1px solid var(--brand-border);
   border-radius: 9px;
 }
@@ -1357,7 +1357,7 @@
   align-items: center;
   justify-content: space-between;
   color: var(--brand-dark);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1382,7 +1382,7 @@
 }
 
 #assistantResultContent {
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -1407,7 +1407,7 @@
   display: inline-block;
   margin-right: 5px;
   color: var(--brand);
-  border-color: #d5d9df;
+  border-color: var(--line-strong);
   border-top-color: var(--brand);
   vertical-align: -3px;
 }
@@ -1454,13 +1454,13 @@
 }
 
 .voice-card b {
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .voice-card small {
   max-width: 155px;
   color: var(--subtle);
-  font-size: 7px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -1468,7 +1468,7 @@
   min-height: 36px;
   padding-inline: 10px;
   flex: 0 0 auto;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .ats-score-card {
@@ -1492,7 +1492,7 @@
   flex: 0 0 66px;
   place-items: center;
   align-content: center;
-  background: conic-gradient(var(--brand) calc(var(--score) * 1%), #dfe3e8 0);
+  background: conic-gradient(var(--brand) calc(var(--score) * 1%), var(--card-2) 0);
   border-radius: 50%;
 }
 
@@ -1519,12 +1519,12 @@
 
 .ats-ring small {
   color: var(--subtle);
-  font-size: 7px;
+  font-size: 12px;
 }
 
 .ats-score-card > div:last-child > span {
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 750;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1538,7 +1538,7 @@
 .ats-score-card p {
   margin: 0;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .full-button {
@@ -1562,7 +1562,7 @@
 
 .ats-category span,
 .ats-category b {
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .ats-category span {
@@ -1577,7 +1577,7 @@
   height: 6px;
   grid-column: 1 / -1;
   overflow: hidden;
-  background: #e2e6ea;
+  background: var(--card-2);
   border-radius: 4px;
 }
 
@@ -1614,14 +1614,14 @@
   background: var(--surface);
   border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
   border-radius: 6px;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .recommendation p {
   margin: 2px 0 0;
   color: var(--ink-soft);
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -1655,7 +1655,7 @@
 .job-match-intro p {
   margin: 5px 0 0;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 #jobDescription {
@@ -1676,7 +1676,7 @@
 .keyword-result p {
   margin: 0 0 8px;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .keyword-cloud {
@@ -1688,7 +1688,7 @@
 .keyword-cloud span {
   padding: 5px 8px;
   border-radius: 7px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -1720,7 +1720,7 @@
   width: 44px;
   height: 44px;
   flex-basis: 44px;
-  background: conic-gradient(var(--success) calc(var(--progress) * 1%), #dfe3e8 0);
+  background: conic-gradient(var(--success) calc(var(--progress) * 1%), var(--card-2) 0);
 }
 
 .progress-ring-small::before {
@@ -1728,7 +1728,7 @@
 }
 
 .progress-ring-small strong {
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .progress-reward > div:last-child {
@@ -1741,13 +1741,13 @@
 }
 
 .progress-reward b {
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .progress-reward span {
   margin-top: 2px;
   color: var(--muted);
-  font-size: 7px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -1888,13 +1888,43 @@
 }
 
 .step-footer {
-  display: flex;
-  margin: 0 16px 28px;
-  padding-top: 16px;
-  align-items: center;
-  justify-content: space-between;
+  position: sticky;
+  z-index: 5;
+  bottom: 0;
+  display: grid;
+  padding: 12px 16px 14px;
   gap: 10px;
-  border-top: 2px solid var(--card-2);
+  /* Solid, not the translucent card colour, so the form never shows
+     through behind the buttons. */
+  background: var(--canvas);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, .06);
+}
+
+.step-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The count gets its own line above Back and Next, so the two buttons
+   share the full width even in the narrow docked editor. */
+.step-nav .step-count {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  text-align: center;
+}
+
+.step-nav .btn {
+  width: 100%;
+  padding-inline: 8px;
+}
+
+.step-footer .btn.step-download {
+  width: 100%;
+  min-height: 46px;
+  font-size: 15px;
 }
 
 .step-footer .btn {
@@ -1910,7 +1940,7 @@
 
 .step-count {
   color: var(--subtle);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 650;
 }
 
@@ -1950,7 +1980,7 @@
 
 .entry-caret {
   color: var(--subtle);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .entry-titles {
@@ -1961,7 +1991,7 @@
 .entry-titles small {
   overflow: hidden;
   color: var(--subtle);
-  font-size: 10px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -2250,7 +2280,7 @@
 
 .import-detected dt {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -2497,7 +2527,7 @@
     display: grid;
     height: 64px;
     padding: 6px max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 4px;
     background: var(--surface);
     border-top: 1px solid var(--line);
@@ -2514,8 +2544,20 @@
     background: transparent;
     border: 0;
     border-radius: 7px;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
+  }
+
+  /* The bottom bar's Download is always on screen here, so the pinned
+     one under Back/Next would only repeat it. */
+  .step-footer .btn.step-download {
+    display: none;
+  }
+
+  /* Download stands out from the three view switches beside it. */
+  .builder-mobile-switch .mobile-switch-download {
+    color: var(--on-gold);
+    background: var(--gold);
   }
 
   .builder-mobile-switch button.active {
@@ -3048,6 +3090,11 @@
    the last field on a stage can be scrolled up to the top.
    ========================================================================== */
 @media (max-width: 1100px) {
+  /* The pinned footer would sit on top of the field being typed into. */
+  .keyboard-open .step-footer {
+    position: static;
+  }
+
   .keyboard-open .editor-sticky {
     position: static;
   }

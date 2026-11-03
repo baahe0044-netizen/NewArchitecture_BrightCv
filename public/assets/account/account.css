@@ -68,7 +68,7 @@
 .account-nav small {
   margin-top: 2px;
   color: var(--subtle);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .account-card {
@@ -109,7 +109,7 @@
 .security-avatar {
   color: var(--success);
   background: var(--success-soft);
-  border: 1px solid #badfce;
+  border: 1px solid color-mix(in srgb, var(--success) 35%, transparent);
 }
 
 .account-card-heading h2,
@@ -181,7 +181,7 @@
 .security-note p {
   margin: 3px 0 0;
   color: var(--ink-soft);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 @media (max-width: 740px) {

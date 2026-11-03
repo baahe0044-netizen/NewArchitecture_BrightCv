@@ -19,6 +19,9 @@
 */
 
 :root {
+  /* Example text inside an empty field: lighter than typed text, but
+     still easy to read (4.5:1 or more on the field). */
+  --placeholder: #6B7280;
   color-scheme: light;
 
   /* Room for the phone's status bar. The page is laid out under it
@@ -172,6 +175,7 @@
 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    --placeholder: #8E99AB;
     color-scheme: dark;
 
     --sand: #05070B;
@@ -255,6 +259,7 @@
 }
 
 :root[data-theme="dark"] {
+  --placeholder: #8E99AB;
   color-scheme: dark;
 
   --sand: #05070B;
@@ -455,10 +460,16 @@ svg {
   min-height: 44px;
   align-items: center;
   gap: 12px;
-  color: var(--choco-ink);
+  /* Body ink by default; the dark bars below switch it to white. */
+  color: var(--ink);
   font-size: 25px;
   font-weight: 700;
   letter-spacing: .01em;
+}
+
+.app-header .brand,
+.builder-topbar .brand {
+  color: var(--choco-ink);
 }
 
 .brand-mark {
@@ -525,7 +536,7 @@ svg {
 }
 
 .app-nav a.active {
-  color: var(--ink);
+  color: var(--choco);
   background: var(--choco-ink);
 }
 
@@ -762,9 +773,10 @@ button:disabled {
     transform var(--motion-fast) var(--ease-out);
 }
 
-.field input::placeholder,
-.field textarea::placeholder {
-  color: #98a2b3;
+input::placeholder,
+textarea::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
 }
 
 .field input:focus,

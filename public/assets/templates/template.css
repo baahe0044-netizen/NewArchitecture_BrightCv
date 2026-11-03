@@ -204,7 +204,7 @@
 }
 
 .template-paper header span {
-  color: #7a818b;
+  color: #5b616b;
   font-size: 4px;
   letter-spacing: .08em;
 }
@@ -212,7 +212,7 @@
 .template-contact {
   margin: 12px 0 14px;
   padding: 5px;
-  color: #717781;
+  color: #565c66;
   background: #f4f5f6;
   font-size: 4px;
   text-align: center;
@@ -237,7 +237,7 @@
 
 .template-content small {
   margin: 1px 0 4px;
-  color: #7f858e;
+  color: #5b616b;
   font-size: 4px;
 }
 
@@ -273,7 +273,8 @@
 
 .template-style-executive .template-avatar {
   color: var(--accent);
-  background: var(--surface);
+  /* The card is a drawing of a paper CV, so it stays white in dark mode. */
+  background: #fff;
   border: 1px solid var(--accent);
 }
 
@@ -647,13 +648,13 @@
   display: block;
   margin-top: 3px;
   color: var(--brand-dark);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .premium-label {
   color: var(--warning);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -668,7 +669,7 @@
   min-height: 0;
   margin-top: 12px;
   color: var(--subtle);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .template-card-actions {
