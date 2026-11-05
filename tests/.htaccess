@@ -1,0 +1,10 @@
+# Nothing in this directory is meant to be reached over the web. The rewrite
+# in the root .htaccess already refuses it; this repeats the refusal here so
+# the directory stays closed even if mod_rewrite is unavailable.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

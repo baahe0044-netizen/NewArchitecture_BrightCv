@@ -1,0 +1,71 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Dashboard"
+    },
+    {
+      "file": "Builder.dc.html",
+      "x": 1560,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "CV builder"
+    },
+    {
+      "file": "Rewards.dc.html",
+      "x": 3120,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Rewards"
+    },
+    {
+      "file": "Phone.dc.html",
+      "x": 0,
+      "y": 1120,
+      "w": 390,
+      "h": 844,
+      "title": "Phone — Dashboard"
+    },
+    {
+      "file": "PhoneBuilder.dc.html",
+      "x": 510,
+      "y": 1120,
+      "w": 390,
+      "h": 844,
+      "title": "Phone — Builder"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "palette",
+      "x": 0,
+      "y": -330,
+      "w": 1020,
+      "text": "BRIGHTCV — one complete design.\n\nPALETTE (no white, no blue): warm sand #EBD9BB page, cream card #FBF3E3, chocolate #3A2A1E chrome, ink #2A1D14. Four working colours — rust #C1442A (do this now), marigold #F2A81D (in progress, XP), moss #4E7A34 (done), berry #A02454 (rewards).\n\nTYPE: Tinos throughout — metrically identical to Times New Roman, so it falls back to real Times with no shift.\n\nWHY IT DOESN'T READ AS AI: no gradients anywhere, no soft blurred shadows, no emoji. Flat colour blocks, 2px ink outlines, hard offset shadows, and a halftone dot ground — the vocabulary of printed board games and letterpress, not of a component library."
+    },
+    {
+      "id": "game",
+      "x": 1560,
+      "y": -330,
+      "w": 1020,
+      "text": "THE GAME LAYER — earned, not sprinkled.\n\nXP is only ever awarded for a change that measurably improves the CV: an achievement line containing a number (+20), a summary trimmed under 60 words (+25), a finished stage (+40). Nothing is given for logging in, and there is no leaderboard — ranking job-hunters against each other would be cruel.\n\nThe six builder sections become six STAGES with XP values. The dashboard's five-step journey (Drafted, Filled in, Polishing, ATS 80+, Sent out) is drawn from data the app already has: completion, ATS score, exports.\n\nLevels unlock templates. Badges name real accomplishments. And the whole layer switches off in Account — see the note on the Rewards screen."
+    },
+    {
+      "id": "phones",
+      "x": 0,
+      "y": 2010,
+      "w": 1020,
+      "text": "PHONES · 390×844 — the CV in the preview stays plain white and print-safe no matter what the app is wearing, which is both the existing constraint in the code and a nice contrast against the colour. Every target is 44px or larger; no fake status bar, since the real one draws over it."
+    }
+  ],
+  "launch": {
+    "view": "focused",
+    "file": "Phone.dc.html"
+  }
+}

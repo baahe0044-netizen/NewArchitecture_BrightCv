@@ -1,493 +1,149 @@
-<!DOCTYPE html>
+<?php
+$signedIn = Auth::check();
+$startUrl = $signedIn ? base_url('/dashboard') : base_url('/resume/builder');
+$startLabel = $signedIn ? 'Open your dashboard' : 'Create your CV';
+$faqs = [
+    ['Is it free?', 'Yes. Writing your CV, choosing a template, and downloading it as a PDF cost nothing.'],
+    ['Do I need an account?', 'Not to start. You can write your whole CV straight away; a free account is only needed when you download it, so your work is saved and you can come back to it.'],
+    ['Will my CV get past applicant tracking systems?', 'The templates use clear headings and real text, and the built-in ATS check flags weak or missing content and compares your CV with a job description.'],
+    ['Can I change the template later?', 'Any time. Your content stays exactly as it is when you switch templates, colours, or fonts.'],
+    ['Can I add a photo?', 'Yes. Add one in Personal details and it appears on every template that has a picture.'],
+];
+?>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bright CV — Build a Resume That Gets You Hired</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/landing/landing.css">
+    <meta charset="utf-8">
+    <?php View::partial('components/theme_init'); ?>
+    <?php View::partial('components/head_meta'); ?>
+    <meta name="description" content="Fill in your details, pick a template, and download a professional CV.">
+    <title><?= e($title ?? 'Create a professional CV') ?> · <?= e(APP_NAME) ?></title>
+    <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('landing/landing.css')) ?>">
 </head>
+<body class="landing-page">
+<header class="landing-nav">
+    <div class="container landing-nav-inner">
+        <?php View::partial('components/logo'); ?>
+        <nav class="landing-links" aria-label="Page sections">
+            <a href="#how">How it works</a>
+            <a href="#templates">Templates</a>
+            <a href="#faq">FAQ</a>
+        </nav>
+        <div class="landing-actions">
+            <?php View::partial('components/theme_toggle'); ?>
+            <?php if ($signedIn): ?>
+                <a class="btn btn-primary landing-cta" href="<?= e(base_url('/dashboard')) ?>">Dashboard</a>
+            <?php else: ?>
+                <a class="btn btn-secondary landing-login" href="<?= e(base_url('/login')) ?>">Log in</a>
+                <a class="btn btn-primary landing-cta" href="<?= e(base_url('/resume/builder')) ?>">Create CV</a>
+            <?php endif; ?>
+        </div>
+    </div>
+</header>
 
-<body>
-
-    <!-- ─── Navigation ─── -->
-    <nav id="nav">
-        <a href="#" class="nav-logo">
-            <span class="nav-logo-dot"></span>
-            Bright CV
-        </a>
-        <ul class="nav-links">
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#templates">Templates</a></li>
-            <li><a href="#testimonials">Stories</a></li>
-            <li><a href="<?= BASE_URL ?>/resume/builder" class="nav-cta">Build Your CV</a></li>
-        </ul>
-    </nav>
-
-    <!-- ─── Hero ─── -->
+<main>
     <section class="hero">
-        <div class="hero-bg-grid"></div>
-        <div class="hero-glow"></div>
-        <div class="hero-glow-2"></div>
-        <div class="hero-inner">
-            <div class="hero-text reveal">
-                <p class="hero-eyebrow">Professional Resume Builder</p>
-                <h1 class="hero-title">
-                    Your career deserves a<br>
-                    <em>remarkable</em> first impression
-                </h1>
-                <p class="hero-desc">
-                    Build a polished, ATS-optimized resume in minutes. Choose from expertly crafted templates, fill in your details, and land more interviews.
-                </p>
-                <div class="hero-actions">
-                    <a href="<?= BASE_URL ?>/dashboard" class="btn-primary">
-                        Start Building Free <i class="fas fa-arrow-right" style="font-size:13px"></i>
-                    </a>
-                    <a href="#templates" class="btn-ghost">
-                        <i class="fas fa-th-large"></i> Browse Templates
-                    </a>
-                </div>
-                <div class="hero-trust">
-                    <div class="hero-trust-avatars">
-                        <span>J</span><span>M</span><span>A</span><span>K</span>
-                    </div>
-                    <p class="hero-trust-text">
-                        Trusted by <strong>12,000+</strong> professionals worldwide
-                    </p>
-                </div>
+        <div class="container hero-inner">
+            <div class="hero-copy">
+                <h1>Build a professional CV in minutes</h1>
+                <p class="hero-lead">Fill in your details, choose a template, and download your CV. No design skills needed.</p>
+                <a class="btn btn-primary hero-button" href="<?= e($startUrl) ?>"><?= e($startLabel) ?></a>
             </div>
 
-            <div class="hero-visual reveal" style="transition-delay:0.15s">
-                <div class="resume-mockup">
-                    <div class="mockup-bar">
-                        <div class="mockup-dot" style="background:#FF5F57"></div>
-                        <div class="mockup-dot" style="background:#FEBC2E"></div>
-                        <div class="mockup-dot" style="background:#28C840"></div>
-                        <span class="mockup-bar-title">resume_preview.pdf</span>
-                    </div>
-                    <div class="resume-preview">
-                        <div class="rp-sidebar">
-                            <div class="rp-avatar"><i class="fas fa-user"></i></div>
-                            <div class="rp-bar gold"></div>
-                            <div class="rp-bar short"></div>
-                            <div class="rp-label">Contact</div>
-                            <div class="rp-bar"></div>
-                            <div class="rp-bar short"></div>
-                            <div class="rp-bar"></div>
-                            <div class="rp-label">Skills</div>
-                            <div class="rp-bar gold"></div>
-                            <div class="rp-bar short"></div>
-                            <div class="rp-bar gold" style="width:70%"></div>
-                        </div>
-                        <div class="rp-main">
-                            <div class="rp-name">Alexandra Chen</div>
-                            <div class="rp-role">Senior Product Designer</div>
-                            <div class="rp-section-title">Work Experience</div>
-                            <div class="rp-exp-item">
-                                <div class="rp-exp-title">Lead Product Designer</div>
-                                <div class="rp-exp-co">TechCorp Inc · 2021 – Present</div>
-                                <div class="rp-lines">
-                                    <div class="rp-line"></div>
-                                    <div class="rp-line short"></div>
-                                    <div class="rp-line shorter"></div>
-                                </div>
-                            </div>
-                            <div class="rp-exp-item">
-                                <div class="rp-exp-title">UX Designer</div>
-                                <div class="rp-exp-co">Startup Studio · 2019 – 2021</div>
-                                <div class="rp-lines">
-                                    <div class="rp-line"></div>
-                                    <div class="rp-line shorter"></div>
-                                </div>
-                            </div>
-                            <div class="rp-section-title" style="margin-top:14px">Education</div>
-                            <div class="rp-exp-item">
-                                <div class="rp-exp-title">B.Sc. Design Technology</div>
-                                <div class="rp-exp-co">University of Ghana · 2019</div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="hero-sheet" aria-hidden="true">
+                <div class="hero-sheet-head">
+                    <span class="hero-sheet-photo">AM</span>
+                    <div><b>AMA MENSAH</b><small>Marketing Manager</small></div>
                 </div>
-
-                <div class="floating-badge badge-1">
-                    <div class="badge-icon green"><i class="fas fa-check"></i></div>
-                    <span>ATS Score: <strong style="color:#10b981">94%</strong></span>
-                </div>
-                <div class="floating-badge badge-2">
-                    <div class="badge-icon gold"><i class="fas fa-bolt"></i></div>
-                    <span>Ready in <strong style="color:var(--gold)">3 min</strong></span>
-                </div>
+                <i class="rule"></i>
+                <em>Summary</em><i></i><i class="short"></i>
+                <em>Experience</em><i></i><i></i><i class="short"></i>
+                <em>Skills</em>
+                <div class="hero-sheet-chips"><span></span><span></span><span></span></div>
             </div>
         </div>
     </section>
 
-    <!-- ─── Stats ─── -->
-    <div class="stats-section reveal">
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stat-num">12K+</div>
-                <div class="stat-label">Resumes created worldwide</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">94%</div>
-                <div class="stat-label">Average ATS compatibility score</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">3×</div>
-                <div class="stat-label">More interviews reported by users</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-num">15+</div>
-                <div class="stat-label">Professional templates available</div>
+    <section class="how" id="how" aria-labelledby="howTitle">
+        <div class="container">
+            <h2 id="howTitle">How it works</h2>
+            <ol class="step-list">
+                <li><span>1</span><h3>Add your details</h3><p>Work through short, guided sections, with examples and skill suggestions along the way.</p></li>
+                <li><span>2</span><h3>Choose a template</h3><p>Pick a layout and colour that suit you. Switch whenever you like.</p></li>
+                <li><span>3</span><h3>Download your CV</h3><p>Save a print-ready PDF and come back to edit it at any time.</p></li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="features" aria-labelledby="featuresTitle">
+        <div class="container">
+            <h2 id="featuresTitle">Everything you need for a strong CV</h2>
+            <ul class="feature-list">
+                <li>
+                    <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></span>
+                    <div><h3>Live preview</h3><p>See the finished page change as you type.</p></div>
+                </li>
+                <li>
+                    <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h14v16H5zM8 8h8M8 12h5"/><path d="m9 16 1.5 1.5L14 14"/></svg></span>
+                    <div><h3>ATS check</h3><p>Find weak sections and missing keywords before you apply.</p></div>
+                </li>
+                <li>
+                    <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/></svg></span>
+                    <div><h3>PDF download</h3><p>A clean A4 file, ready to send or print.</p></div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="templates-strip" id="templates" aria-labelledby="templatesTitle">
+        <div class="container">
+            <h2 id="templatesTitle">Templates recruiters can read at a glance</h2>
+            <div class="template-row" aria-hidden="true">
+                <?php foreach (['#2563EB', '#1D1D20', '#0F766E'] as $index => $color): ?>
+                    <div class="mini-cv mini-cv-<?= $index + 1 ?>" style="--mini-accent:<?= e($color) ?>">
+                        <b></b><small></small><i class="rule"></i><i></i><i></i><i class="short"></i><i></i><i class="short"></i>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="faqTitle">
+        <div class="container faq-inner">
+            <h2 id="faqTitle">Frequently asked questions</h2>
+            <div class="faq-list">
+                <?php foreach ($faqs as [$question, $answer]): ?>
+                    <details>
+                        <summary><?= e($question) ?></summary>
+                        <p><?= e($answer) ?></p>
+                    </details>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="container final-cta-inner">
+            <h2>Ready to make your CV?</h2>
+            <p>It only takes a few minutes to get started.</p>
+            <a class="btn btn-primary hero-button" href="<?= e($startUrl) ?>"><?= e($startLabel) ?></a>
+        </div>
+    </section>
+</main>
+
+<footer class="landing-footer">
+    <div class="container landing-footer-inner">
+        <?php View::partial('components/logo'); ?>
+        <nav class="footer-links" aria-label="Footer">
+            <a href="#how">How it works</a>
+            <a href="#faq">FAQ</a>
+            <?php if (!$signedIn): ?><a href="<?= e(base_url('/login')) ?>">Log in</a><?php endif; ?>
+        </nav>
+        <p>© <?= date('Y') ?> <?= e(APP_NAME) ?></p>
     </div>
-
-    <!-- ─── Features ─── -->
-    <section class="features-section" id="features">
-        <div class="section-inner">
-            <div class="features-header">
-                <div class="reveal">
-                    <p class="eyebrow">Features</p>
-                    <h2 class="section-title">Everything you need to<br><em>stand out</em></h2>
-                </div>
-                <p class="section-subtitle reveal" style="transition-delay:0.1s">
-                    Purpose-built tools that help you craft a resume hiring managers actually want to read — and ATS systems rank highly.
-                </p>
-            </div>
-            <div class="features-grid reveal" style="transition-delay:0.15s">
-                <div class="feature-card">
-                    <div class="feature-icon-wrap"><i class="fas fa-magic"></i></div>
-                    <div class="feature-name">AI-Powered Suggestions</div>
-                    <p class="feature-desc">Intelligent keyword recommendations based on your industry and target roles, drawn from real job postings.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrap"><i class="fas fa-eye"></i></div>
-                    <div class="feature-name">Live Preview</div>
-                    <p class="feature-desc">See exactly how your resume looks as you type. Every change reflected in real time across all templates.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrap"><i class="fas fa-shield-alt"></i></div>
-                    <div class="feature-name">ATS Optimized</div>
-                    <p class="feature-desc">Every template is tested against major Applicant Tracking Systems so your resume gets past the robots first.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrap"><i class="fas fa-palette"></i></div>
-                    <div class="feature-name">Pro Templates</div>
-                    <p class="feature-desc">Designed by career experts. Clean, elegant layouts that make your experience the focus — not the design.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrap"><i class="fas fa-file-download"></i></div>
-                    <div class="feature-name">PDF Export</div>
-                    <p class="feature-desc">Download a pixel-perfect PDF instantly. Consistent rendering across all devices and operating systems.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrap"><i class="fas fa-sync-alt"></i></div>
-                    <div class="feature-name">Always Editable</div>
-                    <p class="feature-desc">Your data is saved automatically. Revisit, update, and re-download your resume whenever things change.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ─── How It Works ─── -->
-    <section id="how-it-works">
-        <div class="section-inner">
-            <div class="reveal">
-                <p class="eyebrow">Process</p>
-                <h2 class="section-title">Four steps to your<br><em>perfect resume</em></h2>
-            </div>
-            <div class="steps-container">
-                <div class="steps-line"></div>
-                <div class="step-card reveal" style="transition-delay:0.05s">
-                    <div class="step-num">01</div>
-                    <div class="step-title">Create your account</div>
-                    <p class="step-desc">Sign up in under a minute. No credit card required to get started with your first resume.</p>
-                </div>
-                <div class="step-card reveal" style="transition-delay:0.1s">
-                    <div class="step-num">02</div>
-                    <div class="step-title">Pick a template</div>
-                    <p class="step-desc">Browse our gallery of professionally designed templates. Filter by industry, style, or ATS rating.</p>
-                </div>
-                <div class="step-card reveal" style="transition-delay:0.15s">
-                    <div class="step-num">03</div>
-                    <div class="step-title">Fill in your details</div>
-                    <p class="step-desc">Our guided builder walks you through every section. AI suggestions help you phrase things perfectly.</p>
-                </div>
-                <div class="step-card reveal" style="transition-delay:0.2s">
-                    <div class="step-num">04</div>
-                    <div class="step-title">Download & apply</div>
-                    <p class="step-desc">Export a flawless PDF and send it out. Most users land their first interview within two weeks.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ─── Templates ─── -->
-    <section class="templates-section" id="templates">
-        <div class="section-inner">
-            <div class="templates-header">
-                <div class="reveal">
-                    <p class="eyebrow">Templates</p>
-                    <h2 class="section-title">Designed for every<br><em>career path</em></h2>
-                </div>
-                <a href="<?= BASE_URL ?>/templates" class="btn-primary reveal" style="transition-delay:0.1s">
-                    Browse All Templates <i class="fas fa-arrow-right" style="font-size:12px"></i>
-                </a>
-            </div>
-
-            <div class="template-strip reveal" style="transition-delay:0.1s">
-                <!-- Template cards (decorative previews) -->
-                <div class="template-card-preview t1">
-                    <div class="template-thumb">
-                        <div class="template-thumb-inner">
-                            <div class="tt-header" style="background:rgba(201,168,76,0.08)">
-                                <div class="tt-avatar"></div>
-                                <div class="tt-name"></div>
-                            </div>
-                            <div class="tt-body">
-                                <div class="tt-section-head"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w80"></div>
-                                <div class="tt-line w60"></div>
-                                <div class="tt-section-head" style="margin-top:8px"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w60"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="template-info">
-                        <span class="template-label">Classic Gold</span>
-                        <span class="template-tag">Popular</span>
-                    </div>
-                </div>
-
-                <div class="template-card-preview t2">
-                    <div class="template-thumb">
-                        <div class="template-thumb-inner">
-                            <div class="tt-header" style="background:rgba(99,102,241,0.1)">
-                                <div class="tt-avatar" style="background:rgba(99,102,241,0.3)"></div>
-                                <div class="tt-name"></div>
-                            </div>
-                            <div class="tt-body">
-                                <div class="tt-section-head"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w80"></div>
-                                <div class="tt-line w60"></div>
-                                <div class="tt-section-head" style="margin-top:8px"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w60"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="template-info">
-                        <span class="template-label">Modern Blue</span>
-                        <span class="template-tag">ATS-Friendly</span>
-                    </div>
-                </div>
-
-                <div class="template-card-preview t3">
-                    <div class="template-thumb">
-                        <div class="template-thumb-inner">
-                            <div class="tt-header" style="background:rgba(16,185,129,0.08)">
-                                <div class="tt-avatar" style="background:rgba(16,185,129,0.3)"></div>
-                                <div class="tt-name"></div>
-                            </div>
-                            <div class="tt-body">
-                                <div class="tt-section-head"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w80"></div>
-                                <div class="tt-line w60"></div>
-                                <div class="tt-section-head" style="margin-top:8px"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w60"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="template-info">
-                        <span class="template-label">Executive Green</span>
-                        <span class="template-tag">New</span>
-                    </div>
-                </div>
-
-                <div class="template-card-preview t4">
-                    <div class="template-thumb">
-                        <div class="template-thumb-inner">
-                            <div class="tt-header" style="background:rgba(236,72,153,0.08)">
-                                <div class="tt-avatar" style="background:rgba(236,72,153,0.3)"></div>
-                                <div class="tt-name"></div>
-                            </div>
-                            <div class="tt-body">
-                                <div class="tt-section-head"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w80"></div>
-                                <div class="tt-line w60"></div>
-                                <div class="tt-section-head" style="margin-top:8px"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w60"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="template-info">
-                        <span class="template-label">Creative Pink</span>
-                        <span class="template-tag">Bold</span>
-                    </div>
-                </div>
-
-                <div class="template-card-preview t5">
-                    <div class="template-thumb">
-                        <div class="template-thumb-inner">
-                            <div class="tt-header" style="background:rgba(245,158,11,0.08)">
-                                <div class="tt-avatar" style="background:rgba(245,158,11,0.3)"></div>
-                                <div class="tt-name"></div>
-                            </div>
-                            <div class="tt-body">
-                                <div class="tt-section-head"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w80"></div>
-                                <div class="tt-line w60"></div>
-                                <div class="tt-section-head" style="margin-top:8px"></div>
-                                <div class="tt-line"></div>
-                                <div class="tt-line w60"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="template-info">
-                        <span class="template-label">Orange Zest</span>
-                        <span class="template-tag">Standout</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ─── Testimonials ─── -->
-    <section id="testimonials">
-        <div class="section-inner">
-            <div class="testimonials-header reveal">
-                <p class="eyebrow">Testimonials</p>
-                <h2 class="section-title">Real stories from<br><em>real hires</em></h2>
-            </div>
-            <div class="testimonials-grid">
-                <div class="testi-card reveal" style="transition-delay:0.05s">
-                    <div class="testi-stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="testi-quote">"I had been applying for months with zero callbacks. After rebuilding my CV here, I had three interviews scheduled within a week. The templates are genuinely beautiful."</p>
-                    <div class="testi-author">
-                        <div class="testi-avatar">J</div>
-                        <div>
-                            <div class="testi-name">John Asante</div>
-                            <div class="testi-role">Software Engineer, Accra</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testi-card reveal" style="transition-delay:0.1s">
-                    <div class="testi-stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="testi-quote">"The AI keyword suggestions were a revelation. I never would have known what phrases recruiters search for. Landed my dream role at a multinational within a month."</p>
-                    <div class="testi-author">
-                        <div class="testi-avatar">S</div>
-                        <div>
-                            <div class="testi-name">Sarah Mensah</div>
-                            <div class="testi-role">Marketing Manager, Lagos</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="testi-card reveal" style="transition-delay:0.15s">
-                    <div class="testi-stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="testi-quote">"Clean, fast, and the PDF export looks flawless on every device. I keep coming back every time I update my experience. Worth every second."</p>
-                    <div class="testi-author">
-                        <div class="testi-avatar">M</div>
-                        <div>
-                            <div class="testi-name">Michael Chen</div>
-                            <div class="testi-role">Product Designer, Nairobi</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ─── CTA ─── -->
-    <div class="cta-section">
-        <div class="cta-box reveal">
-            <p class="eyebrow" style="justify-content:center">Get Started</p>
-            <h2 class="section-title">Your next opportunity<br>starts with a great <em>resume</em></h2>
-            <p class="section-subtitle" style="text-align:center;margin:0 auto 44px">
-                Join thousands of professionals who've already landed roles they love. Free to start, takes minutes.
-            </p>
-            <div class="cta-actions">
-                <a href="<?= BASE_URL ?>/dashboard" class="btn-primary" style="font-size:16px;padding:16px 40px">
-                    Build My Resume Now <i class="fas fa-arrow-right" style="font-size:13px"></i>
-                </a>
-            </div>
-            <p class="cta-note">Free to use · No credit card required · Download as PDF</p>
-        </div>
-    </div>
-
-    <!-- ─── Footer ─── -->
-    <footer>
-        <div class="footer-inner">
-            <div>
-                <div class="footer-brand-name">
-                    <span class="nav-logo-dot"></span> Bright CV
-                </div>
-                <p class="footer-brand-desc">
-                    Professional resume builder for modern careers. Craft a resume that opens doors.
-                </p>
-                <div class="footer-socials">
-                    <a href="#" class="footer-social"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="footer-social"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="footer-social"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div>
-                <div class="footer-col-title">Product</div>
-                <ul class="footer-links">
-                    <li><a href="#">Templates</a></li>
-                    <li><a href="#">Builder</a></li>
-                    <li><a href="#">AI Features</a></li>
-                    <li><a href="#">PDF Export</a></li>
-                </ul>
-            </div>
-            <div>
-                <div class="footer-col-title">Resources</div>
-                <ul class="footer-links">
-                    <li><a href="#">Resume Guide</a></li>
-                    <li><a href="#">Career Blog</a></li>
-                    <li><a href="#">Examples</a></li>
-                    <li><a href="#">FAQ</a></li>
-                </ul>
-            </div>
-            <div>
-                <div class="footer-col-title">Company</div>
-                <ul class="footer-links">
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Privacy</a></li>
-                    <li><a href="#">Terms</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <span class="footer-copy">© 2026 Bright CV · All rights reserved</span>
-            <div class="footer-legal">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-            </div>
-        </div>
-    </footer>
-
-    <script src="<?= BASE_URL ?>/assets/landing/landing.js"></script>
+</footer>
+<script src="<?= e(asset('common/app.js')) ?>" defer></script>
+<script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
 </body>
-
 </html>

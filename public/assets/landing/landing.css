@@ -1,0 +1,554 @@
+/*
+  Landing page: a white top bar, a pale hero with one pill button, centred
+  sections with numbered steps, a feature list, an FAQ, and a plain footer.
+  Phone first -- every section is a single column until there is room.
+*/
+
+.landing-page {
+  overflow-x: hidden;
+  color: var(--ink);
+  background: var(--canvas);
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  font-family: var(--font-display);
+  letter-spacing: 0;
+}
+
+/* ---- Top bar ------------------------------------------------------------ */
+.landing-nav {
+  position: sticky;
+  z-index: 40;
+  top: 0;
+  height: calc(64px + var(--safe-top));
+  padding-top: var(--safe-top);
+  background: var(--choco);
+  border-bottom: 1px solid var(--line);
+}
+
+.landing-nav .brand {
+  font-size: 19px;
+}
+
+.landing-nav-inner {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.landing-links {
+  display: none;
+}
+
+.landing-links a {
+  padding: 8px 12px;
+  color: var(--muted);
+  border-radius: var(--radius-pill);
+  font-size: 16px;
+}
+
+.landing-links a:hover {
+  color: var(--ink);
+  background: var(--card-2);
+}
+
+.landing-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.landing-actions .btn {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 15px;
+}
+
+.landing-login {
+  color: var(--ink);
+  background: transparent;
+  border-color: var(--line-strong);
+}
+
+/* ---- Hero --------------------------------------------------------------- */
+.hero {
+  padding: 48px 0 52px;
+  background: var(--card-2);
+}
+
+.hero-inner {
+  display: grid;
+  gap: 36px;
+  align-items: center;
+}
+
+.hero-copy h1 {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(34px, 8vw, 54px);
+  font-weight: 700;
+  line-height: 1.12;
+}
+
+.hero-lead {
+  max-width: 42ch;
+  margin: 18px 0 28px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.hero-button {
+  min-height: 52px;
+  padding: 0 30px;
+  font-size: 18px;
+}
+
+/* A small drawing of a CV page -- decoration, hidden from assistive
+   software and drawn entirely in CSS. Paper stays white in both themes. */
+.hero-sheet {
+  display: none;
+  width: min(100%, 360px);
+  padding: 24px;
+  justify-self: center;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-sheet-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-sheet-photo {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  color: #fff;
+  background: #2563EB;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hero-sheet-head b,
+.hero-sheet-head small {
+  display: block;
+}
+
+.hero-sheet-head b {
+  color: #1D1D20;
+  font-size: 16px;
+  letter-spacing: .04em;
+}
+
+.hero-sheet-head small {
+  color: #2563EB;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hero-sheet em {
+  margin-top: 8px;
+  color: #2563EB;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.hero-sheet i,
+.mini-cv i {
+  display: block;
+  height: 7px;
+  background: #E8ECF1;
+  border-radius: 4px;
+}
+
+.hero-sheet i.short,
+.mini-cv i.short {
+  width: 62%;
+}
+
+.hero-sheet i.rule {
+  height: 2px;
+  margin: 6px 0 2px;
+  background: #2563EB;
+}
+
+.hero-sheet-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.hero-sheet-chips span {
+  width: 54px;
+  height: 18px;
+  background: #E8EFFD;
+  border-radius: 999px;
+}
+
+/* ---- Shared section layout ---------------------------------------------- */
+.how,
+.features,
+.templates-strip,
+.faq,
+.final-cta {
+  padding: 56px 0;
+}
+
+.how h2,
+.features h2,
+.templates-strip h2,
+.faq h2,
+.final-cta h2 {
+  max-width: 22ch;
+  margin: 0 auto 32px;
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: 700;
+  line-height: 1.18;
+  text-align: center;
+}
+
+/* ---- How it works: numbered steps in outlined circles -------------------- */
+.step-list {
+  display: grid;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0;
+  gap: 32px;
+  list-style: none;
+  text-align: center;
+}
+
+.step-list li > span {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 14px;
+  place-items: center;
+  color: var(--ink);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
+  font-size: 17px;
+}
+
+.step-list h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+
+.step-list p {
+  max-width: 34ch;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---- Features: icon in an outlined circle, then a short line ------------ */
+.features {
+  border-top: 1px solid var(--line);
+}
+
+.feature-list {
+  display: grid;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0;
+  gap: 22px;
+  list-style: none;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.feature-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  place-items: center;
+  color: var(--brand);
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+}
+
+.feature-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.feature-list h3 {
+  margin: 2px 0 4px;
+  font-size: 19px;
+}
+
+.feature-list p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---- Templates: a dark band with three paper thumbnails ----------------- */
+.templates-strip {
+  color: #F3F4F6;
+  background: #1D1D20;
+}
+
+.templates-strip h2 {
+  color: #F3F4F6;
+}
+
+.template-row {
+  display: grid;
+  max-width: 640px;
+  margin: 0 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mini-cv {
+  display: grid;
+  aspect-ratio: 210 / 297;
+  padding: 14% 12%;
+  align-content: start;
+  gap: 6px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.mini-cv b {
+  display: block;
+  width: 70%;
+  height: 10px;
+  background: var(--mini-accent);
+  border-radius: 3px;
+}
+
+.mini-cv small {
+  display: block;
+  width: 45%;
+  height: 6px;
+  margin-bottom: 4px;
+  background: color-mix(in srgb, var(--mini-accent) 45%, #fff);
+  border-radius: 3px;
+}
+
+.mini-cv i.rule {
+  height: 2px;
+  margin: 4px 0;
+  background: var(--mini-accent);
+}
+
+.mini-cv-2 b,
+.mini-cv-2 small {
+  justify-self: center;
+}
+
+/* ---- FAQ ---------------------------------------------------------------- */
+.faq-list {
+  max-width: 760px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+}
+
+.faq details {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq summary {
+  display: flex;
+  min-height: 60px;
+  padding: 16px 4px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: "+";
+  flex: none;
+  color: var(--muted);
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.faq details[open] summary::after {
+  content: "–";
+}
+
+.faq details p {
+  margin: 0;
+  padding: 0 4px 18px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ---- Closing call to action --------------------------------------------- */
+.final-cta {
+  background: var(--card-2);
+}
+
+.final-cta-inner {
+  text-align: center;
+}
+
+.final-cta h2 {
+  margin-bottom: 12px;
+}
+
+.final-cta p {
+  margin: 0 0 26px;
+  color: var(--muted);
+  font-size: 18px;
+}
+
+/* ---- Footer ------------------------------------------------------------- */
+.landing-footer {
+  padding: 28px 0 calc(28px + env(safe-area-inset-bottom, 0px));
+  background: var(--canvas);
+  border-top: 1px solid var(--line);
+}
+
+.landing-footer-inner {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+}
+
+.landing-footer .brand {
+  font-size: 17px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+}
+
+.footer-links a {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.footer-links a:hover {
+  color: var(--ink);
+}
+
+.landing-footer p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---- Larger screens ----------------------------------------------------- */
+@media (min-width: 760px) {
+  .hero {
+    padding: 88px 0;
+  }
+
+  .hero-inner {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+    gap: 48px;
+  }
+
+  .hero-sheet {
+    display: grid;
+  }
+
+  .how,
+  .features,
+  .templates-strip,
+  .faq,
+  .final-cta {
+    padding: 88px 0;
+  }
+
+  .how h2,
+  .features h2,
+  .templates-strip h2,
+  .faq h2 {
+    margin-bottom: 48px;
+  }
+
+  .step-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .feature-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+  }
+
+  .template-row {
+    gap: 20px;
+  }
+
+  .landing-footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+@media (min-width: 900px) {
+  .landing-links {
+    position: absolute;
+    left: 50%;
+    display: flex;
+    gap: 4px;
+    transform: translateX(-50%);
+  }
+
+  .landing-nav-inner {
+    position: relative;
+  }
+}
+
+/* ---- Phones ------------------------------------------------------------- */
+@media (max-width: 759px) {
+  .container {
+    width: calc(100% - 32px);
+  }
+
+  .hero-button {
+    width: 100%;
+  }
+
+  /* The logo's wordmark gives way before the two buttons do. */
+  .landing-nav .brand > span:last-child {
+    display: none;
+  }
+
+  .landing-actions .btn {
+    min-height: 44px;
+    padding: 0 14px;
+  }
+}
