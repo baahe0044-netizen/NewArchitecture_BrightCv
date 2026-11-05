@@ -5,7 +5,7 @@ declare(strict_types=1);
 final class ResumeService
 {
     private const LANGUAGES = ['en', 'fr', 'es'];
-    private const FONTS = ['Times New Roman', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
+    private const FONTS = ['Times New Roman', 'Calibri', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
     private const DEFAULT_FONT = 'Times New Roman';
 
     public function __construct(private readonly ResumeRepository $resumes = new ResumeRepository())

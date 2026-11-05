@@ -196,7 +196,7 @@ $builderPayload = [
             <div class="design-group">
                 <div class="field"><label for="fontFamily">Typeface</label>
                     <select id="fontFamily" data-resume-setting="font_family">
-                        <?php foreach (['Times New Roman', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'] as $font): ?>
+                        <?php foreach (['Times New Roman', 'Calibri', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'] as $font): ?>
                             <option <?= $resume['font_family'] === $font ? 'selected' : '' ?>><?= e($font) ?></option>
                         <?php endforeach; ?>
                     </select>
@@ -228,11 +228,6 @@ $builderPayload = [
     <section class="preview-workspace">
         <div class="preview-toolbar">
             <div><span class="live-dot"></span><b>Live preview</b><small>A4 · changes update instantly</small></div>
-            <div class="robot-score-meter" title="How an applicant tracking system is likely to read this CV">
-                <span>Robot score</span>
-                <span class="robot-score-track"><span id="toolbarAtsMeter" style="width:<?= (int) $resume['ats_score'] ?>%"></span></span>
-                <b id="toolbarAtsScore"><?= (int) $resume['ats_score'] ?></b>
-            </div>
             <div class="preview-controls">
                 <button class="icon-btn" id="zoomOutButton" type="button" aria-label="Zoom out">−</button>
                 <span id="zoomLabel">82%</span>
@@ -336,11 +331,6 @@ $builderPayload = [
                     <div><h4>Consider adding</h4><p>Only where they truthfully describe your work.</p><div class="keyword-cloud missing" id="missingKeywords"></div></div>
                 </div>
             </section>
-        </div>
-
-        <div class="progress-reward">
-            <div class="progress-ring-small" id="progressRingSmall" style="--progress:<?= (int) $resume['completion'] ?>"><strong id="progressSmallValue"><?= (int) $resume['completion'] ?>%</strong></div>
-            <div><b id="progressLevel">Building foundation</b><span id="progressRewardText">Complete sections to reach Application Ready.</span></div>
         </div>
     </aside>
 </main>

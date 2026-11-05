@@ -1,5 +1,7 @@
 /*
-  LunettiStar CV design tokens: white, blue, and black.
+  LunettiStar CV design tokens: white, blue, and black, in a flat, airy
+  style -- a white top bar, white cards on thin grey borders, soft shadows,
+  pill-shaped buttons, and grey secondary text.
 
   Light mode is a white page with black text, blue actions, and a navy
   header that matches the logo; dark mode is a black page with white text
@@ -33,10 +35,10 @@
 
   /* --- White page, black text, blue actions, navy header --------------- */
   --sand: #FFFFFF;
-  --card: rgba(255, 255, 255, .96);
-  --card-2: #F2F5FA;
-  --ink: #0B0B0F;
-  --muted: #4B5563;
+  --card: #FFFFFF;
+  --card-2: #F5F8FB;
+  --ink: #1D1D20;
+  --muted: #5F5F67;
   --rust: #1D4ED8;
   --rust-deep: #1E3A8A;
   --gold: #2563EB;
@@ -46,14 +48,14 @@
   --moss-soft: #E0EAFF;
   --berry: #B91C1C;
   --berry-soft: #FDE8E8;
-  --choco: #0A1F44;
+  --choco: #FFFFFF;
 
   /* Text-on-choco: used only inside choco surfaces (header, level banner). */
-  --choco-ink: #FFFFFF;
-  --choco-muted: #B9C6E0;
-  --choco-line: #1B3263;
-  --choco-line-soft: #2A4580;
-  --choco-well: #06142E;
+  --choco-ink: #1D1D20;
+  --choco-muted: #5F5F67;
+  --choco-line: #E4E7EC;
+  --choco-line-soft: #D0D5DD;
+  --choco-well: #F2F4F7;
 
   /* --- Mapped onto the names the rest of the app already uses ------------
      Kept so downstream CSS needs fewer rewrites: --brand is rust, --surface
@@ -77,10 +79,10 @@
   --accent-plum: var(--berry);
   --accent-plum-soft: var(--berry-soft);
 
-  --ink-soft: #1F2937;
+  --ink-soft: #2E2E33;
   --subtle: var(--muted);
-  --line: rgba(11, 11, 15, .12);
-  --line-strong: rgba(11, 11, 15, .28);
+  --line: #E4E7EC;
+  --line-strong: #858D9A;
   --surface: var(--card);
   --surface-muted: var(--card-2);
   --canvas: var(--sand);
@@ -104,30 +106,30 @@
   /* --- Shape language: thin glass edges, soft blurred elevation ----------
      Read scripts/check-contrast.mjs before changing any of these. */
   --edge: 1px;
-  --shadow-sm: 0 2px 10px rgba(10, 20, 40, .08);
-  --shadow-md: 0 10px 30px rgba(10, 20, 40, .12);
-  --shadow-lg: 0 18px 48px rgba(10, 20, 40, .16);
-  --shadow-btn: 0 6px 16px rgba(37, 99, 235, .28);
-  --shadow-badge: 0 3px 8px rgba(10, 20, 40, .12);
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, .05);
+  --shadow-md: 0 4px 14px rgba(16, 24, 40, .07);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, .10);
+  --shadow-btn: none;
+  --shadow-badge: none;
 
   /* Frosted glass: a blurred, saturated panel over a glowing ground. */
   --glass-bg: var(--surface);
-  --glass-border: rgba(10, 31, 68, .12);
-  --glass-shadow: var(--shadow-md);
-  --glass-highlight: rgba(255, 255, 255, .6);
-  --glass-blur: 20px;
-  --glass-saturate: 160%;
-  --page-glow-1: rgba(37, 99, 235, .06);
-  --page-glow-2: rgba(10, 31, 68, .04);
-  --page-glow-3: rgba(255, 255, 255, .6);
+  --glass-border: #E4E7EC;
+  --glass-shadow: 0 1px 2px rgba(16, 24, 40, .05);
+  --glass-highlight: transparent;
+  --glass-blur: 0px;
+  --glass-saturate: 100%;
+  --page-glow-1: transparent;
+  --page-glow-2: transparent;
+  --page-glow-3: transparent;
 
   /* No halftone in the glass system -- the glow gradients carry the ground. */
   --grain: none;
 
   /* --- Radii: generous, so glass reads soft rather than cut -------------- */
-  --radius-sm: 12px;
-  --radius: 16px;
-  --radius-lg: 22px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
   --radius-pill: 999px;
   --content: 1180px;
 
@@ -143,9 +145,10 @@
   --space-9: 96px;
 
   /* --- Type: a bold wide display face, a warm humanist body face --------- */
-  --font-display: "Unbounded", "Arial Black", sans-serif;
-  --font-text: "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  /* Calibri everywhere: headings, body, and numbers alike. */
+  --font-display: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+  --font-text: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+  --font-mono: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
 
   --text-xs: 12px;
   --text-sm: 13px;
@@ -178,11 +181,11 @@
     --placeholder: #8E99AB;
     color-scheme: dark;
 
-    --sand: #05070B;
-    --card: rgba(17, 21, 30, .92);
-    --card-2: rgba(27, 32, 44, .88);
-    --ink: #F5F7FA;
-    --muted: #A9B4C6;
+    --sand: #0E1014;
+    --card: #16191F;
+    --card-2: #1C2028;
+    --ink: #F3F4F6;
+    --muted: #A3A9B5;
     --rust: #60A5FA;
     --rust-deep: #93C5FD;
     --gold: #2563EB;
@@ -192,13 +195,13 @@
     --moss-soft: #0F1E3D;
     --berry: #F87171;
     --berry-soft: #3B1414;
-    --choco: #070B14;
+    --choco: #16191F;
 
-    --choco-ink: #F5F7FA;
-    --choco-muted: #A9B4C6;
-    --choco-line: #1A2233;
-    --choco-line-soft: #273147;
-    --choco-well: #03050A;
+    --choco-ink: #F3F4F6;
+    --choco-muted: #A3A9B5;
+    --choco-line: #262B34;
+    --choco-line-soft: #323844;
+    --choco-well: #0B0D10;
 
     --brand: var(--rust);
     --brand-dark: var(--rust-deep);
@@ -216,10 +219,10 @@
     --accent-plum: var(--berry);
     --accent-plum-soft: var(--berry-soft);
 
-    --ink-soft: #E5E9F0;
+    --ink-soft: #E5E7EB;
     --subtle: var(--muted);
-    --line: rgba(245, 247, 250, .14);
-    --line-strong: rgba(245, 247, 250, .3);
+    --line: #262B34;
+    --line-strong: #6B7383;
     --surface: var(--card);
     --surface-muted: var(--card-2);
     --canvas: var(--sand);
@@ -241,20 +244,20 @@
        and an accent-tinted glow under primary buttons rather than a hard
        ink-coloured offset. */
     --glass-bg: var(--surface);
-    --glass-border: rgba(245, 247, 250, .12);
-    --glass-shadow: 0 12px 34px rgba(0, 0, 0, .5);
-    --glass-highlight: rgba(255, 255, 255, .08);
-    --glass-blur: 20px;
-    --glass-saturate: 150%;
-    --page-glow-1: rgba(37, 99, 235, .12);
-    --page-glow-2: rgba(37, 99, 235, .05);
-    --page-glow-3: rgba(255, 255, 255, .03);
+    --glass-border: #262B34;
+    --glass-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+    --glass-highlight: transparent;
+    --glass-blur: 0px;
+    --glass-saturate: 100%;
+    --page-glow-1: transparent;
+    --page-glow-2: transparent;
+    --page-glow-3: transparent;
 
-    --shadow-sm: 0 2px 14px rgba(0, 0, 0, .45);
-    --shadow-md: 0 12px 34px rgba(0, 0, 0, .5);
-    --shadow-lg: 0 20px 54px rgba(0, 0, 0, .55);
-    --shadow-btn: 0 8px 20px rgba(37, 99, 235, .32);
-    --shadow-badge: 0 4px 10px rgba(0, 0, 0, .4);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow-md: 0 6px 18px rgba(0, 0, 0, .35);
+    --shadow-lg: 0 14px 36px rgba(0, 0, 0, .45);
+    --shadow-btn: none;
+    --shadow-badge: none;
   }
 }
 
@@ -262,11 +265,11 @@
   --placeholder: #8E99AB;
   color-scheme: dark;
 
-  --sand: #05070B;
-  --card: rgba(17, 21, 30, .92);
-  --card-2: rgba(27, 32, 44, .88);
-  --ink: #F5F7FA;
-  --muted: #A9B4C6;
+  --sand: #0E1014;
+  --card: #16191F;
+  --card-2: #1C2028;
+  --ink: #F3F4F6;
+  --muted: #A3A9B5;
   --rust: #60A5FA;
   --rust-deep: #93C5FD;
   --gold: #2563EB;
@@ -276,13 +279,13 @@
   --moss-soft: #0F1E3D;
   --berry: #F87171;
   --berry-soft: #3B1414;
-  --choco: #070B14;
+  --choco: #16191F;
 
-  --choco-ink: #F5F7FA;
-  --choco-muted: #A9B4C6;
-  --choco-line: #1A2233;
-  --choco-line-soft: #273147;
-  --choco-well: #03050A;
+  --choco-ink: #F3F4F6;
+  --choco-muted: #A3A9B5;
+  --choco-line: #262B34;
+  --choco-line-soft: #323844;
+  --choco-well: #0B0D10;
 
   --brand: var(--rust);
   --brand-dark: var(--rust-deep);
@@ -300,10 +303,10 @@
   --accent-plum: var(--berry);
   --accent-plum-soft: var(--berry-soft);
 
-  --ink-soft: #E5E9F0;
+  --ink-soft: #E5E7EB;
   --subtle: var(--muted);
-  --line: rgba(245, 247, 250, .14);
-  --line-strong: rgba(245, 247, 250, .3);
+  --line: #262B34;
+  --line-strong: #6B7383;
   --surface: var(--card);
   --surface-muted: var(--card-2);
   --canvas: var(--sand);
@@ -321,20 +324,20 @@
   --grain: none;
 
   --glass-bg: var(--surface);
-  --glass-border: rgba(245, 247, 250, .12);
-  --glass-shadow: 0 12px 34px rgba(0, 0, 0, .5);
-  --glass-highlight: rgba(255, 255, 255, .08);
-  --glass-blur: 20px;
-  --glass-saturate: 150%;
-  --page-glow-1: rgba(37, 99, 235, .12);
-  --page-glow-2: rgba(37, 99, 235, .05);
-  --page-glow-3: rgba(255, 255, 255, .03);
+  --glass-border: #262B34;
+  --glass-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+  --glass-highlight: transparent;
+  --glass-blur: 0px;
+  --glass-saturate: 100%;
+  --page-glow-1: transparent;
+  --page-glow-2: transparent;
+  --page-glow-3: transparent;
 
-  --shadow-sm: 0 2px 14px rgba(0, 0, 0, .45);
-  --shadow-md: 0 12px 34px rgba(0, 0, 0, .5);
-  --shadow-lg: 0 20px 54px rgba(0, 0, 0, .55);
-  --shadow-btn: 0 8px 20px rgba(37, 99, 235, .32);
-  --shadow-badge: 0 4px 10px rgba(0, 0, 0, .4);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 14px 36px rgba(0, 0, 0, .45);
+  --shadow-btn: none;
+  --shadow-badge: none;
 }
 
 /*
@@ -1536,4 +1539,51 @@ body {
   :root {
     --safe-top: max(env(safe-area-inset-top, 0px), 14px);
   }
+}
+
+/* ==========================================================================
+   Flat, airy surfaces
+   Pill-shaped buttons with no glow, cards on a thin border, and a plain
+   top bar whose links are grey until chosen.
+   ========================================================================== */
+.btn {
+  border-radius: var(--radius-pill);
+  box-shadow: none;
+  font-weight: 700;
+}
+
+.btn:hover {
+  transform: none;
+}
+
+.card,
+.modal-dialog {
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.app-nav a {
+  color: var(--choco-muted);
+  background: transparent;
+  font-weight: 700;
+}
+
+.app-nav a:hover {
+  color: var(--choco-ink);
+  background: var(--choco-well);
+}
+
+.app-nav a.active {
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.app-header {
+  box-shadow: 0 1px 0 var(--line);
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: 0;
 }

@@ -15,12 +15,13 @@
   display: flex;
   padding: 38px clamp(36px, 5vw, 72px) 48px;
   flex-direction: column;
-  color: var(--choco-ink);
-  background: var(--choco);
+  color: var(--ink);
+  background: var(--card-2);
+  border-right: 1px solid var(--line);
 }
 
 .auth-brand .brand {
-  color: var(--choco-ink);
+  color: var(--ink);
 }
 
 .auth-visual-copy {
@@ -30,9 +31,7 @@
 
 .auth-kicker {
   margin: 0 0 12px;
-  /* The panel behind it is the dark header colour in both themes, so the
-     label takes a light blue that stays readable on it. */
-  color: #93C5FD;
+  color: var(--brand);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .09em;
@@ -178,11 +177,11 @@
 }
 
 .register-visual {
-  background: var(--choco);
+  background: var(--card-2);
 }
 
 .register-visual .auth-kicker {
-  color: #93C5FD;
+  color: var(--brand);
 }
 
 .auth-benefits {

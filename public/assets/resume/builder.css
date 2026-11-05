@@ -457,7 +457,10 @@
 
 .field-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* Two fields side by side when there is room for both at a readable
+     width, otherwise one under the other -- the docked editor column can
+     be narrow on a laptop. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
   gap: 12px;
 }
 
@@ -564,17 +567,144 @@
   }
 }
 
-/* A date is a month dropdown and a year dropdown side by side. */
-.date-picker {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-  gap: 8px;
+/* A date is a button showing the chosen month and year; it opens the
+   month calendar below. Its text is ink-coloured like typed text, and the
+   empty prompt is the placeholder grey. */
+.date-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
 }
 
-.date-picker select {
-  min-width: 0;
-  width: 100%;
+.date-trigger.is-empty {
+  color: var(--placeholder);
 }
+
+.date-trigger svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--brand);
+}
+
+.date-trigger span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.date-trigger:hover,
+.date-trigger[aria-expanded="true"] {
+  border-color: var(--brand);
+}
+
+.date-trigger:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.date-popover {
+  position: fixed;
+  z-index: 400;
+  width: 272px;
+  padding: 12px;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+}
+
+.date-popover-head {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.date-popover-head b {
+  font-size: 17px;
+}
+
+.date-popover button {
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  cursor: pointer;
+}
+
+.date-popover-head button {
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.date-popover-head button:hover:not(:disabled),
+.date-popover-months button:hover {
+  background: var(--card-2);
+}
+
+.date-popover button:disabled {
+  color: var(--line-strong);
+  cursor: default;
+}
+
+.date-popover-months {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.date-popover-months button {
+  min-height: 42px;
+  font-size: 15px;
+}
+
+.date-popover-months button.is-today {
+  border-color: var(--line-strong);
+}
+
+.date-popover-months button.is-chosen {
+  color: var(--on-gold);
+  background: var(--gold);
+  font-weight: 700;
+}
+
+.date-popover-foot {
+  display: flex;
+  margin-top: 10px;
+  padding-top: 10px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+}
+
+.date-popover-foot button {
+  min-height: 36px;
+  padding: 0 10px;
+  color: var(--brand);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.date-popover button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
 
 .builder-page .field {
   gap: 7px;

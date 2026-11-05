@@ -56,7 +56,7 @@
 
   // Times New Roman leads and is the default: every template sets its type in
   // it unless the writer picks another face in the Design panel.
-  const FONTS = ['Times New Roman', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
+  const FONTS = ['Times New Roman', 'Calibri', 'Arial', 'Georgia', 'Poppins', 'Source Sans 3'];
   const DEFAULT_FONT = FONTS[0];
 
   const TEMPLATE_KEYS = Object.keys(TEMPLATES);
@@ -388,7 +388,7 @@
 
     return '<article class="cv-document cv-template-' + template + ' cv-layout-' + layout +
       ' cv-order-' + sectionOrder + ' cv-density-' + density +
-      '" style="--cv-accent:' + accent + ';--cv-font:' + escapeHtml(font) + '">' +
+      '" style="--cv-accent:' + accent + ';--cv-font:' + escapeHtml(font === 'Calibri' ? 'Calibri, Carlito' : font) + '">' +
       '<header class="cv-header' + (photo ? ' cv-has-photo' : '') + '"><div class="cv-monogram">' +
       (photo ? '<img class="cv-photo" src="' + escapeHtml(photo) + '" alt="">' : monogram) + '</div>' +
       '<div class="cv-identity"><h1>' + name + '</h1><p>' + headline + '</p></div></header>' +

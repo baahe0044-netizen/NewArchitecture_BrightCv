@@ -24,6 +24,9 @@
   let lastFocusedInput = null;
   let speechRecognition = null;
   let previewTimer = null;
+  // The open month calendar and the date button it belongs to.
+  let datePopover = null;
+  let dateTrigger = null;
   const localKey = 'lunettistar.resume.' + state.id;
 
   // Declared before the bootstrap calls below: these are const, so anything
@@ -303,39 +306,155 @@
     return window.LunettiResume.formatDate(value, 'en');
   }
 
-  // A month dropdown and a year dropdown, written into one stored value.
+  // How a stored date reads on its button: "January 2023", "2023", or the
+  // text an old CV was typed with.
+  function dateLabel(value) {
+    const stored = String(value || '');
+    const picked = stored.match(/^(\d{4})(?:-(\d{2}))?$/);
+    if (!picked) return stored;
+    return picked[2] ? MONTH_NAMES[Number(picked[2]) - 1] + ' ' + picked[1] : picked[1];
+  }
+
+  // A date is a button showing the chosen month and year; it opens a small
+  // calendar of months (see openDatePicker). Nothing is typed.
   function dateField(label, array, index, key, value) {
     const id = 'field-' + array + '-' + Number(index) + '-' + key;
     const stored = String(value || '');
-    const picked = stored.match(/^(\d{4})(?:-(\d{2}))?$/);
-    const year = picked ? picked[1] : '';
-    const month = picked && picked[2] ? picked[2] : '';
-    const data = ' data-date-array="' + h(array) + '" data-date-index="' + Number(index) + '" data-date-key="' + h(key) + '"';
-    const thisYear = new Date().getFullYear();
-    const years = [];
-    for (let y = thisYear + 6; y >= 1960; y -= 1) years.push(String(y));
-    // A year saved from an old typed date can sit outside the list.
-    if (year && !years.includes(year)) years.push(year);
-
+    const picked = /^(\d{4})(?:-(\d{2}))?$/.test(stored);
     return '<div class="field"><label for="' + h(id) + '">' + h(label) + '</label>' +
-      '<div class="date-picker">' +
-      '<select id="' + h(id) + '"' + data + ' data-date-part="month">' +
-      '<option value="">Month</option>' +
-      MONTH_NAMES.map((name, i) => {
-        const number = String(i + 1).padStart(2, '0');
-        return '<option value="' + number + '"' + (month === number ? ' selected' : '') + '>' + h(name) + '</option>';
-      }).join('') +
-      '</select>' +
-      '<label class="sr-only" for="' + h(id) + '-year">' + h(label) + ' year</label>' +
-      '<select id="' + h(id) + '-year"' + data + ' data-date-part="year">' +
-      '<option value="">Year</option>' +
-      years.map((y) => '<option value="' + y + '"' + (year === y ? ' selected' : '') + '>' + y + '</option>').join('') +
-      '</select></div>' +
+      '<button class="date-trigger' + (stored ? '' : ' is-empty') + '" type="button" id="' + h(id) + '"' +
+      ' data-date-open data-date-array="' + h(array) + '" data-date-index="' + Number(index) + '" data-date-key="' + h(key) + '"' +
+      ' data-date-label="' + h(label) + '" aria-haspopup="dialog" aria-expanded="false">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg>' +
+      '<span>' + h(stored ? dateLabel(stored) : 'Select month and year') + '</span></button>' +
       (stored && !picked
-        ? '<span class="field-hint">Saved as “' + h(stored) + '”. Pick a month and year to replace it.</span>'
+        ? '<span class="field-hint">Saved as “' + h(stored) + '”. Pick a month to replace it.</span>'
         : '') +
       '</div>';
   }
+
+  // ---- The month calendar ---------------------------------------------
+  // One popover at a time, attached to <body> and placed under its button,
+  // so a narrow editor column can never clip it.
+
+  function dateEntry(trigger) {
+    return state.content[trigger.dataset.dateArray]?.[Number(trigger.dataset.dateIndex)];
+  }
+
+  function closeDatePicker({ focus = false } = {}) {
+    if (!datePopover) return;
+    datePopover.remove();
+    datePopover = null;
+    if (dateTrigger) {
+      dateTrigger.setAttribute('aria-expanded', 'false');
+      if (focus) dateTrigger.focus();
+    }
+    dateTrigger = null;
+  }
+
+  function renderDatePicker(year) {
+    const entry = dateEntry(dateTrigger);
+    const stored = String(entry?.[dateTrigger.dataset.dateKey] || '');
+    const picked = stored.match(/^(\d{4})(?:-(\d{2}))?$/);
+    const now = new Date();
+    const thisMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    const maxYear = now.getFullYear() + 10;
+    datePopover.dataset.year = String(year);
+    datePopover.innerHTML =
+      '<div class="date-popover-head">' +
+      '<button type="button" data-date-step="-1" aria-label="Previous year"' + (year <= 1950 ? ' disabled' : '') + '>‹</button>' +
+      '<b aria-live="polite">' + year + '</b>' +
+      '<button type="button" data-date-step="1" aria-label="Next year"' + (year >= maxYear ? ' disabled' : '') + '>›</button>' +
+      '</div><div class="date-popover-months">' +
+      MONTH_NAMES.map((name, i) => {
+        const number = String(i + 1).padStart(2, '0');
+        const value = year + '-' + number;
+        const chosen = picked && picked[2] && value === stored;
+        return '<button type="button" data-date-pick="' + value + '"' +
+          ' class="' + (chosen ? 'is-chosen' : '') + (value === thisMonth ? ' is-today' : '') + '"' +
+          ' aria-pressed="' + (chosen ? 'true' : 'false') + '" aria-label="' + h(name + ' ' + year) + '">' +
+          h(name.slice(0, 3)) + '</button>';
+      }).join('') +
+      '</div><div class="date-popover-foot">' +
+      '<button type="button" data-date-pick="">Clear</button>' +
+      '<button type="button" data-date-pick="' + year + '">Year only</button>' +
+      '</div>';
+  }
+
+  function placeDatePicker() {
+    if (!datePopover || !dateTrigger) return;
+    const box = dateTrigger.getBoundingClientRect();
+    const width = datePopover.offsetWidth;
+    const height = datePopover.offsetHeight;
+    const left = Math.max(8, Math.min(box.left, window.innerWidth - width - 8));
+    const below = box.bottom + 6;
+    const top = below + height > window.innerHeight - 8 ? Math.max(8, box.top - height - 6) : below;
+    datePopover.style.left = left + 'px';
+    datePopover.style.top = top + 'px';
+  }
+
+  function openDatePicker(trigger) {
+    if (dateTrigger === trigger) {
+      closeDatePicker({ focus: true });
+      return;
+    }
+    closeDatePicker();
+    dateTrigger = trigger;
+    const stored = String(dateEntry(trigger)?.[trigger.dataset.dateKey] || '');
+    const picked = stored.match(/^(\d{4})/);
+    datePopover = document.createElement('div');
+    datePopover.className = 'date-popover';
+    datePopover.setAttribute('role', 'dialog');
+    datePopover.setAttribute('aria-label', 'Choose ' + (trigger.dataset.dateLabel || 'date').toLowerCase());
+    document.body.appendChild(datePopover);
+    renderDatePicker(picked ? Number(picked[1]) : new Date().getFullYear());
+    trigger.setAttribute('aria-expanded', 'true');
+    placeDatePicker();
+    (datePopover.querySelector('.is-chosen') || datePopover.querySelector('.is-today') || datePopover.querySelector('[data-date-pick]'))?.focus();
+  }
+
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-date-open]');
+    if (trigger) {
+      openDatePicker(trigger);
+      return;
+    }
+    if (!datePopover) return;
+    if (!datePopover.contains(event.target)) {
+      closeDatePicker();
+      return;
+    }
+    const step = event.target.closest('[data-date-step]');
+    if (step) {
+      renderDatePicker(Number(datePopover.dataset.year) + Number(step.dataset.dateStep));
+      datePopover.querySelector('[data-date-step="' + step.dataset.dateStep + '"]')?.focus();
+      return;
+    }
+    const pick = event.target.closest('[data-date-pick]');
+    if (!pick) return;
+    const entry = dateEntry(dateTrigger);
+    if (!entry) return;
+    const value = pick.dataset.datePick;
+    entry[dateTrigger.dataset.dateKey] = value;
+    dateTrigger.classList.toggle('is-empty', !value);
+    dateTrigger.querySelector('span').textContent = value ? dateLabel(value) : 'Select month and year';
+    dateTrigger.closest('.field')?.querySelector('.field-hint')?.remove();
+    closeDatePicker({ focus: true });
+    stateChanged({ history: true });
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && datePopover) {
+      event.stopPropagation();
+      closeDatePicker({ focus: true });
+    }
+  }, true);
+  // The popover is placed against the page, so it closes rather than
+  // drifting away from its button when the form scrolls.
+  document.addEventListener('scroll', (event) => {
+    if (datePopover && !datePopover.contains(event.target)) closeDatePicker();
+  }, true);
+  window.addEventListener('resize', () => closeDatePicker());
 
   function selectField(label, array, index, key, value, options) {
     const id = 'field-' + array + '-' + Number(index) + '-' + key;
@@ -400,6 +519,7 @@
   }
 
   function renderEditor() {
+    closeDatePicker();
     const mount = document.getElementById('sectionEditor');
     if (!mount) return;
     const c = state.content;
@@ -749,19 +869,12 @@
     state.completion = progress;
     document.getElementById('completionPercent').textContent = progress + '%';
     document.getElementById('completionBar').style.width = progress + '%';
-    document.getElementById('progressSmallValue').textContent = progress + '%';
-    document.getElementById('progressRingSmall').style.setProperty('--progress', progress);
 
-    const levels = progress >= 90
-      ? ['Application ready', 'Great work. Tailor keywords and run a final scan.']
-      : progress >= 70
-        ? ['Strong draft', 'Complete the remaining gaps to become Application Ready.']
-        : progress >= 40
-          ? ['Taking shape', 'Add evidence to the key incomplete sections.']
-          : ['Building foundation', 'Complete sections to reach Application Ready.'];
-    document.getElementById('progressLevel').textContent = levels[0];
-    document.getElementById('progressRewardText').textContent = levels[1];
-    document.getElementById('completionHint').textContent = levels[1];
+    document.getElementById('completionHint').textContent = progress >= 90
+      ? 'Great work. Tailor keywords and run a final scan.'
+      : progress >= 40
+        ? 'Add evidence to the key incomplete sections.'
+        : 'Complete sections to strengthen your CV.';
 
     const c = state.content;
     const personalComplete = ['full_name', 'headline', 'email', 'phone', 'location'].every((key) => String(c.personal[key] || '').trim());
@@ -1021,19 +1134,6 @@
         rerenderEditor();
         stateChanged({ history: true, immediatePreview: true });
       }).catch((error) => window.Lunetti.toast(error.message, 'error'));
-      return;
-    }
-
-    if (element.dataset.datePart) {
-      const entry = state.content[element.dataset.dateArray]?.[Number(element.dataset.dateIndex)];
-      if (!entry) return;
-      const picker = element.closest('.date-picker');
-      const month = picker?.querySelector('[data-date-part="month"]')?.value || '';
-      const year = picker?.querySelector('[data-date-part="year"]')?.value || '';
-      // A month on its own is not a date yet, so nothing is stored until a
-      // year is chosen; the month stays selected meanwhile.
-      entry[element.dataset.dateKey] = year ? (month ? year + '-' + month : year) : '';
-      stateChanged();
       return;
     }
 
@@ -2005,12 +2105,6 @@
   function renderAtsReport(report) {
     document.getElementById('atsScore').textContent = report.score;
     document.getElementById('atsRing').style.setProperty('--score', report.score);
-    // The toolbar's own "Robot score" meter mirrors the same number, so a
-    // fresh scan is visible without opening the review panel to see it.
-    const toolbarScore = document.getElementById('toolbarAtsScore');
-    const toolbarMeter = document.getElementById('toolbarAtsMeter');
-    if (toolbarScore) toolbarScore.textContent = report.score;
-    if (toolbarMeter) toolbarMeter.style.width = report.score + '%';
     document.getElementById('atsGrade').textContent = report.grade;
     document.getElementById('atsScoreMessage').textContent = report.score >= 85
       ? 'A strong CV—finish with role-specific tailoring.'

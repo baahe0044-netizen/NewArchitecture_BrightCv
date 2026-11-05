@@ -18,13 +18,13 @@ $description = $pageDescription
 <meta name="theme-color" content="#1B1025">
 <meta name="format-detection" content="telephone=no">
 
-<?php /* Unbounded (display, bold weights) + Plus Jakarta Sans (body) +
-         JetBrains Mono (scores/dates). System sans/monospace fallbacks in
-         --font-display/--font-text/--font-mono cover a blocked request; one
-         shared link so every page picks the family up the same way. */ ?>
+<?php /* The app is set in Calibri. Calibri itself cannot be served from a
+         website (it is licensed with Windows and Office), so devices that
+         have it use it, and everything else gets Carlito: a free font drawn
+         to Calibri's exact letter widths. One shared link for every page. */ ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Carlito:ital,wght@0,400;0,700;1,400;1,700&display=swap">
 
 <link rel="manifest" href="<?= e(base_url('/manifest.webmanifest')) ?>">
 <link rel="icon" href="<?= e(asset('icons/icon-192.png')) ?>" sizes="192x192" type="image/png">

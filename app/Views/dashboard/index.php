@@ -1,7 +1,5 @@
 <?php
-$stats = $dashboard['stats'] ?? [];
 $resumes = $dashboard['resumes'] ?? [];
-$activity = $dashboard['activity'] ?? [];
 $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'there';
 ?>
 <!doctype html>
@@ -32,29 +30,6 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
                 Create new CV
             </button>
-        </section>
-
-        <section class="stats-grid card" aria-label="CV overview">
-            <article class="stat-card">
-                <span>Active CVs</span>
-                <strong><?= (int) ($stats['total_resumes'] ?? 0) ?></strong>
-                <small><?= (int) ($stats['completed_resumes'] ?? 0) ?> marked complete</small>
-            </article>
-            <article class="stat-card">
-                <span>Average completion</span>
-                <strong><?= (int) ($stats['average_completion'] ?? 0) ?><small>%</small></strong>
-                <small>Across your current CVs</small>
-            </article>
-            <article class="stat-card">
-                <span>Average ATS score</span>
-                <strong><?= (int) ($stats['average_ats'] ?? 0) ?><small>%</small></strong>
-                <small>Across scanned CVs</small>
-            </article>
-            <article class="stat-card">
-                <span>Exports</span>
-                <strong><?= (int) ($stats['total_downloads'] ?? 0) ?></strong>
-                <small>Print, PDF, and backup files</small>
-            </article>
         </section>
 
         <section class="dashboard-grid">
@@ -131,47 +106,10 @@ $firstName = explode(' ', trim((string) ($user['name'] ?? 'there')))[0] ?: 'ther
                 </section>
             </div>
 
-            <aside class="dashboard-side" aria-label="Dashboard guidance">
-                <section class="card next-step-card">
-                    <div class="side-card-heading">
-                        <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2V5M22 12h-3M12 22v-3M2 12h3"/></svg></span>
-                        <div><h2>Recommended next step</h2><p>Based on your latest CV</p></div>
-                    </div>
-                    <?php if (!$resumes): ?>
-                        <h3>Start with your most recent role</h3>
-                        <p>Add your title, employer, and two outcomes. You can return to the other sections later.</p>
-                        <button class="btn btn-primary btn-small" type="button" data-create-resume>Begin now</button>
-                    <?php else: ?>
-                        <?php $next = $resumes[0]; ?>
-                        <h3><?= (int) $next['completion'] < 80 ? 'Finish your latest draft' : 'Tailor this CV for a role' ?></h3>
-                        <p><?= (int) $next['completion'] < 80 ? 'Complete the highlighted sections, then review the ATS feedback.' : 'Add a job description and review role-specific keywords before applying.' ?></p>
-                        <a class="btn btn-primary btn-small" href="<?= e(base_url('/resume/builder/' . $next['id'])) ?>">Open <?= e($next['name']) ?></a>
-                    <?php endif; ?>
-                </section>
-
-                <section class="card activity-card">
-                    <div class="section-title-row compact"><div><h2>Recent activity</h2><p>Your latest account events</p></div></div>
-                    <?php if ($activity): ?>
-                        <div class="activity-list">
-                            <?php foreach ($activity as $item): ?>
-                                <div class="activity-item">
-                                    <span aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
-                                    </span>
-                                    <div><b><?= e($item['description']) ?></b><small><?= e(date('M j · g:i a', strtotime($item['created_at']))) ?></small></div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php else: ?>
-                        <p class="muted">Your editing and export activity will appear here.</p>
-                    <?php endif; ?>
-                </section>
-
-                <section class="support-callout">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    <p>Stuck on the wording? <a href="mailto:<?= e(SUPPORT_EMAIL) ?>?subject=<?= e(rawurlencode('Help with my CV')) ?>">Ask a real person</a></p>
-                </section>
-            </aside>
+            <section class="support-callout">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <p>Stuck on the wording? <a href="mailto:<?= e(SUPPORT_EMAIL) ?>?subject=<?= e(rawurlencode('Help with my CV')) ?>">Ask a real person</a></p>
+            </section>
         </section>
     </div>
 </main>

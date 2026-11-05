@@ -1,11 +1,20 @@
 /*
-  Landing page: one message, one button, three steps. Phone first -- every
-  section is a single column until there is room for two.
+  Landing page: a white top bar, a pale hero with one pill button, centred
+  sections with numbered steps, a feature list, an FAQ, and a plain footer.
+  Phone first -- every section is a single column until there is room.
 */
 
 .landing-page {
   overflow-x: hidden;
+  color: var(--ink);
   background: var(--canvas);
+}
+
+.landing-page h1,
+.landing-page h2,
+.landing-page h3 {
+  font-family: var(--font-display);
+  letter-spacing: 0;
 }
 
 /* ---- Top bar ------------------------------------------------------------ */
@@ -16,21 +25,35 @@
   height: calc(64px + var(--safe-top));
   padding-top: var(--safe-top);
   background: var(--choco);
-  border-bottom: 1px solid var(--choco-line);
+  border-bottom: 1px solid var(--line);
 }
 
 .landing-nav .brand {
-  color: var(--choco-ink);
   font-size: 19px;
 }
 
-.landing-nav-inner,
-.landing-footer-inner {
+.landing-nav-inner {
   display: flex;
   height: 100%;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+}
+
+.landing-links {
+  display: none;
+}
+
+.landing-links a {
+  padding: 8px 12px;
+  color: var(--muted);
+  border-radius: var(--radius-pill);
+  font-size: 16px;
+}
+
+.landing-links a:hover {
+  color: var(--ink);
+  background: var(--card-2);
 }
 
 .landing-actions {
@@ -39,31 +62,22 @@
   gap: 8px;
 }
 
-.landing-nav .icon-btn {
-  color: var(--choco-ink);
-  background: transparent;
-  border-color: var(--choco-line-soft);
+.landing-actions .btn {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 15px;
 }
 
 .landing-login {
-  display: inline-flex;
-  min-height: 44px;
-  padding: 0 14px;
-  align-items: center;
-  color: var(--choco-ink);
-  border: 1px solid var(--choco-line-soft);
-  border-radius: var(--radius-sm);
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.landing-login:hover {
-  background: var(--choco-line);
+  color: var(--ink);
+  background: transparent;
+  border-color: var(--line-strong);
 }
 
 /* ---- Hero --------------------------------------------------------------- */
 .hero {
-  padding: 48px 0 40px;
+  padding: 48px 0 52px;
+  background: var(--card-2);
 }
 
 .hero-inner {
@@ -73,54 +87,33 @@
 }
 
 .hero-copy h1 {
-  max-width: 14ch;
+  max-width: 15ch;
   margin: 0;
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: clamp(30px, 8vw, 50px);
-  font-weight: 800;
-  letter-spacing: -.01em;
-  line-height: 1.1;
+  font-size: clamp(34px, 8vw, 54px);
+  font-weight: 700;
+  line-height: 1.12;
 }
 
 .hero-lead {
-  max-width: 40ch;
-  margin: 16px 0 26px;
+  max-width: 42ch;
+  margin: 18px 0 28px;
   color: var(--muted);
-  font-size: 17px;
-  line-height: 1.5;
+  font-size: 18px;
+  line-height: 1.55;
 }
 
 .hero-button {
-  min-height: 54px;
-  padding: 0 26px;
-  font-size: 17px;
+  min-height: 52px;
+  padding: 0 30px;
+  font-size: 18px;
 }
 
-.hero-button svg {
-  width: 18px;
-  height: 18px;
-}
-
-.hero-note {
-  margin: 16px 0 0;
-  color: var(--muted);
-  font-size: 15px;
-}
-
-.hero-note a {
-  color: var(--brand);
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* A small drawing of a CV page -- decoration, so it is hidden from
-   assistive software and drawn entirely in CSS. */
+/* A small drawing of a CV page -- decoration, hidden from assistive
+   software and drawn entirely in CSS. Paper stays white in both themes. */
 .hero-sheet {
-  display: grid;
-  width: min(100%, 340px);
-  padding: 22px;
+  display: none;
+  width: min(100%, 360px);
+  padding: 24px;
   justify-self: center;
   gap: 7px;
   background: #fff;
@@ -141,10 +134,10 @@
   height: 46px;
   place-items: center;
   color: #fff;
-  background: #1D4ED8;
+  background: #2563EB;
   border-radius: 50%;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .hero-sheet-head b,
@@ -153,23 +146,23 @@
 }
 
 .hero-sheet-head b {
-  color: #0B0B0F;
+  color: #1D1D20;
   font-size: 16px;
   letter-spacing: .04em;
 }
 
 .hero-sheet-head small {
-  color: #1D4ED8;
-  font-size: 12px;
+  color: #2563EB;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .hero-sheet em {
   margin-top: 8px;
-  color: #1D4ED8;
-  font-size: 11px;
+  color: #2563EB;
+  font-size: 12px;
   font-style: normal;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
 }
@@ -178,7 +171,7 @@
 .mini-cv i {
   display: block;
   height: 7px;
-  background: #E5E9F0;
+  background: #E8ECF1;
   border-radius: 4px;
 }
 
@@ -190,7 +183,7 @@
 .hero-sheet i.rule {
   height: 2px;
   margin: 6px 0 2px;
-  background: #1D4ED8;
+  background: #2563EB;
 }
 
 .hero-sheet-chips {
@@ -205,75 +198,128 @@
   border-radius: 999px;
 }
 
-/* ---- Steps -------------------------------------------------------------- */
-.steps,
-.templates-strip {
-  padding: 40px 0;
+/* ---- Shared section layout ---------------------------------------------- */
+.how,
+.features,
+.templates-strip,
+.faq,
+.final-cta {
+  padding: 56px 0;
 }
 
-.steps {
-  background: var(--surface-muted);
-  border-block: 1px solid var(--line);
+.how h2,
+.features h2,
+.templates-strip h2,
+.faq h2,
+.final-cta h2 {
+  max-width: 22ch;
+  margin: 0 auto 32px;
+  font-size: clamp(28px, 6vw, 40px);
+  font-weight: 700;
+  line-height: 1.18;
+  text-align: center;
 }
 
-.steps h2,
-.templates-strip h2 {
-  margin: 0 0 20px;
-  color: var(--ink);
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.2;
-}
-
+/* ---- How it works: numbered steps in outlined circles -------------------- */
 .step-list {
   display: grid;
-  margin: 0;
+  max-width: 980px;
+  margin: 0 auto;
   padding: 0;
-  gap: 12px;
+  gap: 32px;
   list-style: none;
-}
-
-.step-list li {
-  display: flex;
-  padding: 18px;
-  align-items: flex-start;
-  gap: 14px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  text-align: center;
 }
 
 .step-list li > span {
   display: grid;
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 14px;
   place-items: center;
-  color: var(--on-gold);
-  background: var(--gold);
-  border-radius: 50%;
-  font-weight: 800;
-}
-
-.step-list h3 {
-  margin: 4px 0 4px;
   color: var(--ink);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 50%;
   font-size: 17px;
 }
 
-.step-list p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.45;
+.step-list h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
 }
 
-/* ---- Templates ---------------------------------------------------------- */
+.step-list p {
+  max-width: 34ch;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---- Features: icon in an outlined circle, then a short line ------------ */
+.features {
+  border-top: 1px solid var(--line);
+}
+
+.feature-list {
+  display: grid;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0;
+  gap: 22px;
+  list-style: none;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.feature-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  place-items: center;
+  color: var(--brand);
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+}
+
+.feature-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.feature-list h3 {
+  margin: 2px 0 4px;
+  font-size: 19px;
+}
+
+.feature-list p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ---- Templates: a dark band with three paper thumbnails ----------------- */
+.templates-strip {
+  color: #F3F4F6;
+  background: #1D1D20;
+}
+
+.templates-strip h2 {
+  color: #F3F4F6;
+}
+
 .template-row {
   display: grid;
-  margin-bottom: 24px;
+  max-width: 640px;
+  margin: 0 auto;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .mini-cv {
@@ -283,9 +329,7 @@
   align-content: start;
   gap: 6px;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  box-shadow: var(--shadow-sm);
+  border-radius: 8px;
 }
 
 .mini-cv b {
@@ -311,59 +355,180 @@
   background: var(--mini-accent);
 }
 
-.mini-cv-2 b {
-  justify-self: center;
-}
-
+.mini-cv-2 b,
 .mini-cv-2 small {
   justify-self: center;
 }
 
-.mini-cv-3 i.rule {
-  background: #C9CFD9;
+/* ---- FAQ ---------------------------------------------------------------- */
+.faq-list {
+  max-width: 760px;
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+}
+
+.faq details {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq summary {
+  display: flex;
+  min-height: 60px;
+  padding: 16px 4px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 18px;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: "+";
+  flex: none;
+  color: var(--muted);
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.faq details[open] summary::after {
+  content: "–";
+}
+
+.faq details p {
+  margin: 0;
+  padding: 0 4px 18px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ---- Closing call to action --------------------------------------------- */
+.final-cta {
+  background: var(--card-2);
+}
+
+.final-cta-inner {
+  text-align: center;
+}
+
+.final-cta h2 {
+  margin-bottom: 12px;
+}
+
+.final-cta p {
+  margin: 0 0 26px;
+  color: var(--muted);
+  font-size: 18px;
 }
 
 /* ---- Footer ------------------------------------------------------------- */
 .landing-footer {
-  padding: 22px 0 calc(22px + env(safe-area-inset-bottom, 0px));
-  background: var(--choco);
+  padding: 28px 0 calc(28px + env(safe-area-inset-bottom, 0px));
+  background: var(--canvas);
+  border-top: 1px solid var(--line);
+}
+
+.landing-footer-inner {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
 }
 
 .landing-footer .brand {
-  color: var(--choco-ink);
   font-size: 17px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+}
+
+.footer-links a {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.footer-links a:hover {
+  color: var(--ink);
 }
 
 .landing-footer p {
   margin: 0;
-  color: var(--choco-muted);
+  color: var(--muted);
   font-size: 14px;
 }
 
 /* ---- Larger screens ----------------------------------------------------- */
 @media (min-width: 760px) {
   .hero {
-    padding: 80px 0 72px;
+    padding: 88px 0;
   }
 
   .hero-inner {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
     gap: 48px;
+  }
+
+  .hero-sheet {
+    display: grid;
+  }
+
+  .how,
+  .features,
+  .templates-strip,
+  .faq,
+  .final-cta {
+    padding: 88px 0;
+  }
+
+  .how h2,
+  .features h2,
+  .templates-strip h2,
+  .faq h2 {
+    margin-bottom: 48px;
   }
 
   .step-list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
   }
 
-  .steps,
-  .templates-strip {
-    padding: 64px 0;
+  .feature-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
   }
 
   .template-row {
-    max-width: 640px;
     gap: 20px;
+  }
+
+  .landing-footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+@media (min-width: 900px) {
+  .landing-links {
+    position: absolute;
+    left: 50%;
+    display: flex;
+    gap: 4px;
+    transform: translateX(-50%);
+  }
+
+  .landing-nav-inner {
+    position: relative;
   }
 }
 
@@ -373,26 +538,17 @@
     width: calc(100% - 32px);
   }
 
-  .hero-button,
-  .templates-strip .btn {
+  .hero-button {
     width: 100%;
   }
 
-  /* The logo's wordmark gives way before the actions do. */
+  /* The logo's wordmark gives way before the two buttons do. */
   .landing-nav .brand > span:last-child {
     display: none;
   }
 
-  .landing-footer-inner {
-    flex-direction: column;
-    justify-content: center;
-    padding-block: 4px;
-    gap: 8px;
-  }
-
-  /* On a phone the drawing only pushes the steps down; the template
-     strip further on already shows what a CV looks like. */
-  .hero-sheet {
-    display: none;
+  .landing-actions .btn {
+    min-height: 44px;
+    padding: 0 14px;
   }
 }

@@ -63,7 +63,7 @@ final class App
         header('Permissions-Policy: camera=(), geolocation=(), payment=()');
         // style-src and font-src carry fonts.googleapis.com/fonts.gstatic.com
         // because head_meta.php (loaded on every page) actually requests the
-        // Unbounded/Plus Jakarta Sans/JetBrains Mono stylesheet and its woff2
+        // Carlito stylesheet (the Calibri stand-in) and its font
         // files from there. Without these, the CSP silently blocks that
         // request on every single page load -- the system-font fallback in
         // --font-display/--font-text/--font-mono would fire on every visit,
