@@ -1587,3 +1587,246 @@ h2,
 h3 {
   letter-spacing: 0;
 }
+
+/* ==========================================================================
+   Premium finish
+   Purely visual: depth, light, and motion on things people touch. Nothing
+   here changes layout, sizes, or colours of text, so contrast is unchanged.
+   Movement is removed by the reduced-motion rule near the top of the file.
+   ========================================================================== */
+:root {
+  --glow: rgba(29, 78, 216, .28);
+  --glow-soft: rgba(29, 78, 216, .14);
+  --lift-shadow: 0 10px 24px -8px rgba(16, 24, 40, .18), 0 2px 6px rgba(16, 24, 40, .06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --glow: rgba(96, 165, 250, .32);
+    --glow-soft: rgba(96, 165, 250, .16);
+    --lift-shadow: 0 12px 28px -8px rgba(0, 0, 0, .6), 0 2px 6px rgba(0, 0, 0, .35);
+  }
+}
+
+:root[data-theme="dark"] {
+  --glow: rgba(96, 165, 250, .32);
+  --glow-soft: rgba(96, 165, 250, .16);
+  --lift-shadow: 0 12px 28px -8px rgba(0, 0, 0, .6), 0 2px 6px rgba(0, 0, 0, .35);
+}
+
+::selection {
+  color: var(--on-brand);
+  background: var(--brand);
+}
+
+/* ---- Buttons ------------------------------------------------------------ */
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    background-color var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out),
+    color var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-spring);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0) scale(.98);
+  transition-duration: 60ms;
+}
+
+/* Primary: a soft top-light, a coloured glow, and a sheen that sweeps
+   across on hover. */
+.btn-primary {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, 0) 60%);
+  border-color: transparent;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .12), 0 4px 12px -2px var(--glow-soft), inset 0 1px 0 rgba(255, 255, 255, .18);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 2px 4px rgba(16, 24, 40, .12), 0 10px 24px -6px var(--glow), inset 0 1px 0 rgba(255, 255, 255, .22);
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .28), transparent);
+  transform: skewX(-18deg) translateX(0);
+  transition: transform 700ms var(--ease-out);
+  pointer-events: none;
+}
+
+.btn-primary:hover:not(:disabled)::after {
+  transform: skewX(-18deg) translateX(420%);
+}
+
+/* Secondary: an outlined pill that fills faintly with the brand tint. */
+.btn-secondary:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  box-shadow: 0 6px 16px -8px var(--glow);
+}
+
+.btn-danger {
+  box-shadow: 0 4px 12px -4px rgba(185, 28, 28, .35);
+}
+
+.btn-danger:hover:not(:disabled) {
+  box-shadow: 0 10px 22px -8px rgba(185, 28, 28, .5);
+}
+
+.btn-link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 6px calc(100% - 7px);
+  background-size: 0 1.5px;
+  transition: background-size var(--motion-base) var(--ease-out), color var(--motion-fast) var(--ease-out);
+}
+
+.btn-link:hover:not(:disabled) {
+  transform: none;
+  background-size: calc(100% - 12px) 1.5px;
+}
+
+.btn svg {
+  transition: transform var(--motion-base) var(--ease-spring);
+}
+
+.btn:hover:not(:disabled) svg {
+  transform: translateX(1px) scale(1.06);
+}
+
+/* Icon buttons: a round lift with a tinted ring. */
+.icon-btn {
+  transition:
+    background-color var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out),
+    color var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-spring);
+}
+
+.icon-btn:hover:not(:disabled) {
+  color: var(--brand);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  box-shadow: 0 6px 16px -8px var(--glow);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:hover:not(:disabled) svg {
+  transform: rotate(18deg);
+  transition: transform var(--motion-slow) var(--ease-spring);
+}
+
+/* ---- Cards -------------------------------------------------------------- */
+.card {
+  transition:
+    transform var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--brand) 30%, var(--line));
+  box-shadow: var(--lift-shadow);
+}
+
+/* Forms and dialogs are cards too, but should hold still while typed in. */
+.card:has(input:focus, textarea:focus, select:focus),
+.modal-dialog.card:hover {
+  transform: none;
+}
+
+/* ---- Fields ------------------------------------------------------------- */
+.field input:hover:not(:focus):not(:disabled),
+.field textarea:hover:not(:focus):not(:disabled),
+.field select:hover:not(:focus):not(:disabled),
+.input:hover:not(:focus):not(:disabled) {
+  border-color: var(--line-strong);
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus,
+.input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px var(--glow-soft);
+}
+
+/* ---- Navigation --------------------------------------------------------- */
+.app-nav a {
+  transition: color var(--motion-fast) var(--ease-out), background-color var(--motion-base) var(--ease-out);
+}
+
+.app-header {
+  background: color-mix(in srgb, var(--choco) 86%, transparent);
+  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+}
+
+.user-chip {
+  transition: transform var(--motion-base) var(--ease-spring), box-shadow var(--motion-base) var(--ease-out);
+}
+
+.user-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 3px var(--glow-soft);
+}
+
+.bottom-nav-inner {
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: saturate(1.6) blur(14px);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+  box-shadow: var(--lift-shadow);
+}
+
+.bottom-nav-item {
+  transition: color var(--motion-fast) var(--ease-out), background-color var(--motion-base) var(--ease-out), transform var(--motion-base) var(--ease-spring);
+}
+
+.bottom-nav-fab {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, 0) 60%);
+  box-shadow: 0 8px 20px -6px var(--glow);
+}
+
+.bottom-nav-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px -6px var(--glow);
+}
+
+.chip {
+  transition: border-color var(--motion-base) var(--ease-out), background-color var(--motion-base) var(--ease-out);
+}
+
+a.chip:hover,
+button.chip:hover {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+/* ---- Scrollbars --------------------------------------------------------- */
+html {
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@media print {
+  .btn,
+  .card {
+    box-shadow: none !important;
+    transform: none !important;
+  }
+}

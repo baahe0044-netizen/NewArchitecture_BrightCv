@@ -722,3 +722,28 @@
     font-size: 12px;
   }
 }
+
+/* Premium finish: cards rise with a soft, wide shadow and a brand edge. */
+.resume-card,
+.new-resume-card {
+  transition: transform var(--motion-base) var(--ease-out), box-shadow var(--motion-base) var(--ease-out), border-color var(--motion-base) var(--ease-out), background-color var(--motion-base) var(--ease-out), color var(--motion-base) var(--ease-out);
+}
+
+.resume-card:hover {
+  border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
+  box-shadow: var(--lift-shadow);
+}
+
+.new-resume-card:hover {
+  border-color: var(--brand);
+  box-shadow: 0 10px 24px -10px var(--glow);
+  transform: translateY(-3px);
+}
+
+.new-resume-card > span {
+  transition: transform var(--motion-base) var(--ease-spring);
+}
+
+.new-resume-card:hover > span {
+  transform: scale(1.1) rotate(90deg);
+}

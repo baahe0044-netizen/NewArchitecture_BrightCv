@@ -856,3 +856,27 @@
   width: min(100%, 520px);
   box-shadow: var(--shadow-md);
 }
+
+/* Premium finish: template cards lift and the page inside tilts forward. */
+.template-card {
+  transition: transform var(--motion-base) var(--ease-out), box-shadow var(--motion-base) var(--ease-out), border-color var(--motion-base) var(--ease-out);
+}
+
+.template-card:hover {
+  border-color: color-mix(in srgb, var(--brand) 40%, var(--line));
+  box-shadow: var(--lift-shadow);
+  transform: translateY(-4px);
+}
+
+.template-preview .cv-thumb {
+  transition: transform var(--motion-slow) var(--ease-out), box-shadow var(--motion-slow) var(--ease-out);
+}
+
+.template-card:hover .template-preview .cv-thumb {
+  transform: scale(1.03);
+  box-shadow: 0 18px 36px -14px rgba(16, 24, 40, .35);
+}
+
+.filter-tabs button {
+  transition: color var(--motion-fast) var(--ease-out), background-color var(--motion-base) var(--ease-out), border-color var(--motion-base) var(--ease-out);
+}
