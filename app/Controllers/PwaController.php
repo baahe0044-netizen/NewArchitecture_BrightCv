@@ -20,7 +20,7 @@ final class PwaController extends Controller
             'short_name' => APP_NAME,
             'description' => 'Write, tailor, and export a professional CV from any device.',
             'id' => $scope,
-            'start_url' => $scope . 'dashboard',
+            'start_url' => $scope,
             'scope' => $scope,
             'display' => 'standalone',
             'display_override' => ['standalone', 'minimal-ui'],
