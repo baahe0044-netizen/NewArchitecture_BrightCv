@@ -1,4 +1,7 @@
 <?php
+// Empty when the view is rendered without the catalogue (the view tests
+// do this); the showcase is then left out.
+$templates = $templates ?? [];
 $signedIn = Auth::check();
 $startUrl = $signedIn ? base_url('/dashboard') : base_url('/resume/builder');
 $startLabel = $signedIn ? 'Open your dashboard' : 'Create your CV';
@@ -19,6 +22,7 @@ $faqs = [
     <meta name="description" content="Fill in your details, pick a template, and download a professional CV.">
     <title><?= e($title ?? 'Create a professional CV') ?> · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('resume/preview.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('landing/landing.css')) ?>">
 </head>
 <body class="landing-page">
@@ -96,18 +100,38 @@ $faqs = [
         </div>
     </section>
 
+    <?php if ($templates !== []): ?>
     <section class="templates-strip" id="templates" aria-labelledby="templatesTitle">
-        <div class="container">
-            <h2 id="templatesTitle">Templates recruiters can read at a glance</h2>
-            <div class="template-row" aria-hidden="true">
-                <?php foreach (['#2563EB', '#1D1D20', '#0F766E'] as $index => $color): ?>
-                    <div class="mini-cv mini-cv-<?= $index + 1 ?>" style="--mini-accent:<?= e($color) ?>">
-                        <b></b><small></small><i class="rule"></i><i></i><i></i><i class="short"></i><i></i><i class="short"></i>
-                    </div>
-                <?php endforeach; ?>
+        <div class="container showcase-head">
+            <div>
+                <h2 id="templatesTitle">Choose from <?= count($templates) ?> templates</h2>
+                <p>Every template, filled in with an example CV. Scroll sideways to see them all.</p>
+            </div>
+            <div class="showcase-arrows">
+                <button class="icon-btn" type="button" data-showcase-step="-1" aria-controls="templateShowcase" aria-label="Previous templates">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <button class="icon-btn" type="button" data-showcase-step="1" aria-controls="templateShowcase" aria-label="Next templates">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
             </div>
         </div>
+        <div class="showcase" id="templateShowcase" tabindex="0" role="region" aria-label="CV templates. Scroll sideways to see more.">
+            <ul class="showcase-track">
+                <?php foreach ($templates as $template): ?>
+                    <?php $templateUrl = $signedIn ? base_url('/templates') : base_url('/resume/builder') . '?template=' . rawurlencode($template['template_key']); ?>
+                    <li>
+                        <a class="showcase-card" href="<?= e($templateUrl) ?>">
+                            <div class="cv-thumb" data-cv-thumb="<?= e($template['template_key']) ?>" data-accent="<?= e($template['color']) ?>"></div>
+                            <span class="showcase-name"><?= e($template['name']) ?></span>
+                            <span class="showcase-use">Use this template</span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
     </section>
+    <?php endif; ?>
 
     <section class="faq" id="faq" aria-labelledby="faqTitle">
         <div class="container faq-inner">
@@ -145,5 +169,9 @@ $faqs = [
 </footer>
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/renderer.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/sample-cv.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/template-thumbs.js')) ?>" defer></script>
+<script src="<?= e(asset('landing/landing.js')) ?>" defer></script>
 </body>
 </html>

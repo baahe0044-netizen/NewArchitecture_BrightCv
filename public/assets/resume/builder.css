@@ -1010,6 +1010,7 @@
 }
 
 .mini-template {
+  min-width: 0;
   /* Chrome around the paper mockup, so it follows the theme; the .mini-sheet
      inside stays white like the real document. */
   min-height: 108px;
@@ -1027,6 +1028,13 @@
 .mini-template.active {
   border-color: var(--brand);
   box-shadow: 0 0 0 2px var(--focus);
+}
+
+/* A filled example of the template (resume/template-thumbs.js). */
+.mini-thumb {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line);
 }
 
 .mini-sheet {

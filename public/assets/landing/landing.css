@@ -167,16 +167,14 @@
   text-transform: uppercase;
 }
 
-.hero-sheet i,
-.mini-cv i {
+.hero-sheet i {
   display: block;
   height: 7px;
   background: #E8ECF1;
   border-radius: 4px;
 }
 
-.hero-sheet i.short,
-.mini-cv i.short {
+.hero-sheet i.short {
   width: 62%;
 }
 
@@ -304,60 +302,122 @@
   line-height: 1.5;
 }
 
-/* ---- Templates: a dark band with three paper thumbnails ----------------- */
+/* ---- Templates: a dark band with every template, scrolled sideways ----- */
 .templates-strip {
   color: #F3F4F6;
   background: #1D1D20;
 }
 
-.templates-strip h2 {
+.showcase-head {
+  display: flex;
+  margin-bottom: 28px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.templates-strip .showcase-head h2 {
+  max-width: none;
+  margin: 0 0 8px;
   color: #F3F4F6;
+  text-align: left;
 }
 
-.template-row {
-  display: grid;
-  max-width: 640px;
-  margin: 0 auto;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+.showcase-head p {
+  margin: 0;
+  color: #C7CAD1;
+  font-size: 17px;
 }
 
-.mini-cv {
+.showcase-arrows {
+  display: none;
+  gap: 8px;
+}
+
+.showcase-arrows .icon-btn {
+  width: 46px;
+  height: 46px;
+  color: #F3F4F6;
+  background: transparent;
+  border: 1px solid #4A4D55;
+  border-radius: 50%;
+}
+
+.showcase-arrows .icon-btn:hover:not(:disabled) {
+  background: #2C2E34;
+}
+
+.showcase-arrows .icon-btn:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+/* The row runs edge to edge; its first card lines up with the page
+   content, and cards snap into place as it scrolls. */
+.showcase {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: max(16px, calc((100vw - var(--content)) / 2));
+  scrollbar-width: thin;
+  scrollbar-color: #4A4D55 transparent;
+}
+
+.showcase:focus-visible {
+  outline: 3px solid #60A5FA;
+  outline-offset: -3px;
+}
+
+.showcase-track {
+  display: flex;
+  width: max-content;
+  margin: 0;
+  padding: 4px max(16px, calc((100vw - var(--content)) / 2)) 20px;
+  gap: 18px;
+  list-style: none;
+}
+
+.showcase-track li {
+  scroll-snap-align: start;
+}
+
+.showcase-card {
   display: grid;
-  aspect-ratio: 210 / 297;
-  padding: 14% 12%;
-  align-content: start;
-  gap: 6px;
-  background: #fff;
+  width: 220px;
+  gap: 10px;
+  color: #F3F4F6;
+  text-decoration: none;
+}
+
+.showcase-card .cv-thumb {
   border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .35);
+  transition: transform var(--motion-fast) var(--ease-out);
 }
 
-.mini-cv b {
-  display: block;
-  width: 70%;
-  height: 10px;
-  background: var(--mini-accent);
-  border-radius: 3px;
+.showcase-card:hover .cv-thumb,
+.showcase-card:focus-visible .cv-thumb {
+  transform: translateY(-4px);
 }
 
-.mini-cv small {
-  display: block;
-  width: 45%;
-  height: 6px;
-  margin-bottom: 4px;
-  background: color-mix(in srgb, var(--mini-accent) 45%, #fff);
-  border-radius: 3px;
+.showcase-card:focus-visible {
+  outline: none;
 }
 
-.mini-cv i.rule {
-  height: 2px;
-  margin: 4px 0;
-  background: var(--mini-accent);
+.showcase-card:focus-visible .cv-thumb {
+  outline: 3px solid #60A5FA;
+  outline-offset: 3px;
 }
 
-.mini-cv-2 b,
-.mini-cv-2 small {
-  justify-self: center;
+.showcase-name {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.showcase-use {
+  margin-top: -6px;
+  color: #93C5FD;
+  font-size: 15px;
 }
 
 /* ---- FAQ ---------------------------------------------------------------- */
@@ -507,8 +567,12 @@
     gap: 32px;
   }
 
-  .template-row {
-    gap: 20px;
+  .showcase-arrows {
+    display: flex;
+  }
+
+  .showcase-card {
+    width: 250px;
   }
 
   .landing-footer-inner {

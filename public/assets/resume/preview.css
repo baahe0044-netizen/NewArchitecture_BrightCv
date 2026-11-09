@@ -1640,3 +1640,34 @@
     margin-top: -14mm;
   }
 }
+
+/* ==========================================================================
+   Template thumbnails (resume/template-thumbs.js)
+   A full A4 page of the example CV, scaled down to the box's width. Paper
+   stays white in both themes.
+   ========================================================================== */
+.cv-thumb {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 210 / 297;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Out of the flow, so the full-size page never widens the box it sits in;
+   the box takes its size from its own width and the A4 ratio. */
+.cv-thumb-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 794px;
+  transform: scale(var(--thumb-scale, .3));
+  transform-origin: top left;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cv-thumb-page .cv-document {
+  min-height: 1123px;
+  box-shadow: none;
+}

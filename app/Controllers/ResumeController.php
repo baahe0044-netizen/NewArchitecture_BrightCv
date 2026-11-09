@@ -24,7 +24,9 @@ final class ResumeController extends Controller
             // no account screen in between.
             if (!Auth::check()) {
                 $guest = (new AuthService())->startAsGuest();
-                $resume = $this->resumes->create((int) $guest['id'], 'My CV');
+                // ?template= comes from a template picked on the landing
+                // page; create() falls back to the default for anything else.
+                $resume = $this->resumes->create((int) $guest['id'], 'My CV', (string) $request->input('template', TemplateCatalog::DEFAULT_KEY));
                 return Response::redirect(base_url('/resume/builder/' . $resume['id']));
             }
 

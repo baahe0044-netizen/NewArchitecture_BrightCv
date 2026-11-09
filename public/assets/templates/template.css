@@ -844,3 +844,15 @@
     font-size: 11px;
   }
 }
+
+/* ---- Filled example CVs (resume/template-thumbs.js) --------------------- */
+.template-preview .cv-thumb {
+  width: min(100%, 216px);
+  border-radius: 6px;
+  box-shadow: var(--shadow-md);
+}
+
+.large-template-preview .cv-thumb {
+  width: min(100%, 520px);
+  box-shadow: var(--shadow-md);
+}

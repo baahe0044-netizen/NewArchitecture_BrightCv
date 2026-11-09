@@ -7,6 +7,7 @@
     <meta name="csrf-token" content="<?= e(Csrf::token()) ?>">
     <title>CV templates · <?= e(APP_NAME) ?></title>
     <link rel="stylesheet" href="<?= e(asset('common/app.css')) ?>">
+    <link rel="stylesheet" href="<?= e(asset('resume/preview.css')) ?>">
     <link rel="stylesheet" href="<?= e(asset('templates/template.css')) ?>">
 </head>
 <body>
@@ -60,16 +61,7 @@
                 <?php $isStacked = ($template['layout'] ?? 'stacked') === 'stacked'; ?>
                 <article class="template-card" data-template-card data-category="<?= e(mb_strtolower($template['category'])) ?>" data-name="<?= e(mb_strtolower($template['name'])) ?>" data-layout="<?= e($template['layout'] ?? 'stacked') ?>">
                     <div class="template-preview template-style-<?= e($template['template_key']) ?> template-layout-<?= e($template['layout'] ?? 'stacked') ?>" style="--accent:<?= e($template['color']) ?>" aria-label="<?= e($template['name']) ?> layout preview">
-                        <div class="template-paper" aria-hidden="true">
-                            <header><div class="template-avatar">AM</div><div><h2>ALEX MORGAN</h2><span>PRODUCT &amp; OPERATIONS LEAD</span></div></header>
-                            <div class="template-contact">Accra, Ghana · alex@example.com · +233 24 000 0000</div>
-                            <div class="template-content">
-                                <section><h3>PROFILE</h3><i></i><i></i><i class="short"></i></section>
-                                <section><h3>EXPERIENCE</h3><b>Operations Manager</b><small>Forward Labs · 2022 — Present</small><i></i><i></i><i class="short"></i></section>
-                                <section><h3>EDUCATION</h3><b>Bachelor of Arts</b><small>University of Ghana</small></section>
-                                <section><h3>SKILLS</h3><div class="preview-skills"><span>Leadership</span><span>Strategy</span><span>Analytics</span></div></section>
-                            </div>
-                        </div>
+                        <div class="cv-thumb" data-cv-thumb="<?= e($template['template_key']) ?>" data-accent="<?= e($template['color']) ?>"></div>
                     </div>
                     <div class="template-card-body">
                         <div class="template-name-row">
@@ -138,6 +130,9 @@
 
 <script src="<?= e(asset('common/app.js')) ?>" defer></script>
 <script src="<?= e(asset('common/pwa.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/renderer.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/sample-cv.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/template-thumbs.js')) ?>" defer></script>
 <script src="<?= e(asset('templates/template.js')) ?>" defer></script>
 </body>
 </html>

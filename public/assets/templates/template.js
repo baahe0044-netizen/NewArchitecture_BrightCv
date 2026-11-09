@@ -67,12 +67,18 @@
     if (preview) {
       previewedKey = preview.dataset.previewTemplate;
       previewedName = preview.dataset.templateName;
-      const source = preview.closest('.template-card')?.querySelector('.template-preview');
+      const source = preview.closest('.template-card')?.querySelector('[data-cv-thumb]');
       if (!source) return;
-      const clone = source.cloneNode(true);
-      document.getElementById('largeTemplatePreview').replaceChildren(clone);
+      // A fresh, larger drawing of the same filled example CV.
+      const large = document.createElement('div');
+      large.className = 'cv-thumb';
+      large.dataset.cvThumb = source.dataset.cvThumb;
+      large.dataset.accent = source.dataset.accent;
+      document.getElementById('largeTemplatePreview').replaceChildren(large);
       document.getElementById('previewTemplateTitle').textContent = previewedName;
       window.Lunetti.openModal('templatePreviewModal');
+      window.LunettiThumbs?.render(large);
+      requestAnimationFrame(() => window.LunettiThumbs?.fit(large));
     }
   });
 

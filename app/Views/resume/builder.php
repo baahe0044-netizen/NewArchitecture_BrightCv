@@ -158,7 +158,7 @@ $builderPayload = [
                 <div class="mini-template-grid">
                     <?php foreach ($templates as $template): ?>
                         <button class="mini-template <?= $resume['template_key'] === $template['template_key'] ? 'active' : '' ?>" type="button" data-template-key="<?= e($template['template_key']) ?>" aria-pressed="<?= $resume['template_key'] === $template['template_key'] ? 'true' : 'false' ?>" title="<?= e($template['name']) ?>">
-                            <span class="mini-sheet mini-<?= e($template['template_key']) ?>" style="--mini-accent:<?= e($template['color']) ?>"><i></i><i></i><b></b><i></i><i></i></span>
+                            <span class="cv-thumb mini-thumb" data-cv-thumb="<?= e($template['template_key']) ?>" data-accent="<?= e($template['color']) ?>"></span>
                             <small><?= e($template['name']) ?></small>
                         </button>
                     <?php endforeach; ?>
@@ -481,6 +481,8 @@ $builderPayload = [
 <script src="<?= e(asset('resume/renderer.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/download.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/skill-suggestions.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/sample-cv.js')) ?>" defer></script>
+<script src="<?= e(asset('resume/template-thumbs.js')) ?>" defer></script>
 <script src="<?= e(asset('resume/builder.js')) ?>" defer></script>
 </body>
 </html>
