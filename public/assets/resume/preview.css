@@ -3,8 +3,10 @@
   --cv-font: "Times New Roman";
   /* Every font size below is written for a 10.5pt body and multiplied by this,
      so the whole page grows together and the hierarchy between name, headings,
-     body, dates and chips stays as designed. 1.24 puts the body at 13pt. */
-  --cv-scale: 1.24;
+     body, dates and chips stays as designed. 1.333 puts the body at 14pt,
+     and the small print (dates, places, chips) is set no smaller than about
+     10pt so the page reads comfortably once printed. */
+  --cv-scale: 1.333;
   width: 210mm;
   min-height: 297mm;
   padding: 15mm 16mm;
@@ -45,7 +47,7 @@
   color: #fff;
   background: var(--cv-accent);
   border-radius: 50%;
-  font-size: calc(13pt * var(--cv-scale));
+  font-size: calc(12.1pt * var(--cv-scale));
   font-weight: 800;
 }
 
@@ -68,7 +70,7 @@
 .cv-identity h1 {
   margin: 0;
   color: #17171b;
-  font-size: calc(25pt * var(--cv-scale));
+  font-size: calc(23.3pt * var(--cv-scale));
   font-weight: 800;
   letter-spacing: .035em;
   line-height: 1;
@@ -77,7 +79,7 @@
 .cv-identity p {
   margin: 5px 0 0;
   color: var(--cv-accent);
-  font-size: calc(9pt * var(--cv-scale));
+  font-size: calc(9.7pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -93,7 +95,7 @@
   gap: 5px 9px;
   color: #54545d;
   background: #f5f5f8;
-  font-size: calc(7.6pt * var(--cv-scale));
+  font-size: calc(8.9pt * var(--cv-scale));
 }
 
 .cv-contact i {
@@ -127,7 +129,7 @@
   padding-bottom: 4px;
   color: var(--cv-accent);
   border-bottom: 1.5px solid var(--cv-accent);
-  font-size: calc(9.5pt * var(--cv-scale));
+  font-size: calc(9.9pt * var(--cv-scale));
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -155,6 +157,24 @@
   gap: 12px;
 }
 
+/* The title block takes all the room the date leaves, so titles, places and
+   dates line up from one entry to the next. */
+.cv-entry-head > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A side column is too narrow for a title and a date side by side: the title
+   wraps around the date and nothing lines up. Stack them there instead, the
+   date on its own line under the title and place. */
+.cv-layout-sidebar .cv-side .cv-entry-head,
+.cv-layout-sidebar .cv-side .cv-compact-entry {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 2px;
+}
+
 .cv-entry h3 {
   margin: 0;
   color: #222228;
@@ -165,7 +185,7 @@
 .cv-organization {
   margin: 2px 0 0;
   color: #55545e;
-  font-size: calc(8pt * var(--cv-scale));
+  font-size: calc(9.1pt * var(--cv-scale));
   font-weight: 700;
 }
 
@@ -173,7 +193,7 @@
 .cv-compact-entry time {
   flex: 0 0 auto;
   color: var(--cv-accent);
-  font-size: calc(7.2pt * var(--cv-scale));
+  font-size: calc(8.7pt * var(--cv-scale));
   font-weight: 700;
   white-space: nowrap;
 }
@@ -196,13 +216,13 @@
 .cv-detail {
   margin: 5px 0 0;
   color: #4f4e57;
-  font-size: calc(8pt * var(--cv-scale));
+  font-size: calc(9.1pt * var(--cv-scale));
 }
 
 .cv-link {
   margin: 3px 0 0;
   color: var(--cv-accent);
-  font-size: calc(7pt * var(--cv-scale));
+  font-size: calc(8.6pt * var(--cv-scale));
 }
 
 .cv-skills {
@@ -223,13 +243,13 @@
 
 .cv-skill b,
 .cv-language b {
-  font-size: calc(7.5pt * var(--cv-scale));
+  font-size: calc(8.8pt * var(--cv-scale));
 }
 
 .cv-skill small,
 .cv-language small {
   color: #686670;
-  font-size: calc(6.4pt * var(--cv-scale));
+  font-size: calc(8.2pt * var(--cv-scale));
 }
 
 /* Drawn proficiency, sized from --cv-skill (0-100) and --cv-skill-dots (1-5).
@@ -259,12 +279,12 @@
 }
 
 .cv-compact-entry b {
-  font-size: calc(7.7pt * var(--cv-scale));
+  font-size: calc(9pt * var(--cv-scale));
 }
 
 .cv-compact-entry span {
   color: #686670;
-  font-size: calc(6.8pt * var(--cv-scale));
+  font-size: calc(8.5pt * var(--cv-scale));
 }
 
 .cv-interests {
@@ -278,7 +298,7 @@
   color: #4f4d58;
   background: #f3f2f6;
   border-radius: 999px;
-  font-size: calc(6.8pt * var(--cv-scale));
+  font-size: calc(8.5pt * var(--cv-scale));
 }
 
 .cv-reference {
@@ -291,9 +311,9 @@
   display: block;
 }
 
-.cv-reference b { font-size: calc(7.8pt * var(--cv-scale)); }
-.cv-reference span { color: #55545e; font-size: calc(6.8pt * var(--cv-scale)); }
-.cv-reference small { color: #77757e; font-size: calc(6.5pt * var(--cv-scale)); }
+.cv-reference b { font-size: calc(9pt * var(--cv-scale)); }
+.cv-reference span { color: #55545e; font-size: calc(8.5pt * var(--cv-scale)); }
+.cv-reference small { color: #77757e; font-size: calc(8.3pt * var(--cv-scale)); }
 
 /* Executive */
 .cv-template-executive {
@@ -369,7 +389,7 @@
 .cv-template-minimal .cv-section h2 {
   color: #222;
   border-color: #aaa;
-  font-size: calc(8.5pt * var(--cv-scale));
+  font-size: calc(9.4pt * var(--cv-scale));
   text-align: center;
 }
 
@@ -416,6 +436,9 @@
 
 .cv-template-creative .cv-side .cv-section h2,
 .cv-template-creative .cv-side .cv-entry h3,
+.cv-template-creative .cv-side time,
+.cv-template-creative .cv-side .cv-compact-entry b,
+.cv-template-creative .cv-side .cv-reference b,
 .cv-template-creative .cv-side .cv-skill b,
 .cv-template-creative .cv-side .cv-language b {
   color: #fff;
@@ -459,7 +482,7 @@
 }
 
 .cv-template-tech .cv-identity h1 {
-  font-size: calc(23pt * var(--cv-scale));
+  font-size: calc(21.4pt * var(--cv-scale));
 }
 
 .cv-template-tech .cv-section h2 {
@@ -541,7 +564,7 @@
 }
 
 .cv-layout-stacked .cv-detail {
-  font-size: calc(8.4pt * var(--cv-scale));
+  font-size: calc(9.3pt * var(--cv-scale));
 }
 
 /* ==========================================================================
@@ -552,7 +575,7 @@
 .cv-density-compact {
   padding-top: 11mm;
   padding-bottom: 11mm;
-  font-size: calc(8.6pt * var(--cv-scale));
+  font-size: calc(9.5pt * var(--cv-scale));
   line-height: 1.34;
 }
 
@@ -597,7 +620,7 @@
 }
 
 .cv-template-classic .cv-identity h1 {
-  font-size: calc(22pt * var(--cv-scale));
+  font-size: calc(20.5pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -605,7 +628,7 @@
 
 .cv-template-classic .cv-identity p {
   color: #3f3f47;
-  font-size: calc(9.5pt * var(--cv-scale));
+  font-size: calc(9.9pt * var(--cv-scale));
   font-weight: 600;
   letter-spacing: .04em;
   text-transform: none;
@@ -617,7 +640,7 @@
   color: #45444c;
   background: transparent;
   border-bottom: 1px solid var(--cv-accent);
-  font-size: calc(8pt * var(--cv-scale));
+  font-size: calc(9.1pt * var(--cv-scale));
 }
 
 .cv-template-classic .cv-contact i {
@@ -628,7 +651,7 @@
   color: #1c1c21;
   border-bottom-width: 1px;
   border-color: #c6c6cd;
-  font-size: calc(10pt * var(--cv-scale));
+  font-size: calc(10.2pt * var(--cv-scale));
   letter-spacing: .06em;
 }
 
@@ -652,14 +675,14 @@
 }
 
 .cv-template-elegant .cv-identity h1 {
-  font-size: calc(26pt * var(--cv-scale));
+  font-size: calc(24.2pt * var(--cv-scale));
   font-weight: 400;
   letter-spacing: .01em;
 }
 
 .cv-template-elegant .cv-identity p {
   color: #63615c;
-  font-size: calc(9pt * var(--cv-scale));
+  font-size: calc(9.7pt * var(--cv-scale));
   letter-spacing: .22em;
 }
 
@@ -669,12 +692,12 @@
   justify-content: flex-start;
   color: #5c5a55;
   background: transparent;
-  font-size: calc(8pt * var(--cv-scale));
+  font-size: calc(9.1pt * var(--cv-scale));
 }
 
 .cv-template-elegant .cv-section h2 {
   border: 0;
-  font-size: calc(9pt * var(--cv-scale));
+  font-size: calc(9.7pt * var(--cv-scale));
   font-style: italic;
   font-weight: 400;
   letter-spacing: .16em;
@@ -687,7 +710,7 @@
 
 .cv-template-compact {
   padding: 12mm 13mm;
-  font-size: calc(8.7pt * var(--cv-scale));
+  font-size: calc(9.5pt * var(--cv-scale));
   line-height: 1.36;
 }
 
@@ -704,14 +727,14 @@
 }
 
 .cv-template-compact .cv-identity h1 {
-  font-size: calc(20pt * var(--cv-scale));
+  font-size: calc(18.6pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-contact {
   margin: 10px 0 12px;
   padding: 5px 8px;
   justify-content: flex-start;
-  font-size: calc(7.2pt * var(--cv-scale));
+  font-size: calc(8.7pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-section {
@@ -722,7 +745,7 @@
   margin-bottom: 5px;
   padding-bottom: 2px;
   border-bottom-width: 1px;
-  font-size: calc(8.6pt * var(--cv-scale));
+  font-size: calc(9.5pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-entry {
@@ -780,7 +803,7 @@
 
 .cv-template-academic {
   padding: 17mm 20mm;
-  font-size: calc(9.5pt * var(--cv-scale));
+  font-size: calc(9.9pt * var(--cv-scale));
 }
 
 .cv-template-academic .cv-header {
@@ -793,7 +816,7 @@
 }
 
 .cv-template-academic .cv-identity h1 {
-  font-size: calc(21pt * var(--cv-scale));
+  font-size: calc(19.5pt * var(--cv-scale));
   font-weight: 400;
   letter-spacing: .04em;
 }
@@ -809,18 +832,18 @@
   color: #4a4956;
   background: transparent;
   border-block: 1px solid #ccccd6;
-  font-size: calc(8pt * var(--cv-scale));
+  font-size: calc(9.1pt * var(--cv-scale));
 }
 
 .cv-template-academic .cv-section h2 {
   border-bottom-width: 1px;
-  font-size: calc(10pt * var(--cv-scale));
+  font-size: calc(10.2pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .05em;
 }
 
 .cv-template-academic .cv-detail {
-  font-size: calc(8.8pt * var(--cv-scale));
+  font-size: calc(9.6pt * var(--cv-scale));
 }
 
 /* ==========================================================================
@@ -844,12 +867,12 @@
   color: var(--cv-accent);
   background: #fff;
   border-radius: 10px;
-  font-size: calc(15pt * var(--cv-scale));
+  font-size: calc(14pt * var(--cv-scale));
 }
 
 .cv-template-bold .cv-identity h1 {
   color: #fff;
-  font-size: calc(28pt * var(--cv-scale));
+  font-size: calc(26pt * var(--cv-scale));
   font-weight: 800;
   letter-spacing: .01em;
   text-transform: uppercase;
@@ -876,7 +899,10 @@
 }
 
 .cv-template-bold .cv-section h2 {
-  display: inline-block;
+  /* Block-level but only as wide as its words, so it can still span both
+     columns of Certifications and References (an inline-block cannot). */
+  display: block;
+  width: fit-content;
   padding: 4px 9px;
   color: #fff;
   background: var(--cv-accent);
@@ -991,7 +1017,7 @@
 .cv-template-modern .cv-skill small,
 .cv-template-modern .cv-language small {
   order: 3;
-  font-size: calc(6pt * var(--cv-scale));
+  font-size: calc(8pt * var(--cv-scale));
 }
 
 .cv-template-modern .cv-level-meter {
@@ -1012,7 +1038,7 @@
 .cv-template-classic .cv-language small {
   letter-spacing: .06em;
   text-transform: uppercase;
-  font-size: calc(5.8pt * var(--cv-scale));
+  font-size: calc(7.9pt * var(--cv-scale));
 }
 
 /* --- Minimal: one quiet running line, levels left unsaid. ---------------- */
@@ -1104,12 +1130,12 @@
 
 .cv-template-compact .cv-skill b,
 .cv-template-compact .cv-language b {
-  font-size: calc(6.8pt * var(--cv-scale));
+  font-size: calc(8.5pt * var(--cv-scale));
 }
 
 .cv-template-compact .cv-skill small,
 .cv-template-compact .cv-language small {
-  font-size: calc(5.6pt * var(--cv-scale));
+  font-size: calc(7.8pt * var(--cv-scale));
 }
 
 /* --- Timeline: outlined pills matching the rail down the entries. -------- */
@@ -1158,14 +1184,14 @@
 
 .cv-template-tech .cv-skill b,
 .cv-template-tech .cv-language b {
-  font-size: calc(6.8pt * var(--cv-scale));
+  font-size: calc(8.5pt * var(--cv-scale));
   font-weight: 600;
 }
 
 .cv-template-tech .cv-skill small,
 .cv-template-tech .cv-language small {
   color: color-mix(in srgb, var(--cv-accent) 60%, #5f5e66);
-  font-size: calc(5.6pt * var(--cv-scale));
+  font-size: calc(7.8pt * var(--cv-scale));
 }
 
 /* --- Graduate: the level shown as a bar, since the words carry weight when
@@ -1188,7 +1214,7 @@
 .cv-template-graduate .cv-skill small,
 .cv-template-graduate .cv-language small {
   order: 3;
-  font-size: calc(5.8pt * var(--cv-scale));
+  font-size: calc(7.9pt * var(--cv-scale));
   text-align: right;
 }
 
@@ -1243,7 +1269,7 @@
 
 .cv-template-executive .cv-skill b,
 .cv-template-executive .cv-language b {
-  font-size: calc(6.8pt * var(--cv-scale));
+  font-size: calc(8.5pt * var(--cv-scale));
   font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1274,7 +1300,7 @@
 
 .cv-template-bold .cv-skill b,
 .cv-template-bold .cv-language b {
-  font-size: calc(7pt * var(--cv-scale));
+  font-size: calc(8.6pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -1283,6 +1309,13 @@
 .cv-template-bold .cv-skill small,
 .cv-template-bold .cv-language small {
   color: rgba(255,255,255,.82);
+}
+
+/* Each block is as wide as its name and level, never squeezed into a third
+   of the row, so a two-word skill stays on one line. */
+.cv-template-bold .cv-skill,
+.cv-template-bold .cv-language {
+  flex: 1 1 auto;
 }
 
 /* --- Creative: a name and a row of dots on the coloured sidebar. --------- */
@@ -1327,7 +1360,7 @@
 
 .cv-template-editorial .cv-skill b,
 .cv-template-editorial .cv-language b {
-  font-size: calc(8pt * var(--cv-scale));
+  font-size: calc(9.1pt * var(--cv-scale));
   font-weight: 500;
   font-variant: small-caps;
   letter-spacing: .04em;
@@ -1336,7 +1369,7 @@
 .cv-template-editorial .cv-skill small,
 .cv-template-editorial .cv-language small {
   color: #8d8b93;
-  font-size: calc(6.2pt * var(--cv-scale));
+  font-size: calc(8.1pt * var(--cv-scale));
   font-style: italic;
 }
 
@@ -1366,7 +1399,9 @@
 
 .cv-template-metro .cv-skill,
 .cv-template-metro .cv-language {
-  flex: 1 1 22%;
+  /* Sized to the name, so a two-word skill stays on one line and the row
+     still fills edge to edge. */
+  flex: 1 1 auto;
 }
 
 .cv-template-metro .cv-skill,
@@ -1391,7 +1426,7 @@
 
 .cv-template-metro .cv-skill b,
 .cv-template-metro .cv-language b {
-  font-size: calc(6.8pt * var(--cv-scale));
+  font-size: calc(8.5pt * var(--cv-scale));
   font-weight: 700;
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -1400,7 +1435,7 @@
 .cv-template-metro .cv-skill small,
 .cv-template-metro .cv-language small {
   color: rgba(255,255,255,.8);
-  font-size: calc(5.6pt * var(--cv-scale));
+  font-size: calc(7.8pt * var(--cv-scale));
 }
 
 /* --- Ledger: a register of ruled rows, level against the right rule. ----- */
@@ -1484,14 +1519,14 @@
   display: flex;
   justify-content: space-between;
   gap: 5px;
-  font-size: calc(7.8pt * var(--cv-scale));
+  font-size: calc(9pt * var(--cv-scale));
 }
 
 .cv-template-spectrum .cv-skill small,
 .cv-template-spectrum .cv-language small {
   order: 3;
   color: color-mix(in srgb, var(--cv-accent) 70%, #55545c);
-  font-size: calc(5.8pt * var(--cv-scale));
+  font-size: calc(7.9pt * var(--cv-scale));
   letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -1506,6 +1541,9 @@
 
 .cv-template-slate .cv-side .cv-section h2,
 .cv-template-slate .cv-side .cv-entry h3,
+.cv-template-slate .cv-side time,
+.cv-template-slate .cv-side .cv-compact-entry b,
+.cv-template-slate .cv-side .cv-reference b,
 .cv-template-slate .cv-side .cv-skill b,
 .cv-template-slate .cv-side .cv-language b {
   color: #fff;
@@ -1586,7 +1624,7 @@
 .cv-template-aurora .cv-skill small,
 .cv-template-aurora .cv-language small {
   color: color-mix(in srgb, var(--cv-accent) 55%, #45444d);
-  font-size: calc(5.8pt * var(--cv-scale));
+  font-size: calc(7.9pt * var(--cv-scale));
   letter-spacing: .05em;
   text-transform: uppercase;
 }
