@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400&display=swap">
+  <style>
+    :root {
+      --sand: #EBD9BB; --card: #FBF3E3; --card-2: #F3E3C6;
+      --ink: #2A1D14; --muted: #6E5A45;
+      --rust: #C1442A; --rust-deep: #9A3320;
+      --gold: #F2A81D; --gold-soft: #FBE3AE;
+      --moss: #4E7A34; --moss-deep: #3F6528; --moss-soft: #DCE9CC;
+      --berry: #A02454; --berry-soft: #F4D8E2;
+      --choco: #3A2A1E;
+    }
+    body { margin: 0; font-family: "Tinos", "Times New Roman", Times, serif; color: var(--ink); background: var(--sand); }
+    a { color: var(--rust-deep); text-decoration: none; }
+    a:hover { color: var(--ink); }
+    h1, h2, h3 { margin: 0; font-weight: 700; }
+    p { margin: 0; }
+    .dots { background-color: var(--sand); background-image: radial-gradient(rgba(42,29,20,.09) 1.2px, transparent 1.2px); background-size: 17px 17px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 13px; border: 2px solid var(--ink); border-radius: 999px; font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .field-label { font-size: 15px; font-weight: 700; }
+    .field-input { min-height: 50px; display: flex; align-items: center; padding: 0 13px; border: 2px solid var(--ink); border-radius: 9px; background: var(--card); font-size: 16px; }
+    .xp { font-size: 13px; font-weight: 700; letter-spacing: .04em; }
+  </style>
+</helmet>
+
+<div class="dots" style="width: 390px; height: 844px; overflow: hidden; display: flex; flex-direction: column;">
+
+  <header style="height: 62px; background: var(--choco); border-bottom: 3px solid var(--ink); display: flex; align-items: center; gap: 11px; padding: 0 12px; flex-shrink: 0;">
+    <span style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 2px solid #55402F; border-radius: 10px; color: #F6E9D2; cursor: pointer; flex-shrink: 0;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    </span>
+    <div style="flex: 1; min-width: 0;">
+      <p style="font-size: 17px; font-weight: 700; color: #F6E9D2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Product Design CV</p>
+      <p style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #9FD68A;">
+        <span style="width: 7px; height: 7px; border-radius: 999px; background: #9FD68A;"></span>
+        Saved
+      </p>
+    </div>
+    <span class="chip" style="background: var(--gold); border-color: #F6E9D2; flex-shrink: 0;">+90 XP</span>
+  </header>
+
+  <div style="flex: 1; padding: 13px 14px 0; display: flex; flex-direction: column; gap: 13px; min-height: 0;">
+
+    <!-- Stage progress -->
+    <div style="display: flex; align-items: center; gap: 11px;">
+      <div style="flex: 1; height: 14px; border: 2px solid var(--ink); border-radius: 999px; background: var(--card-2); overflow: hidden; display: flex;">
+        <div style="width: 33%; height: 100%; background: var(--moss); border-right: 2px solid var(--ink);"></div>
+        <div style="width: 17%; height: 100%; background: var(--gold);"></div>
+      </div>
+      <span style="font-size: 14px; font-weight: 700; white-space: nowrap;">Stage 3 of 6</span>
+    </div>
+
+    <!-- Stage chips -->
+    <div style="display: flex; gap: 7px; overflow: hidden;">
+      <span class="chip" style="background: var(--moss-soft);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--moss-deep)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"/></svg>
+        You
+      </span>
+      <span class="chip" style="background: var(--moss-soft);">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--moss-deep)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"/></svg>
+        Pitch
+      </span>
+      <span class="chip" style="background: var(--gold); box-shadow: 3px 3px 0 var(--ink);">Work &middot; +40</span>
+      <span class="chip" style="background: var(--card); color: var(--muted);">Study</span>
+    </div>
+
+    <div>
+      <h2 style="font-size: 27px; letter-spacing: -0.01em;">Where you worked</h2>
+      <p style="margin-top: 5px; font-size: 16px; line-height: 1.45; color: var(--muted);">Most recent job first. Two lines each is plenty.</p>
+    </div>
+
+    <!-- Entry -->
+    <div style="border: 2px solid var(--ink); border-radius: 12px; overflow: hidden; background: var(--card);">
+      <div style="display: flex; align-items: center; gap: 9px; padding: 10px 12px; background: var(--card-2); border-bottom: 2px solid var(--ink);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.1" stroke-linecap="round"><path d="M4 8h16M4 12h16M4 16h16"/></svg>
+        <span style="font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Kwesi Studios</span>
+        <span class="chip" style="margin-left: auto; background: var(--gold-soft); height: 26px; font-size: 13px;">2 tips</span>
+      </div>
+
+      <div style="padding: 13px 12px; display: flex; flex-direction: column; gap: 12px;">
+        <label style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="field-label">Job title</span>
+          <span class="field-input">Senior Product Designer</span>
+        </label>
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;">
+          <label style="display: flex; flex-direction: column; gap: 5px;"><span class="field-label">Started</span><span class="field-input" style="color: var(--muted); font-size: 15px;">Mar 2022</span></label>
+          <label style="display: flex; flex-direction: column; gap: 5px;"><span class="field-label">Ended</span><span class="field-input" style="color: var(--muted); font-size: 15px;">Still here</span></label>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span class="field-label">What you did there</span>
+
+          <div style="display: flex; align-items: flex-start; gap: 9px; padding: 10px 11px; border: 2px solid var(--ink); border-radius: 9px; background: var(--moss-soft);">
+            <span style="width: 20px; height: 20px; border: 2px solid var(--ink); border-radius: 999px; background: var(--moss); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FBF3E3" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"/></svg></span>
+            <span style="flex: 1; font-size: 15px; line-height: 1.45;">Rebuilt onboarding, cutting drop-off from 41% to 18%.</span>
+            <span class="xp" style="color: var(--moss-deep); margin-top: 2px;">+20</span>
+          </div>
+
+          <div style="display: flex; align-items: flex-start; gap: 9px; padding: 10px 11px; border: 3px solid var(--rust); border-radius: 9px;">
+            <span style="width: 20px; height: 20px; border: 2px solid #BCA88A; border-radius: 999px; background: var(--card-2); flex-shrink: 0; margin-top: 1px;"></span>
+            <span style="flex: 1; font-size: 15px; line-height: 1.45; color: var(--muted);">Responsible for the design system</span>
+          </div>
+
+          <div style="display: flex; align-items: flex-start; gap: 9px; padding: 10px 11px; border: 2px solid var(--ink); border-radius: 9px; background: var(--gold-soft);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.1" stroke-linecap="round" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+            <p style="font-size: 14px; line-height: 1.45;">Open with a verb, close with the result. A line with a number earns <b>+20 XP</b>.</p>
+          </div>
+
+          <button style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border: 2px solid var(--ink); border-radius: 9px; background: var(--card-2); color: var(--ink); font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Add another line
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom action bar -->
+  <div style="padding: 10px 14px 14px; flex-shrink: 0;">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <button style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--ink); border-radius: 11px; box-shadow: 3px 3px 0 var(--ink); background: var(--card); color: var(--ink); cursor: pointer; flex-shrink: 0;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      </button>
+      <button style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 56px; border: 2px solid var(--ink); border-radius: 11px; box-shadow: 3px 3px 0 var(--ink); background: var(--moss); color: #FBF3E3; font-family: inherit; font-size: 17px; font-weight: 700; cursor: pointer;">
+        Next stage &middot; +40 XP
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
